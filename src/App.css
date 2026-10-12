@@ -963,6 +963,24 @@
   color: #3d0d0d;
 }
 
+.nes-subtle-contact {
+  margin-top: 4px;
+}
+
+.subtle-email-link {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  color: #661818;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: color 0.15s;
+}
+
+.subtle-email-link:hover {
+  color: #ff5555;
+  text-decoration: underline;
+}
+
 .global-sync-tag {
   display: flex;
   justify-content: space-between;
