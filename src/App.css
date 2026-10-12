@@ -774,16 +774,74 @@
   text-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
 }
 
-/* NES Submarine Centerpiece */
-.nes-sub-frame {
-  width: 100%;
-  max-width: 620px;
-  padding: 6px;
+.score-telemetry-item {
+  position: relative;
+}
+
+.highlight-penalty {
+  color: #ff0033;
+  text-shadow: 0 0 8px #ff0033;
+}
+
+.penalty-floating-badge {
+  position: absolute;
+  top: -14px;
+  right: -6px;
+  background-color: #ff0000;
+  color: #ffffff;
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  padding: 2px 5px;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 10px #ff0000;
+  animation: penaltyShake 0.3s ease-in-out;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@keyframes penaltyShake {
+  0% { transform: scale(0.8) translateY(0); }
+  25% { transform: scale(1.15) translateY(-3px) rotate(-3deg); }
+  50% { transform: scale(1.1) translateY(-2px) rotate(3deg); }
+  75% { transform: scale(1.05) translateY(-1px) rotate(-1deg); }
+  100% { transform: scale(1) translateY(0) rotate(0); }
+}
+
+/* 8-bit Swedish Gotland Submarine Styling (No empty border frame!) */
+.gotland-sub-wrapper {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at center, #260202 0%, #080000 85%);
-  border: 3px solid var(--c64-border);
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+  gap: 8px;
+  padding: 4px 0 10px 0;
+  animation: gotlandBob 3s ease-in-out infinite;
+}
+
+@keyframes gotlandBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.gotland-sub-svg {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(255, 34, 34, 0.6));
+}
+
+.gotland-badge-text {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #ff6666;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px var(--c64-red-glow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sweden-flag {
+  font-size: 13px;
 }
 
 /* NES "PUSH START BUTTON" */

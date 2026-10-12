@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { type HighScore } from '../data/submarineTexts';
-import { SubmarineGraphic } from './SubmarineGraphic';
+import { GotlandSubmarine } from './GotlandSubmarine';
 import { sound } from '../utils/audio';
 
 interface StartScreenProps {
@@ -115,10 +115,8 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         </div>
       </div>
 
-      {/* RED OCTOBER SUBMARINE ARTWORK */}
-      <div className="nes-sub-frame">
-        <SubmarineGraphic />
-      </div>
+      {/* 8-BIT RED GOTLAND-CLASS SWEDISH SUBMARINE */}
+      <GotlandSubmarine />
 
       {/* NES PUSH START BUTTON */}
       <div className="nes-start-prompt" onClick={onStartGame}>

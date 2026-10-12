@@ -19,6 +19,8 @@ export function App() {
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [errorCount, setErrorCount] = useState<number>(0);
   const [totalKeystrokes, setTotalKeystrokes] = useState<number>(0);
+  const [penaltyPoints, setPenaltyPoints] = useState<number>(0);
+  const [recentPenalty, setRecentPenalty] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [showScoreboard, setShowScoreboard] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -34,6 +36,7 @@ export function App() {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const timerRef = useRef<number | null>(null);
+  const penaltyTimerRef = useRef<number | null>(null);
 
   // Detect mobile
   useEffect(() => {
@@ -58,6 +61,8 @@ export function App() {
     setElapsedSeconds(0);
     setErrorCount(0);
     setTotalKeystrokes(0);
+    setPenaltyPoints(0);
+    setRecentPenalty(null);
     setFinalScoreData(null);
     if (timerRef.current) clearInterval(timerRef.current);
     setTimeout(() => {
@@ -101,7 +106,7 @@ export function App() {
     };
   }, [gameState, isStarted, isFinished, startTime]);
 
-  // Calculate live metrics
+  // Calculate live metrics including point deductions
   const calculateMetrics = useCallback(() => {
     const timeInMinutes = Math.max((elapsedSeconds || 1) / 60, 0.05);
     const wordsTyped = inputVal.length / 5;
@@ -109,9 +114,10 @@ export function App() {
     const accuracy = totalKeystrokes > 0
       ? Math.max(0, Math.min(100, Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100)))
       : 100;
-    const score = Math.round((wpm * (accuracy / 100)) * (level * 200));
+    const baseScore = Math.round((wpm * (accuracy / 100)) * (level * 220));
+    const score = Math.max(0, baseScore - penaltyPoints);
     return { wpm, accuracy, score };
-  }, [elapsedSeconds, inputVal.length, totalKeystrokes, errorCount, level]);
+  }, [elapsedSeconds, inputVal.length, totalKeystrokes, errorCount, level, penaltyPoints]);
 
   const { wpm, accuracy, score } = calculateMetrics();
 
@@ -126,7 +132,8 @@ export function App() {
     const finalAcc = totalKeystrokes > 0
       ? Math.max(0, Math.min(100, Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100)))
       : 100;
-    const finalScore = Math.round((finalWpm * (finalAcc / 100)) * (level * 200));
+    const baseScore = Math.round((finalWpm * (finalAcc / 100)) * (level * 220));
+    const finalScore = Math.max(0, baseScore - penaltyPoints);
 
     setFinalScoreData({
       score: finalScore,
@@ -137,9 +144,9 @@ export function App() {
     setTimeout(() => {
       setShowScoreboard(true);
     }, 600);
-  }, [elapsedSeconds, targetText.length, totalKeystrokes, errorCount, level]);
+  }, [elapsedSeconds, targetText.length, totalKeystrokes, errorCount, level, penaltyPoints]);
 
-  // Input change handler (works on desktop and mobile virtual keyboards)
+  // Input change handler with error & continued misspelled penalty deductions
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isFinished || gameState !== 'playing') return;
     const val = e.target.value;
@@ -158,12 +165,38 @@ export function App() {
 
       setTotalKeystrokes(prev => prev + 1);
 
+      // Check if any preceding character in the typed string was misspelled
+      let hasPrecedingError = false;
+      for (let i = 0; i < charIndex; i++) {
+        if (val[i] !== targetText[i]) {
+          hasPrecedingError = true;
+          break;
+        }
+      }
+
       if (typedChar !== expectedChar) {
         setErrorCount(prev => prev + 1);
+        // Penalty: 50 * level for first error, 80 * level if continuing on misspelled word
+        const penalty = hasPrecedingError ? (80 * level) : (50 * level);
+        setPenaltyPoints(prev => prev + penalty);
+        setRecentPenalty(`-${penalty} PTS`);
+        sound.playError();
+      } else if (hasPrecedingError) {
+        // Character matches target index, but preceding mistake was not fixed!
+        // Continuing while misspelled deducts penalty points!
+        const continuedPenalty = 30 * level;
+        setPenaltyPoints(prev => prev + continuedPenalty);
+        setRecentPenalty(`-${continuedPenalty} PTS (MISSPELLED)`);
         sound.playError();
       } else {
         sound.playKeypress();
       }
+
+      // Clear recent penalty alert after 1.2s
+      if (penaltyTimerRef.current) clearTimeout(penaltyTimerRef.current);
+      penaltyTimerRef.current = window.setTimeout(() => {
+        setRecentPenalty(null);
+      }, 1200);
     }
 
     setInputVal(val);
@@ -231,7 +264,7 @@ export function App() {
       <div className="c64-screen-frame">
         {gameState === 'start' ? (
           /* =============================================================
-             START SCREEN (HERO / SUBMARINE / LEVEL CHOOSER)
+             START SCREEN (NINTENDO NES TITLE WITH SWEDISH GOTLAND SUB)
              ============================================================= */
           <StartScreen
             selectedLevel={level}
@@ -257,7 +290,7 @@ export function App() {
                 <button
                   onClick={handleReturnToMenu}
                   className="retro-header-btn"
-                  title="Return to Briefing Menu"
+                  title="Return to Title Menu"
                   type="button"
                 >
                   ◄ MENU
@@ -285,7 +318,7 @@ export function App() {
             <section className="c64-telemetry-panel c64-box">
               <div className="telemetry-item">
                 <span className="telemetry-label">VESSEL</span>
-                <span className="telemetry-val highlight-red">TK-208 AKULA</span>
+                <span className="telemetry-val highlight-red">HSwMS GOTLAND</span>
               </div>
               <div className="telemetry-item">
                 <span className="telemetry-label">SPEED (WPM)</span>
@@ -299,13 +332,16 @@ export function App() {
                 <span className="telemetry-label">DEPTH</span>
                 <span className="telemetry-val">{currentLevelData.depth}</span>
               </div>
-              <div className="telemetry-item">
+              <div className="telemetry-item score-telemetry-item">
                 <span className="telemetry-label">SCORE</span>
                 <span className="telemetry-val highlight-gold">{score}</span>
+                {recentPenalty && (
+                  <span className="penalty-floating-badge">{recentPenalty}</span>
+                )}
               </div>
               <div className="telemetry-item">
-                <span className="telemetry-label">TIME</span>
-                <span className="telemetry-val">{elapsedSeconds}s</span>
+                <span className="telemetry-label">PENALTY</span>
+                <span className="telemetry-val highlight-penalty">-{penaltyPoints}</span>
               </div>
             </section>
 
@@ -414,7 +450,7 @@ export function App() {
             {/* BOTTOM ACTION BAR */}
             <footer className="c64-footer c64-box">
               <div className="footer-keys-legend">
-                <span>[ESC] RESET</span> | <span>[1-5] CHANGE LEVEL</span> | <span>ERRORS: {errorCount}</span>
+                <span>[ESC] RESET</span> | <span>[1-5] CHANGE LEVEL</span> | <span>PENALTY DEDUCTED: -{penaltyPoints} PTS</span>
               </div>
               <div className="footer-actions">
                 <button
