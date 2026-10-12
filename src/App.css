@@ -612,20 +612,92 @@
   border-color: #ffffff;
 }
 
-.mission-result-card {
-  background-color: #190101;
-  border: 2px solid #550000;
-  padding: 10px;
-  text-align: center;
-  font-family: var(--font-retro);
-  font-size: 20px;
+.highlight-cyan {
+  color: var(--c64-cyan);
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
 }
 
-.mission-result-card h3 {
+.alert-time-low {
+  color: #ff0000;
+  text-shadow: 0 0 10px #ff0000;
+  animation: alertBlink 0.6s infinite;
+}
+
+/* =========================================================================
+   TRIAL STATUS DEBRIEF PROMPT (CORRECT & INCORRECT CHARACTERS)
+   ========================================================================= */
+
+.mission-debrief-card {
+  background-color: #1a0101;
+  border: 3px solid var(--c64-border);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.debrief-header {
   font-family: var(--font-arcade);
   font-size: 11px;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px var(--c64-red-glow);
+}
+
+.debrief-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.debrief-item {
+  background-color: #0d0101;
+  border: 1px solid #4a0000;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.full-width-debrief {
+  grid-column: span 3;
+}
+
+.debrief-lbl {
+  font-family: var(--font-arcade);
+  font-size: 8px;
   color: var(--c64-dim-red);
-  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.debrief-val {
+  font-family: var(--font-retro);
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.char-green {
+  color: var(--c64-green);
+  text-shadow: 0 0 8px var(--c64-green-glow);
+}
+
+.char-red {
+  color: #ff2222;
+  text-shadow: 0 0 8px #ff2222;
+}
+
+.debrief-final-score {
+  font-family: var(--font-arcade);
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+  padding-top: 6px;
+  border-top: 1px dashed #550000;
 }
 
 .scores-table-wrapper {

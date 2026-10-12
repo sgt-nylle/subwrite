@@ -1,9 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { SUBMARINE_LEVELS, type SubmarineLevel } from './data/submarineTexts';
-import { Scoreboard } from './components/Scoreboard';
+import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
 import { sound } from './utils/audio';
 import './App.css';
+
+// Level Time Limits as requested:
+// Level 1: 5 minutes (300s)
+// Level 4: 4 minutes (240s)
+// Level 3 / Level 5 / Level 2: 3-4 minutes (180s - 240s)
+export const LEVEL_TIME_LIMITS: Record<number, number> = {
+  1: 300, // 5 minutes
+  2: 240, // 4 minutes
+  3: 180, // 3 minutes
+  4: 240, // 4 minutes
+  5: 180  // 3 minutes
+};
 
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
@@ -26,13 +38,8 @@ export function App() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
-  // Score state for modal
-  const [finalScoreData, setFinalScoreData] = useState<{
-    score: number;
-    wpm: number;
-    accuracy: number;
-    level: number;
-  } | null>(null);
+  // Score state for debrief modal
+  const [finalScoreData, setFinalScoreData] = useState<FinalTrialResult | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const timerRef = useRef<number | null>(null);
@@ -45,8 +52,17 @@ export function App() {
     setIsMobile(mobileCheck);
   }, []);
 
-  // Current level details
+  // Current level details & time limit
   const currentLevelData: SubmarineLevel = SUBMARINE_LEVELS.find(l => l.level === level) || SUBMARINE_LEVELS[0];
+  const timeLimit = LEVEL_TIME_LIMITS[level] || 180;
+  const timeRemaining = Math.max(0, timeLimit - elapsedSeconds);
+
+  // Format time mm:ss
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
 
   // Initialize or reset passage
   const loadPassage = useCallback((lvl: number, idx?: number) => {
@@ -92,21 +108,7 @@ export function App() {
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
-  // Timer loop
-  useEffect(() => {
-    if (gameState === 'playing' && isStarted && !isFinished && startTime) {
-      timerRef.current = window.setInterval(() => {
-        setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
-      }, 200);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [gameState, isStarted, isFinished, startTime]);
-
-  // Calculate live metrics including point deductions
+  // Calculate live metrics
   const calculateMetrics = useCallback(() => {
     const timeInMinutes = Math.max((elapsedSeconds || 1) / 60, 0.05);
     const wordsTyped = inputVal.length / 5;
@@ -135,16 +137,50 @@ export function App() {
     const baseScore = Math.round((finalWpm * (finalAcc / 100)) * (level * 220));
     const finalScore = Math.max(0, baseScore - penaltyPoints);
 
+    // Count exact correct characters matching target
+    let correctChars = 0;
+    for (let i = 0; i < inputVal.length; i++) {
+      if (inputVal[i] === targetText[i]) {
+        correctChars++;
+      }
+    }
+
     setFinalScoreData({
       score: finalScore,
       wpm: finalWpm,
       accuracy: finalAcc,
-      level
+      level,
+      correctChars,
+      incorrectChars: errorCount,
+      totalKeystrokes,
+      timeSpentSeconds: elapsedSeconds,
+      timeLimitSeconds: timeLimit,
+      penaltyPoints
     });
     setTimeout(() => {
       setShowScoreboard(true);
     }, 600);
-  }, [elapsedSeconds, targetText.length, totalKeystrokes, errorCount, level, penaltyPoints]);
+  }, [elapsedSeconds, targetText, inputVal, totalKeystrokes, errorCount, level, penaltyPoints, timeLimit]);
+
+  // Timer loop with countdown clock
+  useEffect(() => {
+    if (gameState === 'playing' && isStarted && !isFinished && startTime) {
+      timerRef.current = window.setInterval(() => {
+        const secs = Math.floor((Date.now() - startTime) / 1000);
+        setElapsedSeconds(secs);
+
+        // Check time expiration
+        if (secs >= timeLimit) {
+          handleComplete();
+        }
+      }, 200);
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [gameState, isStarted, isFinished, startTime, timeLimit, handleComplete]);
 
   // Input change handler with error & continued misspelled penalty deductions
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,7 +219,6 @@ export function App() {
         sound.playError();
       } else if (hasPrecedingError) {
         // Character matches target index, but preceding mistake was not fixed!
-        // Continuing while misspelled deducts penalty points!
         const continuedPenalty = 30 * level;
         setPenaltyPoints(prev => prev + continuedPenalty);
         setRecentPenalty(`-${continuedPenalty} PTS (MISSPELLED)`);
@@ -314,7 +349,7 @@ export function App() {
               </div>
             </header>
 
-            {/* SUBMARINE TACTICAL TELEMETRY PANEL */}
+            {/* SUBMARINE TACTICAL TELEMETRY PANEL (WITH TIME COUNTDOWN) */}
             <section className="c64-telemetry-panel c64-box">
               <div className="telemetry-item">
                 <span className="telemetry-label">VESSEL</span>
@@ -340,8 +375,10 @@ export function App() {
                 )}
               </div>
               <div className="telemetry-item">
-                <span className="telemetry-label">PENALTY</span>
-                <span className="telemetry-val highlight-penalty">-{penaltyPoints}</span>
+                <span className="telemetry-label">TIME LEFT</span>
+                <span className={`telemetry-val ${timeRemaining <= 30 ? 'alert-time-low' : 'highlight-cyan'}`}>
+                  {formatTime(timeRemaining)}
+                </span>
               </div>
             </section>
 
@@ -368,7 +405,7 @@ export function App() {
                 })}
               </div>
               <div className="level-status-desc">
-                <span className="status-bullet">►</span> {currentLevelData.rank}: {currentLevelData.description}
+                <span className="status-bullet">►</span> {currentLevelData.rank}: {currentLevelData.description} (TIME: {Math.floor((LEVEL_TIME_LIMITS[level] || 180) / 60)} MIN)
               </div>
             </section>
 
@@ -450,7 +487,7 @@ export function App() {
             {/* BOTTOM ACTION BAR */}
             <footer className="c64-footer c64-box">
               <div className="footer-keys-legend">
-                <span>[ESC] RESET</span> | <span>[1-5] CHANGE LEVEL</span> | <span>PENALTY DEDUCTED: -{penaltyPoints} PTS</span>
+                <span>[ESC] RESET</span> | <span>[1-5] CHANGE LEVEL</span> | <span>ERRORS: {errorCount}</span> | <span>PENALTY: -{penaltyPoints} PTS</span>
               </div>
               <div className="footer-actions">
                 <button
@@ -473,7 +510,7 @@ export function App() {
         )}
       </div>
 
-      {/* SCOREBOARD MODAL */}
+      {/* SCOREBOARD / TRIAL STATUS DEBRIEF MODAL */}
       {showScoreboard && (
         <Scoreboard
           currentScore={finalScoreData}

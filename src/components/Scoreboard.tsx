@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { type HighScore, INITIAL_HIGH_SCORES } from '../data/submarineTexts';
 import { sound } from '../utils/audio';
 
+export interface FinalTrialResult {
+  score: number;
+  wpm: number;
+  accuracy: number;
+  level: number;
+  correctChars: number;
+  incorrectChars: number;
+  totalKeystrokes: number;
+  timeSpentSeconds: number;
+  timeLimitSeconds: number;
+  penaltyPoints: number;
+}
+
 interface ScoreboardProps {
-  currentScore?: {
-    score: number;
-    wpm: number;
-    accuracy: number;
-    level: number;
-  } | null;
+  currentScore?: FinalTrialResult | null;
   onPlayAgain: () => void;
   onReturnToMenu?: () => void;
 }
@@ -126,14 +134,54 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
           <span className="star-icon">★</span>
         </div>
 
+        {/* STATUS PROMPT: CORRECT & INCORRECT CHARACTERS DEBRIEF */}
+        {currentScore && (
+          <div className="mission-debrief-card c64-box">
+            <div className="debrief-header">
+              <span className="radar-blip">●</span> TRIAL STATUS DEBRIEF <span className="radar-blip">●</span>
+            </div>
+            <div className="debrief-grid">
+              <div className="debrief-item">
+                <span className="debrief-lbl">CORRECT CHARS</span>
+                <span className="debrief-val char-green">{currentScore.correctChars}</span>
+              </div>
+              <div className="debrief-item">
+                <span className="debrief-lbl">INCORRECT CHARS</span>
+                <span className="debrief-val char-red">{currentScore.incorrectChars}</span>
+              </div>
+              <div className="debrief-item">
+                <span className="debrief-lbl">TOTAL KEYSTROKES</span>
+                <span className="debrief-val">{currentScore.totalKeystrokes}</span>
+              </div>
+              <div className="debrief-item">
+                <span className="debrief-lbl">ACCURACY</span>
+                <span className="debrief-val highlight-amber">{currentScore.accuracy}%</span>
+              </div>
+              <div className="debrief-item">
+                <span className="debrief-lbl">NET SPEED</span>
+                <span className="debrief-val highlight-green">{currentScore.wpm} WPM</span>
+              </div>
+              <div className="debrief-item">
+                <span className="debrief-lbl">TIME TAKEN</span>
+                <span className="debrief-val">{currentScore.timeSpentSeconds}s / {currentScore.timeLimitSeconds}s</span>
+              </div>
+              <div className="debrief-item full-width-debrief">
+                <span className="debrief-lbl">PENALTY DEDUCTED</span>
+                <span className="debrief-val highlight-penalty">-{currentScore.penaltyPoints} PTS</span>
+              </div>
+            </div>
+            <div className="debrief-final-score">
+              FINAL SCORE: <span className="highlight-gold">{currentScore.score.toLocaleString()}</span> (LVL {currentScore.level})
+            </div>
+          </div>
+        )}
+
+        {/* 3-LETTER INITIALS PROMPT IF HIGH SCORE */}
         {currentScore && !submitted && isNewHighScore && (
           <div className="new-record-prompt">
             <div className="blinking-alert">★★★ NEW HIGH SCORE REGISTERED ★★★</div>
-            <p className="score-summary">
-              SCORE: <span className="highlight-val">{currentScore.score}</span> | WPM: {currentScore.wpm} | ACC: {currentScore.accuracy}% (LVL {currentScore.level})
-            </p>
             <form onSubmit={handleSubmitInitials} className="initials-form">
-              <label htmlFor="initials-input">ENTER 3-LETTER INITIALS:</label>
+              <label htmlFor="initials-input">ENTER 3-LETTER INITIALS FOR FLEET RECORDS:</label>
               <div className="initials-input-wrapper">
                 <input
                   id="initials-input"
@@ -154,14 +202,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
           </div>
         )}
 
-        {currentScore && !isNewHighScore && !submitted && (
-          <div className="mission-result-card">
-            <h3>MISSION DEBRIEF</h3>
-            <p>FINAL SCORE: <span className="highlight-val">{currentScore.score}</span></p>
-            <p>SPEED: {currentScore.wpm} WPM | ACCURACY: {currentScore.accuracy}%</p>
-          </div>
-        )}
-
+        {/* LEADERBOARD TABLE */}
         <div className="scores-table-wrapper">
           <div className="global-sync-tag">
             <span>● SHARED GLOBAL LOGS</span>
@@ -212,3 +253,5 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
     </div>
   );
 };
+
+export default Scoreboard;
