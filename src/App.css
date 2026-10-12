@@ -679,6 +679,315 @@
 }
 
 /* =========================================================================
+   START SCREEN (TITLE, SUBMARINE, LEVEL SELECTOR)
+   ========================================================================= */
+
+.c64-start-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.c64-boot-lines {
+  background-color: #060101;
+  border-left: 4px solid var(--c64-border);
+  padding: 8px 12px;
+  font-family: var(--font-retro);
+  font-size: 18px;
+  line-height: 1.4;
+  color: #882222;
+}
+
+.command-line {
+  color: #dd4444;
+}
+
+.ready-text {
+  color: var(--c64-green);
+  font-weight: bold;
+  text-shadow: 0 0 8px var(--c64-green-glow);
+}
+
+.start-top-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: -8px;
+}
+
+.start-hero-title {
+  text-align: center;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.soviet-star-large {
+  font-size: 32px;
+  color: var(--c64-red);
+  text-shadow: 0 0 16px var(--c64-red-glow);
+  animation: starPulse 2s infinite ease-in-out;
+}
+
+.main-logo-text {
+  font-family: var(--font-arcade);
+  font-size: 38px;
+  color: #ffffff;
+  letter-spacing: 3px;
+  text-shadow: 0 0 24px var(--c64-red-glow), 4px 4px 0px #990000;
+  text-transform: lowercase;
+}
+
+.main-tagline {
+  font-family: var(--font-retro);
+  font-size: 28px;
+  color: var(--c64-amber);
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.6);
+  letter-spacing: 1.5px;
+}
+
+.tag-bracket {
+  color: var(--c64-red);
+}
+
+.start-sub-caption {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #aa5555;
+  letter-spacing: 1px;
+  max-width: 680px;
+  margin-top: 4px;
+}
+
+/* Submarine Graphic Box */
+.start-sub-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background: radial-gradient(ellipse at center, #1f0101 0%, #050000 90%);
+}
+
+.submarine-graphic-container {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  justify-content: center;
+  animation: subFloat 4s ease-in-out infinite;
+}
+
+.submarine-svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 12px rgba(255, 34, 34, 0.45));
+}
+
+@keyframes subFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Sonar Wave Animation */
+.sonar-waves {
+  animation: sonarPulse 2s infinite linear;
+}
+
+@keyframes sonarPulse {
+  0% { opacity: 0.1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.1; }
+}
+
+/* Level Selection on Start Screen */
+.start-level-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.level-section-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: #ffffff;
+  text-shadow: 0 0 6px var(--c64-red-glow);
+  letter-spacing: 1.5px;
+}
+
+.radar-blip {
+  color: var(--c64-red);
+  animation: alertBlink 1s infinite;
+}
+
+.start-level-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.start-level-card {
+  background-color: #120101;
+  border: 3px solid #4a0000;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  user-select: none;
+}
+
+.start-level-card:hover {
+  background-color: #240202;
+  border-color: var(--c64-red);
+  transform: translateY(-3px);
+  box-shadow: 0 0 14px rgba(255, 34, 34, 0.5);
+}
+
+.start-level-card.card-selected {
+  background: linear-gradient(180deg, #380101 0%, #1e0000 100%);
+  border-color: #ffffff;
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px var(--c64-red-glow), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-lvl-badge {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.diff-pill {
+  font-family: var(--font-arcade);
+  font-size: 7px;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.diff-1 { background-color: #004400; color: #33ff33; border: 1px solid #33ff33; }
+.diff-2 { background-color: #003344; color: #00ffff; border: 1px solid #00ffff; }
+.diff-3 { background-color: #443300; color: #ffaa00; border: 1px solid #ffaa00; }
+.diff-4 { background-color: #440000; color: #ff5555; border: 1px solid #ff5555; }
+.diff-5 { background-color: #660000; color: #ffd700; border: 1px solid #ffd700; }
+
+.card-rank {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  color: var(--c64-red);
+  letter-spacing: 0.5px;
+}
+
+.card-selected .card-rank {
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--c64-red-glow);
+}
+
+.card-depth {
+  font-family: var(--font-retro);
+  font-size: 17px;
+  color: #dd8888;
+}
+
+.card-mult {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  color: var(--c64-gold);
+}
+
+.card-desc {
+  font-family: var(--font-retro);
+  font-size: 15px;
+  line-height: 1.25;
+  color: #995555;
+  margin-top: 2px;
+}
+
+.card-selected .card-desc {
+  color: #ffaaaa;
+}
+
+.selected-level-banner {
+  background-color: #1a0101;
+  border-left: 4px solid var(--c64-gold);
+  padding: 6px 12px;
+  font-family: var(--font-retro);
+  font-size: 19px;
+  color: #ffdddd;
+}
+
+.selected-level-banner strong {
+  color: var(--c64-gold);
+}
+
+.star-mini {
+  color: var(--c64-gold);
+}
+
+/* Start Launch Button Row */
+.start-action-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.start-dive-btn {
+  font-family: var(--font-arcade);
+  font-size: 14px;
+  padding: 16px 36px;
+  letter-spacing: 2px;
+  background-color: var(--c64-red);
+  border: 4px solid #ffffff;
+  color: #ffffff;
+  text-shadow: 0 0 10px #ffffff;
+  animation: divePulse 1.8s infinite ease-in-out;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.start-dive-btn:hover {
+  background-color: #ff0000;
+  transform: scale(1.03);
+  box-shadow: 0 0 35px var(--c64-red-glow);
+}
+
+@keyframes divePulse {
+  0%, 100% {
+    box-shadow: 0 0 14px var(--c64-red-glow);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(255, 34, 34, 0.95);
+    transform: scale(1.02);
+  }
+}
+
+.start-keyboard-tip {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: var(--c64-dim-red);
+  letter-spacing: 1px;
+}
+
+.start-keyboard-tip strong {
+  color: var(--c64-gold);
+}
+
+/* =========================================================================
    MOBILE & RESPONSIVE ADAPTATIONS (iPhone & Android)
    ========================================================================= */
 
@@ -692,6 +1001,43 @@
     border-width: 6px;
     padding: 8px;
     gap: 8px;
+  }
+
+  .main-logo-text {
+    font-size: 26px;
+  }
+
+  .main-tagline {
+    font-size: 20px;
+  }
+
+  .start-level-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .start-level-card {
+    padding: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-desc {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .start-dive-btn {
+    width: 100%;
+    font-size: 11px;
+    padding: 14px 10px;
+  }
+
+  .start-keyboard-tip {
+    font-size: 8px;
+    text-align: center;
   }
 
   .brand-name {

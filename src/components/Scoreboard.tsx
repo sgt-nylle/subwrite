@@ -10,11 +10,12 @@ interface ScoreboardProps {
     level: number;
   } | null;
   onPlayAgain: () => void;
+  onReturnToMenu?: () => void;
 }
 
 const STORAGE_KEY = 'subwrite_high_scores_v1';
 
-export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgain }) => {
+export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgain, onReturnToMenu }) => {
   const [scores, setScores] = useState<HighScore[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -158,6 +159,11 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
           <button onClick={onPlayAgain} className="retro-btn btn-danger large-btn">
             ▶ ENGAGE NEXT PATROL (RETRY)
           </button>
+          {onReturnToMenu && (
+            <button onClick={onReturnToMenu} className="retro-btn btn-warning">
+              ◄ TITLE MENU
+            </button>
+          )}
           <button onClick={handleClearScores} className="retro-btn btn-subtle">
             [RESET LOGS]
           </button>
