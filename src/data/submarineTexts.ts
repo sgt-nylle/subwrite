@@ -93,6 +93,14 @@ export interface HighScore {
   date: string;
 }
 
+export const LEVEL_TIME_LIMITS: Record<number, number> = {
+  1: 300, // 5 minutes
+  2: 240, // 4 minutes
+  3: 180, // 3 minutes
+  4: 240, // 4 minutes
+  5: 180  // 3 minutes
+};
+
 export const INITIAL_HIGH_SCORES: HighScore[] = [
   { id: "1", initials: "RAM", score: 8500, wpm: 92, accuracy: 98, level: 5, date: "1984-11-23" },
   { id: "2", initials: "BOR", score: 6200, wpm: 84, accuracy: 96, level: 4, date: "1985-04-12" },

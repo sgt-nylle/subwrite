@@ -1,21 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { SUBMARINE_LEVELS, type SubmarineLevel } from './data/submarineTexts';
+import { SUBMARINE_LEVELS, type SubmarineLevel, LEVEL_TIME_LIMITS } from './data/submarineTexts';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
 import { sound } from './utils/audio';
 import './App.css';
-
-// Level Time Limits as requested:
-// Level 1: 5 minutes (300s)
-// Level 4: 4 minutes (240s)
-// Level 3 / Level 5 / Level 2: 3-4 minutes (180s - 240s)
-export const LEVEL_TIME_LIMITS: Record<number, number> = {
-  1: 300, // 5 minutes
-  2: 240, // 4 minutes
-  3: 180, // 3 minutes
-  4: 240, // 4 minutes
-  5: 180  // 3 minutes
-};
 
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
