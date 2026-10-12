@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1791838823980",
+    "initials": "NYL",
+    "score": 9100,
+    "wpm": 98,
+    "accuracy": 99,
+    "level": 5,
+    "date": "2026-10-12"
+  },
+  {
+    "id": "1",
+    "initials": "RAM",
+    "score": 8500,
+    "wpm": 92,
+    "accuracy": 98,
+    "level": 5,
+    "date": "1984-11-23"
+  },
+  {
+    "id": "2",
+    "initials": "BOR",
+    "score": 6200,
+    "wpm": 84,
+    "accuracy": 96,
+    "level": 4,
+    "date": "1985-04-12"
+  },
+  {
+    "id": "3",
+    "initials": "KAP",
+    "score": 4800,
+    "wpm": 75,
+    "accuracy": 95,
+    "level": 3,
+    "date": "1986-07-04"
+  },
+  {
+    "id": "4",
+    "initials": "SUB",
+    "score": 3200,
+    "wpm": 68,
+    "accuracy": 92,
+    "level": 2,
+    "date": "1987-10-18"
+  },
+  {
+    "id": "5",
+    "initials": "NES",
+    "score": 2400,
+    "wpm": 60,
+    "accuracy": 91,
+    "level": 1,
+    "date": "1988-05-15"
+  }
+]

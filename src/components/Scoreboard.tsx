@@ -31,16 +31,45 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
   const [initials, setInitials] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isNewHighScore, setIsNewHighScore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch shared global scores from backend API
+  useEffect(() => {
+    let isMounted = true;
+    const fetchSharedScores = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch('/api/scores');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0 && isMounted) {
+            setScores(data);
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch {
+              // Ignore
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('API fetch failed, using local scores:', err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchSharedScores();
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     if (currentScore && !submitted) {
-      // Check if current score ranks in top 10
       const isTop = scores.length < 10 || currentScore.score > (scores[scores.length - 1]?.score || 0);
       setIsNewHighScore(isTop);
     }
   }, [currentScore, scores, submitted]);
 
-  const handleSubmitInitials = (e: React.FormEvent) => {
+  const handleSubmitInitials = async (e: React.FormEvent) => {
     e.preventDefault();
     if (initials.trim().length === 0 || !currentScore) return;
 
@@ -56,27 +85,35 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
       date: new Date().toISOString().split('T')[0]
     };
 
+    // Optimistically update locally
     const updated = [...scores, newEntry]
       .sort((a, b) => b.score - a.score)
       .slice(0, 10);
-
     setScores(updated);
     setSubmitted(true);
+
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     } catch {
       // Ignore
     }
-  };
 
-  const handleClearScores = () => {
-    if (window.confirm("CONFIRM ERASE: RESET CLASSIFIED RED OCTOBER LOGS?")) {
-      setScores(INITIAL_HIGH_SCORES);
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch {
-        // Ignore
+    // Post to shared global backend
+    try {
+      const res = await fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEntry)
+      });
+      if (res.ok) {
+        const serverData = await res.json();
+        if (Array.isArray(serverData)) {
+          setScores(serverData);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(serverData));
+        }
       }
+    } catch (err) {
+      console.warn('Failed to sync score to shared server:', err);
     }
   };
 
@@ -85,7 +122,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
       <div className="retro-scoreboard-container c64-box">
         <div className="c64-header-banner">
           <span className="star-icon">★</span>
-          <h2>CLASSIFIED FLEET RECORD LOGS</h2>
+          <h2>CLASSIFIED FLEET RECORDS (ALL FLEET OPERATORS)</h2>
           <span className="star-icon">★</span>
         </div>
 
@@ -126,6 +163,10 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
         )}
 
         <div className="scores-table-wrapper">
+          <div className="global-sync-tag">
+            <span>● SHARED GLOBAL LOGS</span>
+            {isLoading && <span className="syncing-text">[SYNCING FLEET...]</span>}
+          </div>
           <table className="c64-score-table">
             <thead>
               <tr>
@@ -135,6 +176,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
                 <th>WPM</th>
                 <th>ACC</th>
                 <th>LVL</th>
+                <th>DATE</th>
               </tr>
             </thead>
             <tbody>
@@ -148,6 +190,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
                     <td className="wpm-col">{entry.wpm}</td>
                     <td className="acc-col">{entry.accuracy}%</td>
                     <td className="lvl-col">L{entry.level}</td>
+                    <td className="date-col">{entry.date || '---'}</td>
                   </tr>
                 );
               })}
@@ -156,17 +199,14 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
         </div>
 
         <div className="scoreboard-actions">
-          <button onClick={onPlayAgain} className="retro-btn btn-danger large-btn">
-            ▶ ENGAGE NEXT PATROL (RETRY)
+          <button onClick={onPlayAgain} className="retro-btn btn-danger large-btn" type="button">
+            ▶ ENGAGE PATROL
           </button>
           {onReturnToMenu && (
-            <button onClick={onReturnToMenu} className="retro-btn btn-warning">
-              ◄ TITLE MENU
+            <button onClick={onReturnToMenu} className="retro-btn btn-warning" type="button">
+              ◄ TITLE SCREEN
             </button>
           )}
-          <button onClick={handleClearScores} className="retro-btn btn-subtle">
-            [RESET LOGS]
-          </button>
         </div>
       </div>
     </div>

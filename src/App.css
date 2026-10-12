@@ -679,312 +679,247 @@
 }
 
 /* =========================================================================
-   START SCREEN (TITLE, SUBMARINE, LEVEL SELECTOR)
+   NINTENDO NES ARCADE TITLE SCREEN
    ========================================================================= */
 
-.c64-start-screen {
+.nes-title-screen {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 14px;
   width: 100%;
-}
-
-.c64-boot-lines {
-  background-color: #060101;
-  border-left: 4px solid var(--c64-border);
-  padding: 8px 12px;
-  font-family: var(--font-retro);
-  font-size: 18px;
-  line-height: 1.4;
-  color: #882222;
-}
-
-.command-line {
-  color: #dd4444;
-}
-
-.ready-text {
-  color: var(--c64-green);
-  font-weight: bold;
-  text-shadow: 0 0 8px var(--c64-green-glow);
-}
-
-.start-top-controls {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: -8px;
-}
-
-.start-hero-title {
-  text-align: center;
   padding: 8px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
 }
 
-.soviet-star-large {
-  font-size: 32px;
-  color: var(--c64-red);
-  text-shadow: 0 0 16px var(--c64-red-glow);
-  animation: starPulse 2s infinite ease-in-out;
-}
-
-.main-logo-text {
-  font-family: var(--font-arcade);
-  font-size: 38px;
-  color: #ffffff;
-  letter-spacing: 3px;
-  text-shadow: 0 0 24px var(--c64-red-glow), 4px 4px 0px #990000;
-  text-transform: lowercase;
-}
-
-.main-tagline {
-  font-family: var(--font-retro);
-  font-size: 28px;
-  color: var(--c64-amber);
-  text-shadow: 0 0 10px rgba(255, 170, 0, 0.6);
-  letter-spacing: 1.5px;
-}
-
-.tag-bracket {
-  color: var(--c64-red);
-}
-
-.start-sub-caption {
-  font-family: var(--font-arcade);
-  font-size: 9px;
-  color: #aa5555;
-  letter-spacing: 1px;
-  max-width: 680px;
-  margin-top: 4px;
-}
-
-/* Submarine Graphic Box */
-.start-sub-display {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px;
-  background: radial-gradient(ellipse at center, #1f0101 0%, #050000 90%);
-}
-
-.submarine-graphic-container {
+/* NES Top HUD */
+.nes-top-hud {
   width: 100%;
-  max-width: 680px;
-  display: flex;
-  justify-content: center;
-  animation: subFloat 4s ease-in-out infinite;
-}
-
-.submarine-svg {
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 0 12px rgba(255, 34, 34, 0.45));
-}
-
-@keyframes subFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
-}
-
-/* Sonar Wave Animation */
-.sonar-waves {
-  animation: sonarPulse 2s infinite linear;
-}
-
-@keyframes sonarPulse {
-  0% { opacity: 0.1; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.1; }
-}
-
-/* Level Selection on Start Screen */
-.start-level-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.level-section-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-arcade);
-  font-size: 11px;
-  color: #ffffff;
-  text-shadow: 0 0 6px var(--c64-red-glow);
-  letter-spacing: 1.5px;
-}
-
-.radar-blip {
-  color: var(--c64-red);
-  animation: alertBlink 1s infinite;
-}
-
-.start-level-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-
-.start-level-card {
-  background-color: #120101;
-  border: 3px solid #4a0000;
-  padding: 10px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  user-select: none;
-}
-
-.start-level-card:hover {
-  background-color: #240202;
-  border-color: var(--c64-red);
-  transform: translateY(-3px);
-  box-shadow: 0 0 14px rgba(255, 34, 34, 0.5);
-}
-
-.start-level-card.card-selected {
-  background: linear-gradient(180deg, #380101 0%, #1e0000 100%);
-  border-color: #ffffff;
-  transform: translateY(-4px);
-  box-shadow: 0 0 20px var(--c64-red-glow), inset 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.card-lvl-badge {
-  font-family: var(--font-arcade);
-  font-size: 11px;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.diff-pill {
-  font-family: var(--font-arcade);
-  font-size: 7px;
-  padding: 2px 4px;
-  border-radius: 2px;
-}
-
-.diff-1 { background-color: #004400; color: #33ff33; border: 1px solid #33ff33; }
-.diff-2 { background-color: #003344; color: #00ffff; border: 1px solid #00ffff; }
-.diff-3 { background-color: #443300; color: #ffaa00; border: 1px solid #ffaa00; }
-.diff-4 { background-color: #440000; color: #ff5555; border: 1px solid #ff5555; }
-.diff-5 { background-color: #660000; color: #ffd700; border: 1px solid #ffd700; }
-
-.card-rank {
   font-family: var(--font-arcade);
   font-size: 10px;
-  color: var(--c64-red);
-  letter-spacing: 0.5px;
+  padding: 4px 8px;
+  border-bottom: 2px solid #4a0000;
 }
 
-.card-selected .card-rank {
+.nes-score-display {
+  color: var(--c64-dim-red);
+}
+
+.top-val {
+  color: var(--c64-gold);
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.top-initials {
   color: #ffffff;
-  text-shadow: 0 0 8px var(--c64-red-glow);
 }
 
-.card-depth {
-  font-family: var(--font-retro);
-  font-size: 17px;
-  color: #dd8888;
-}
-
-.card-mult {
-  font-family: var(--font-arcade);
-  font-size: 8px;
-  color: var(--c64-gold);
-}
-
-.card-desc {
-  font-family: var(--font-retro);
-  font-size: 15px;
-  line-height: 1.25;
-  color: #995555;
-  margin-top: 2px;
-}
-
-.card-selected .card-desc {
-  color: #ffaaaa;
-}
-
-.selected-level-banner {
-  background-color: #1a0101;
-  border-left: 4px solid var(--c64-gold);
-  padding: 6px 12px;
-  font-family: var(--font-retro);
-  font-size: 19px;
-  color: #ffdddd;
-}
-
-.selected-level-banner strong {
-  color: var(--c64-gold);
-}
-
-.star-mini {
-  color: var(--c64-gold);
-}
-
-/* Start Launch Button Row */
-.start-action-row {
+.nes-hud-buttons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 8px;
 }
 
-.start-dive-btn {
+.nes-mini-btn {
   font-family: var(--font-arcade);
-  font-size: 14px;
-  padding: 16px 36px;
-  letter-spacing: 2px;
-  background-color: var(--c64-red);
-  border: 4px solid #ffffff;
-  color: #ffffff;
-  text-shadow: 0 0 10px #ffffff;
-  animation: divePulse 1.8s infinite ease-in-out;
+  font-size: 9px;
+  background-color: #200202;
+  border: 1px solid var(--c64-border);
+  color: var(--c64-gold);
+  padding: 4px 8px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.start-dive-btn:hover {
-  background-color: #ff0000;
-  transform: scale(1.03);
-  box-shadow: 0 0 35px var(--c64-red-glow);
+.nes-mini-btn:hover {
+  background-color: var(--c64-red);
+  color: #ffffff;
 }
 
-@keyframes divePulse {
-  0%, 100% {
-    box-shadow: 0 0 14px var(--c64-red-glow);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 28px rgba(255, 34, 34, 0.95);
-    transform: scale(1.02);
-  }
+/* NES Title Section */
+.nes-logo-section {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
 }
 
-.start-keyboard-tip {
+.nes-star-flair {
+  color: var(--c64-red);
+  font-size: 14px;
+  letter-spacing: 8px;
+  animation: starPulse 1.8s infinite;
+}
+
+.nes-main-title {
+  font-family: var(--font-arcade);
+  font-size: 42px;
+  color: #ffffff;
+  letter-spacing: 6px;
+  text-shadow: 
+    0 0 15px var(--c64-red-glow),
+    4px 4px 0px #b30000,
+    6px 6px 0px #440000;
+  margin: 0;
+}
+
+.nes-sub-banner {
+  font-family: var(--font-retro);
+  font-size: 26px;
+  color: var(--c64-amber);
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+}
+
+/* NES Submarine Centerpiece */
+.nes-sub-frame {
+  width: 100%;
+  max-width: 620px;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #260202 0%, #080000 85%);
+  border: 3px solid var(--c64-border);
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+/* NES "PUSH START BUTTON" */
+.nes-start-prompt {
+  cursor: pointer;
+  padding: 8px 16px;
+  margin: 4px 0;
+  user-select: none;
+}
+
+.flashing-press-start {
+  font-family: var(--font-arcade);
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px var(--c64-red-glow);
+  animation: nesBlink 1s infinite steps(2, start);
+}
+
+@keyframes nesBlink {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px #ff3333); }
+  50% { opacity: 0; }
+}
+
+/* NES Level Menu Box */
+.nes-menu-box {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background-color: #0d0101;
+  border: 2px dashed #660000;
+  padding: 12px 16px;
+}
+
+.nes-menu-header {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  color: var(--c64-dim-red);
+  letter-spacing: 1.5px;
+}
+
+.nes-level-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nes-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: #772222;
+  cursor: pointer;
+  transition: all 0.1s;
+  border: 1px solid transparent;
+}
+
+.nes-menu-item:hover {
+  color: #ff8888;
+  background-color: #1a0202;
+}
+
+.nes-menu-item.selected-item {
+  color: #ffffff;
+  background-color: #380202;
+  border: 1px solid var(--c64-red);
+  box-shadow: 0 0 10px rgba(255, 34, 34, 0.4);
+}
+
+.nes-cursor {
+  color: var(--c64-red);
+  font-size: 14px;
+  width: 16px;
+  animation: cursorBlink 0.6s infinite steps(2, start);
+}
+
+.selected-item .nes-cursor {
+  color: var(--c64-red);
+  text-shadow: 0 0 8px var(--c64-red-glow);
+}
+
+.nes-item-text {
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.nes-item-desc {
+  font-family: var(--font-retro);
+  font-size: 15px;
+  color: var(--c64-gold);
+  margin-left: auto;
+  letter-spacing: 0.5px;
+}
+
+/* NES Footer */
+.nes-footer-credits {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  color: #551515;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.copyright-line {
+  color: #3d0d0d;
+}
+
+.global-sync-tag {
+  display: flex;
+  justify-content: space-between;
   font-family: var(--font-arcade);
   font-size: 9px;
-  color: var(--c64-dim-red);
-  letter-spacing: 1px;
+  color: var(--c64-gold);
+  padding: 4px 6px;
+  background-color: #1a0202;
+  border: 1px solid #4a0000;
+  margin-bottom: 6px;
 }
 
-.start-keyboard-tip strong {
-  color: var(--c64-gold);
+.syncing-text {
+  color: var(--c64-cyan);
+  animation: alertBlink 1s infinite;
 }
 
 /* =========================================================================
