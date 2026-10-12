@@ -5,6 +5,30 @@ import { StartScreen } from './components/StartScreen';
 import { sound } from './utils/audio';
 import './App.css';
 
+// Helper to allow tolerant matching for special characters, smart quotes, and dashes
+const areCharsEquivalent = (typed?: string, expected?: string): boolean => {
+  if (!typed || !expected) return false;
+  if (typed === expected) return true;
+
+  // Single quotes, apostrophes, backticks, acute accents
+  const isSingleQuote = (c: string) => c === "'" || c === '’' || c === '‘' || c === '`' || c === '´';
+  if (isSingleQuote(typed) && isSingleQuote(expected)) return true;
+
+  // Double quotes, smart double quotes, guillemets
+  const isDoubleQuote = (c: string) => c === '"' || c === '“' || c === '”' || c === '«' || c === '»';
+  if (isDoubleQuote(typed) && isDoubleQuote(expected)) return true;
+
+  // Hyphens, en-dashes, em-dashes, minus signs
+  const isDash = (c: string) => c === '-' || c === '—' || c === '–' || c === '−';
+  if (isDash(typed) && isDash(expected)) return true;
+
+  // Standard and non-breaking spaces
+  const isSpace = (c: string) => c === ' ' || c === '\u00A0';
+  if (isSpace(typed) && isSpace(expected)) return true;
+
+  return false;
+};
+
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
   const [level, setLevel] = useState<number>(1);
@@ -112,11 +136,12 @@ export function App() {
   const { wpm, accuracy, score } = calculateMetrics();
 
   // Completion check
-  const handleComplete = useCallback(() => {
+  const handleComplete = useCallback((completedVal?: string) => {
     setIsFinished(true);
     if (timerRef.current) clearInterval(timerRef.current);
     sound.playSonarPing();
 
+    const currentVal = completedVal ?? inputVal;
     const finalTimeInMinutes = Math.max((elapsedSeconds || 1) / 60, 0.05);
     const finalWpm = Math.max(0, Math.round((targetText.length / 5) / finalTimeInMinutes));
     const finalAcc = totalKeystrokes > 0
@@ -125,10 +150,10 @@ export function App() {
     const baseScore = Math.round((finalWpm * (finalAcc / 100)) * (level * 220));
     const finalScore = Math.max(0, baseScore - penaltyPoints);
 
-    // Count exact correct characters matching target
+    // Count exact or equivalent correct characters matching target
     let correctChars = 0;
-    for (let i = 0; i < inputVal.length; i++) {
-      if (inputVal[i] === targetText[i]) {
+    for (let i = 0; i < currentVal.length; i++) {
+      if (currentVal[i] === targetText[i] || areCharsEquivalent(currentVal[i], targetText[i])) {
         correctChars++;
       }
     }
@@ -192,13 +217,15 @@ export function App() {
       // Check if any preceding character in the typed string was misspelled
       let hasPrecedingError = false;
       for (let i = 0; i < charIndex; i++) {
-        if (val[i] !== targetText[i]) {
+        if (val[i] !== targetText[i] && !areCharsEquivalent(val[i], targetText[i])) {
           hasPrecedingError = true;
           break;
         }
       }
 
-      if (typedChar !== expectedChar) {
+      const isMatch = typedChar === expectedChar || areCharsEquivalent(typedChar, expectedChar);
+
+      if (!isMatch) {
         setErrorCount(prev => prev + 1);
         // Penalty: 50 * level for first error, 80 * level if continuing on misspelled word
         const penalty = hasPrecedingError ? (80 * level) : (50 * level);
@@ -206,11 +233,11 @@ export function App() {
         setRecentPenalty(`-${penalty} PTS`);
         sound.playError();
       } else if (hasPrecedingError) {
-        // Character matches target index, but preceding mistake was not fixed!
-        const continuedPenalty = 30 * level;
+        // Character matches target index, but preceding mistake was not fixed
+        const continuedPenalty = 10 * level;
         setPenaltyPoints(prev => prev + continuedPenalty);
-        setRecentPenalty(`-${continuedPenalty} PTS (MISSPELLED)`);
-        sound.playError();
+        // Play keypress sound so the user can smoothly proceed through the text
+        sound.playKeypress();
       } else {
         sound.playKeypress();
       }
@@ -222,11 +249,12 @@ export function App() {
       }, 1200);
     }
 
-    setInputVal(val);
+    const clampedVal = val.slice(0, targetText.length);
+    setInputVal(clampedVal);
 
-    // Finished entire passage?
-    if (val === targetText) {
-      handleComplete();
+    // Finished entire passage? (Allows finishing upon reaching end, even with errors)
+    if (clampedVal.length >= targetText.length && targetText.length > 0) {
+      handleComplete(clampedVal);
     }
   };
 
@@ -252,15 +280,73 @@ export function App() {
         return;
       }
 
-      // Auto-focus input on any typed character when in playing mode
-      if (gameState === 'playing' && document.activeElement !== inputRef.current && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        inputRef.current?.focus();
+      // Auto-focus input on any typed character when in playing mode (allow AltGr / international characters)
+      if (gameState === 'playing' && document.activeElement !== inputRef.current) {
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+          inputRef.current?.focus();
+          if (inputVal.length > 0) {
+            setInputVal(prev => prev.slice(0, -1));
+            sound.playKeypress();
+          }
+          return;
+        }
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+          inputRef.current?.focus();
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, isStarted, level, showScoreboard, loadPassage]);
+  }, [gameState, isStarted, level, showScoreboard, loadPassage, inputVal.length]);
+
+  // Ensure caret always stays locked to the active typing position at the end of input
+  const syncCaretToEnd = useCallback(() => {
+    if (inputRef.current) {
+      const len = inputRef.current.value.length;
+      inputRef.current.setSelectionRange(len, len);
+    }
+  }, []);
+
+  useEffect(() => {
+    syncCaretToEnd();
+  }, [inputVal, syncCaretToEnd]);
+
+  // Handle direct keydown events on the typing input
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      sound.playKeypress();
+
+      // Word-level deletion: Ctrl+Backspace or Alt/Option+Backspace
+      if (e.ctrlKey || e.altKey || e.metaKey) {
+        e.preventDefault();
+        const trimmed = inputVal.trimEnd();
+        const lastSpace = trimmed.lastIndexOf(' ');
+        const nextVal = lastSpace === -1 ? '' : trimmed.slice(0, lastSpace + 1);
+        setInputVal(nextVal);
+        return;
+      }
+
+      // If caret desynced, ensure backspace always deletes cleanly from the end
+      if (inputRef.current) {
+        const len = inputVal.length;
+        if (inputRef.current.selectionStart !== len || inputRef.current.selectionEnd !== len) {
+          e.preventDefault();
+          if (len > 0) {
+            setInputVal(prev => prev.slice(0, -1));
+          }
+          return;
+        }
+      }
+    }
+
+    // Prevent Arrow keys from shifting caret away from active typing position
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      syncCaretToEnd();
+    }
+  };
 
   const toggleSound = () => {
     const next = !soundEnabled;
@@ -418,7 +504,13 @@ export function App() {
                 className="hidden-typing-input"
                 value={inputVal}
                 onChange={handleInputChange}
-                onFocus={() => setIsFocused(true)}
+                onKeyDown={handleInputKeyDown}
+                onFocus={() => {
+                  setIsFocused(true);
+                  syncCaretToEnd();
+                }}
+                onClick={syncCaretToEnd}
+                onSelect={syncCaretToEnd}
                 onBlur={() => setIsFocused(false)}
                 autoCapitalize="none"
                 autoCorrect="off"
@@ -435,7 +527,7 @@ export function App() {
                   const isCursor = index === inputVal.length;
 
                   if (index < inputVal.length) {
-                    if (inputVal[index] === char) {
+                    if (inputVal[index] === char || areCharsEquivalent(inputVal[index], char)) {
                       charClass = 'char-correct';
                     } else {
                       charClass = 'char-error';

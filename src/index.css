@@ -1,11 +1,11 @@
 :root {
-  --c64-bg: #080101;
-  --c64-frame: #3d0000;
-  --c64-border: #750000;
-  --c64-red: #ff2222;
-  --c64-red-glow: rgba(255, 34, 34, 0.75);
-  --c64-dim-red: #9e1b1b;
-  --c64-dark-red: #420808;
+  --c64-bg: #0d0202;
+  --c64-frame: #661111;
+  --c64-border: #992222;
+  --c64-red: #ff3333;
+  --c64-red-glow: rgba(255, 51, 51, 0.75);
+  --c64-dim-red: #e04545;
+  --c64-dark-red: #771818;
   --c64-green: #39ff14;
   --c64-green-glow: rgba(57, 255, 20, 0.6);
   --c64-amber: #ffaa00;

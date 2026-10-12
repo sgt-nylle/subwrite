@@ -153,7 +153,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         <div className="copyright-line">© 1984 RED OCTOBER FLEET CORP. • ALL RIGHTS RESERVED</div>
         <div className="nes-subtle-contact">
           <a href="mailto:mnewlund@gmail.com" className="subtle-email-link" title="Contact Developer">
-            mnewlund@gmail.com
+            a great sub-spelling service provided by Nylle! email:mnewlund@gmail.com
           </a>
         </div>
       </div>
