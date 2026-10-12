@@ -1,4 +1,4 @@
-import passagesData from './passages.json';
+import passagesData from './passages.json' with { type: 'json' };
 
 export interface SubmarineLevel {
   level: number;
@@ -102,9 +102,28 @@ export const LEVEL_TIME_LIMITS: Record<number, number> = {
 };
 
 export const INITIAL_HIGH_SCORES: HighScore[] = [
-  { id: "1", initials: "RAM", score: 8500, wpm: 92, accuracy: 98, level: 5, date: "1984-11-23" },
-  { id: "2", initials: "BOR", score: 6200, wpm: 84, accuracy: 96, level: 4, date: "1985-04-12" },
-  { id: "3", initials: "KAP", score: 4800, wpm: 75, accuracy: 95, level: 3, date: "1986-07-04" },
-  { id: "4", initials: "SUB", score: 3200, wpm: 68, accuracy: 92, level: 2, date: "1987-10-18" },
-  { id: "5", initials: "NES", score: 2400, wpm: 60, accuracy: 91, level: 1, date: "1988-05-15" }
+  // Level 5 - COMMANDER
+  { id: "501", initials: "RAM", score: 8500, wpm: 92, accuracy: 98, level: 5, date: "1984-11-23" },
+  { id: "502", initials: "KAP", score: 7600, wpm: 86, accuracy: 96, level: 5, date: "1985-02-14" },
+  { id: "503", initials: "RED", score: 6900, wpm: 80, accuracy: 95, level: 5, date: "1985-10-30" },
+
+  // Level 4 - CHIEF ENG
+  { id: "401", initials: "BOR", score: 6200, wpm: 84, accuracy: 96, level: 4, date: "1985-04-12" },
+  { id: "402", initials: "DEL", score: 5400, wpm: 78, accuracy: 94, level: 4, date: "1986-09-01" },
+  { id: "403", initials: "ENG", score: 4900, wpm: 72, accuracy: 93, level: 4, date: "1987-05-18" },
+
+  // Level 3 - OFFICER
+  { id: "301", initials: "NAV", score: 4800, wpm: 75, accuracy: 95, level: 3, date: "1986-07-04" },
+  { id: "302", initials: "TAC", score: 4100, wpm: 70, accuracy: 93, level: 3, date: "1987-03-22" },
+  { id: "303", initials: "OFF", score: 3600, wpm: 66, accuracy: 92, level: 3, date: "1987-11-09" },
+
+  // Level 2 - SONAR TECH
+  { id: "201", initials: "SUB", score: 3200, wpm: 68, accuracy: 92, level: 2, date: "1987-10-18" },
+  { id: "202", initials: "SON", score: 2850, wpm: 62, accuracy: 91, level: 2, date: "1988-01-10" },
+  { id: "203", initials: "ACO", score: 2400, wpm: 58, accuracy: 90, level: 2, date: "1988-08-25" },
+
+  // Level 1 - CADET
+  { id: "101", initials: "NES", score: 2400, wpm: 60, accuracy: 91, level: 1, date: "1988-05-15" },
+  { id: "102", initials: "CAD", score: 1950, wpm: 52, accuracy: 90, level: 1, date: "1989-06-30" },
+  { id: "103", initials: "HEL", score: 1620, wpm: 46, accuracy: 88, level: 1, date: "1990-04-12" }
 ];

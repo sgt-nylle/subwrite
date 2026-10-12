@@ -700,6 +700,52 @@
   border-top: 1px dashed #550000;
 }
 
+.scoreboard-level-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.level-tab-btn {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  background-color: #1a0101;
+  border: 2px solid var(--c64-border);
+  color: #ff9999;
+  padding: 6px 10px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+}
+
+.level-tab-btn:hover {
+  background-color: #380202;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 34, 34, 0.4);
+}
+
+.level-tab-btn.active-tab {
+  background-color: var(--c64-red);
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 12px var(--c64-red-glow);
+  transform: translateY(-1px);
+}
+
+.no-scores-cell {
+  padding: 24px 8px !important;
+  color: var(--c64-gold) !important;
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 1.6;
+}
+
 .scores-table-wrapper {
   overflow-x: auto;
 }

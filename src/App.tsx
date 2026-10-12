@@ -594,6 +594,7 @@ export function App() {
       {showScoreboard && (
         <Scoreboard
           currentScore={finalScoreData}
+          initialLevel={level}
           onPlayAgain={() => {
             setShowScoreboard(false);
             loadPassage(level);

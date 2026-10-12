@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { type HighScore, INITIAL_HIGH_SCORES } from '../data/submarineTexts';
+import React, { useState, useEffect, useMemo } from 'react';
+import { type HighScore, INITIAL_HIGH_SCORES, SUBMARINE_LEVELS } from '../data/submarineTexts';
 import { sound } from '../utils/audio';
 
 export interface FinalTrialResult {
@@ -17,13 +17,14 @@ export interface FinalTrialResult {
 
 interface ScoreboardProps {
   currentScore?: FinalTrialResult | null;
+  initialLevel?: number;
   onPlayAgain: () => void;
   onReturnToMenu?: () => void;
 }
 
-const STORAGE_KEY = 'subwrite_high_scores_v1';
+const STORAGE_KEY = 'subwrite_high_scores_v2';
 
-export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgain, onReturnToMenu }) => {
+export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, initialLevel, onPlayAgain, onReturnToMenu }) => {
   const [scores, setScores] = useState<HighScore[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -35,6 +36,11 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
     }
     return INITIAL_HIGH_SCORES;
   });
+
+  // Default to the level just played, or the active level, or 'all'
+  const [selectedLevel, setSelectedLevel] = useState<number | 'all'>(
+    currentScore ? currentScore.level : (initialLevel ?? 'all')
+  );
 
   const [initials, setInitials] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -70,9 +76,14 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
     return () => { isMounted = false; };
   }, []);
 
+  // Check if current trial qualifies as a new high score for that specific level
   useEffect(() => {
     if (currentScore && !submitted) {
-      const isTop = scores.length < 10 || currentScore.score > (scores[scores.length - 1]?.score || 0);
+      const levelScores = scores
+        .filter(s => Number(s.level) === currentScore.level)
+        .sort((a, b) => b.score - a.score);
+
+      const isTop = levelScores.length < 10 || currentScore.score > (levelScores[levelScores.length - 1]?.score || 0);
       setIsNewHighScore(isTop);
     }
   }, [currentScore, scores, submitted]);
@@ -94,11 +105,10 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
     };
 
     // Optimistically update locally
-    const updated = [...scores, newEntry]
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+    const updated = [...scores, newEntry].sort((a, b) => b.score - a.score);
     setScores(updated);
     setSubmitted(true);
+    setSelectedLevel(currentScore.level);
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -125,12 +135,32 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
     }
   };
 
+  // Filter and sort scores for the currently active tab
+  const filteredScores = useMemo(() => {
+    const list = selectedLevel === 'all'
+      ? scores
+      : scores.filter(s => Number(s.level) === selectedLevel);
+
+    return [...list]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+  }, [scores, selectedLevel]);
+
+  const currentLevelInfo = useMemo(() => {
+    if (selectedLevel === 'all') return null;
+    return SUBMARINE_LEVELS.find(l => l.level === selectedLevel) || null;
+  }, [selectedLevel]);
+
   return (
     <div className="retro-modal-overlay">
       <div className="retro-scoreboard-container c64-box">
         <div className="c64-header-banner">
           <span className="star-icon">★</span>
-          <h2>CLASSIFIED FLEET RECORDS (ALL FLEET OPERATORS)</h2>
+          <h2>
+            {selectedLevel === 'all'
+              ? 'CLASSIFIED FLEET RECORDS (ALL LEVELS)'
+              : `LEVEL ${selectedLevel} FLEET RECORDS: ${currentLevelInfo?.name || ''}`}
+          </h2>
           <span className="star-icon">★</span>
         </div>
 
@@ -176,12 +206,14 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
           </div>
         )}
 
-        {/* 3-LETTER INITIALS PROMPT IF HIGH SCORE */}
+        {/* 3-LETTER INITIALS PROMPT IF HIGH SCORE FOR THIS LEVEL */}
         {currentScore && !submitted && isNewHighScore && (
           <div className="new-record-prompt">
-            <div className="blinking-alert">★★★ NEW HIGH SCORE REGISTERED ★★★</div>
+            <div className="blinking-alert">★★★ NEW LEVEL {currentScore.level} RECORD REGISTERED ★★★</div>
             <form onSubmit={handleSubmitInitials} className="initials-form">
-              <label htmlFor="initials-input">ENTER 3-LETTER INITIALS FOR FLEET RECORDS:</label>
+              <label htmlFor="initials-input">
+                ENTER 3-LETTER INITIALS FOR LEVEL {currentScore.level} FLEET LOG:
+              </label>
               <div className="initials-input-wrapper">
                 <input
                   id="initials-input"
@@ -202,10 +234,44 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
           </div>
         )}
 
+        {/* LEVEL FILTER TABS */}
+        <div className="scoreboard-level-tabs">
+          <button
+            type="button"
+            className={`level-tab-btn ${selectedLevel === 'all' ? 'active-tab' : ''}`}
+            onClick={() => {
+              sound.playKeypress();
+              setSelectedLevel('all');
+            }}
+          >
+            ★ ALL FLEET
+          </button>
+          {SUBMARINE_LEVELS.map(lvl => {
+            const count = scores.filter(s => Number(s.level) === lvl.level).length;
+            return (
+              <button
+                key={lvl.level}
+                type="button"
+                className={`level-tab-btn ${selectedLevel === lvl.level ? 'active-tab' : ''}`}
+                onClick={() => {
+                  sound.playKeypress();
+                  setSelectedLevel(lvl.level);
+                }}
+              >
+                LVL {lvl.level}: {lvl.name} ({count})
+              </button>
+            );
+          })}
+        </div>
+
         {/* LEADERBOARD TABLE */}
         <div className="scores-table-wrapper">
           <div className="global-sync-tag">
-            <span>● SHARED GLOBAL LOGS</span>
+            <span>
+              ● {selectedLevel === 'all'
+                ? 'ALL FLEET RECORDS'
+                : `LEVEL ${selectedLevel} [${currentLevelInfo?.name || ''}] RECORDS`}
+            </span>
             {isLoading && <span className="syncing-text">[SYNCING FLEET...]</span>}
           </div>
           <table className="c64-score-table">
@@ -221,20 +287,28 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ currentScore, onPlayAgai
               </tr>
             </thead>
             <tbody>
-              {scores.map((entry, index) => {
-                const isCurrent = submitted && currentScore && entry.score === currentScore.score && entry.initials === initials.toUpperCase();
-                return (
-                  <tr key={entry.id || index} className={isCurrent ? "current-player-row blinking-row" : index === 0 ? "rank-1-row" : ""}>
-                    <td className="rank-col">#{index + 1}</td>
-                    <td className="name-col">{entry.initials}</td>
-                    <td className="score-col">{entry.score.toLocaleString()}</td>
-                    <td className="wpm-col">{entry.wpm}</td>
-                    <td className="acc-col">{entry.accuracy}%</td>
-                    <td className="lvl-col">L{entry.level}</td>
-                    <td className="date-col">{entry.date || '---'}</td>
-                  </tr>
-                );
-              })}
+              {filteredScores.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="no-scores-cell">
+                    NO FLEET RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
+                  </td>
+                </tr>
+              ) : (
+                filteredScores.map((entry, index) => {
+                  const isCurrent = submitted && currentScore && entry.score === currentScore.score && entry.initials === initials.toUpperCase() && Number(entry.level) === currentScore.level;
+                  return (
+                    <tr key={entry.id || index} className={isCurrent ? "current-player-row blinking-row" : index === 0 ? "rank-1-row" : ""}>
+                      <td className="rank-col">#{index + 1}</td>
+                      <td className="name-col">{entry.initials}</td>
+                      <td className="score-col">{entry.score.toLocaleString()}</td>
+                      <td className="wpm-col">{entry.wpm}</td>
+                      <td className="acc-col">{entry.accuracy}%</td>
+                      <td className="lvl-col">L{entry.level}</td>
+                      <td className="date-col">{entry.date || '---'}</td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

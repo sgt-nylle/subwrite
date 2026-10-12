@@ -39,6 +39,9 @@ const server = http.createServer((req, res) => {
   if (req.url?.startsWith('/api/scores')) {
     res.setHeader('Content-Type', 'application/json');
 
+    const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const levelParam = urlObj.searchParams.get('level');
+
     if (req.method === 'GET') {
       try {
         if (!fs.existsSync(SCORES_FILE)) {
@@ -46,7 +49,11 @@ const server = http.createServer((req, res) => {
           fs.writeFileSync(SCORES_FILE, '[]', 'utf-8');
         }
         const data = fs.readFileSync(SCORES_FILE, 'utf-8');
-        const scores = JSON.parse(data);
+        let scores = JSON.parse(data);
+        if (levelParam) {
+          const targetLvl = parseInt(levelParam, 10);
+          scores = scores.filter(s => Number(s.level) === targetLvl);
+        }
         res.statusCode = 200;
         return res.end(JSON.stringify(scores));
       } catch (err) {
@@ -90,13 +97,13 @@ const server = http.createServer((req, res) => {
 
           currentScores.push(formattedEntry);
           currentScores.sort((a, b) => b.score - a.score);
-          currentScores = currentScores.slice(0, 50);
+          currentScores = currentScores.slice(0, 200);
 
           fs.mkdirSync(path.dirname(SCORES_FILE), { recursive: true });
           fs.writeFileSync(SCORES_FILE, JSON.stringify(currentScores, null, 2), 'utf-8');
 
           res.statusCode = 200;
-          return res.end(JSON.stringify(currentScores.slice(0, 10)));
+          return res.end(JSON.stringify(currentScores));
         } catch (err) {
           console.error('Error saving score:', err);
           res.statusCode = 500;
