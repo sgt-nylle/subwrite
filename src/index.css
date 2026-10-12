@@ -1,0 +1,56 @@
+:root {
+  --c64-bg: #080101;
+  --c64-frame: #3d0000;
+  --c64-border: #750000;
+  --c64-red: #ff2222;
+  --c64-red-glow: rgba(255, 34, 34, 0.75);
+  --c64-dim-red: #9e1b1b;
+  --c64-dark-red: #420808;
+  --c64-green: #39ff14;
+  --c64-green-glow: rgba(57, 255, 20, 0.6);
+  --c64-amber: #ffaa00;
+  --c64-gold: #ffd700;
+  --c64-cyan: #00ffff;
+  --c64-white: #ffffff;
+  --font-retro: 'VT323', 'Press Start 2P', 'Courier New', monospace;
+  --font-arcade: 'Press Start 2P', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #030000;
+  color: var(--c64-red);
+  font-family: var(--font-retro);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#root {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--c64-dark-red);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--c64-red);
+  border: 1px solid var(--c64-frame);
+}
