@@ -1327,13 +1327,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 10px 12px;
   background-color: #150202;
   border: 1px solid #4a0000;
   cursor: pointer;
   transition: all 0.12s ease-in-out;
   width: 100%;
+  box-sizing: border-box;
   text-align: left;
   user-select: none;
   touch-action: manipulation;
@@ -1351,14 +1352,34 @@
   box-shadow: 0 0 10px rgba(255, 34, 34, 0.4);
 }
 
+.nes-menu-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
 .nes-menu-item-main {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   font-family: var(--font-arcade);
   font-size: 11px;
   color: #ff8888;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+}
+
+.nes-item-role-tag {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: var(--c64-gold);
+  background-color: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 1px 5px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .selected-item .nes-menu-item-main {
@@ -1371,7 +1392,7 @@
   color: var(--c64-gold);
   background: rgba(80, 0, 0, 0.6);
   border: 1px solid #992222;
-  padding: 3px 6px;
+  padding: 4px 8px;
   letter-spacing: 0.5px;
   flex-shrink: 0;
 }
@@ -1493,10 +1514,11 @@
 
 .nes-item-desc {
   font-family: var(--font-retro);
-  font-size: 15px;
-  color: var(--c64-gold);
-  margin-left: auto;
+  font-size: 16px;
+  color: #ffb8b8;
   letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin-left: 20px;
 }
 
 /* NES Footer */
@@ -1617,42 +1639,28 @@
   }
 
   .nes-menu-item-btn {
-    padding: 10px 8px;
-    flex-wrap: wrap;
-    gap: 4px;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .nes-menu-item-content {
+    gap: 2px;
   }
 
   .nes-menu-item-main {
-    font-size: 10px;
-  }
-
-  .nes-quick-dive-badge {
-    font-size: 7px;
-    padding: 2px 4px;
-  }
-
-  .scoreboard-device-tabs {
+    font-size: 9.5px;
     gap: 6px;
-    width: 100%;
   }
 
-  .device-tab-btn {
-    font-size: 9px;
-    padding: 8px 10px;
-    flex: 1;
-  }
-
-  .nes-menu-item {
-    padding: 10px 8px;
-    font-size: 10px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: rgba(255, 34, 34, 0.3);
+  .nes-item-role-tag {
+    font-size: 8px;
+    padding: 1px 4px;
   }
 
   .nes-item-desc {
     font-size: 13px;
-    width: 100%;
-    margin-left: 20px;
+    margin-left: 16px;
+    width: auto;
   }
 
   /* Mobile Logo Resizing: Keep SUBWRITE! comfortably inside CRT frame */

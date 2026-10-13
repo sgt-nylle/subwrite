@@ -95,11 +95,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   };
 
   const levelOptions = [
-    { lvl: 1, label: 'LEVEL 1  [EASY]', desc: 'Cadet • 20m • simple words' },
-    { lvl: 2, label: 'LEVEL 2  [EASY-MED]', desc: 'Sonar Tech • 80m • punctuation' },
-    { lvl: 3, label: 'LEVEL 3  [MEDIUM]', desc: 'Officer • 250m • nuclear boats' },
-    { lvl: 4, label: 'LEVEL 4  [HARD]', desc: 'Chief Eng • 450m • technical specs' },
-    { lvl: 5, label: 'LEVEL 5  [SUPER HARD]', desc: 'Commander • 700m • Red October' }
+    { lvl: 1, label: 'LEVEL 1 [EASY]', role: 'CADET', desc: '20m depth • simple naval words' },
+    { lvl: 2, label: 'LEVEL 2 [EASY-MED]', role: 'SONAR TECH', desc: '80m depth • punctuation & speed' },
+    { lvl: 3, label: 'LEVEL 3 [MEDIUM]', role: 'OFFICER', desc: '250m depth • nuclear submarine history' },
+    { lvl: 4, label: 'LEVEL 4 [HARD]', role: 'CHIEF ENG', desc: '450m depth • technical specifications' },
+    { lvl: 5, label: 'LEVEL 5 [SUPER HARD]', role: 'COMMANDER', desc: '700m depth • Red October doctrine' }
   ];
 
   return (
@@ -179,11 +179,14 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                 onClick={() => handleLevelClick(opt.lvl)}
                 className={`nes-menu-item-btn ${isCurrent ? 'selected-item' : ''}`}
               >
-                <div className="nes-menu-item-main">
-                  <span className="nes-cursor">{isCurrent ? '►' : '\u00A0'}</span>
-                  <span className="nes-item-text">{opt.label}</span>
+                <div className="nes-menu-item-content">
+                  <div className="nes-menu-item-main">
+                    <span className="nes-cursor">{isCurrent ? '►' : '\u00A0'}</span>
+                    <span className="nes-item-text">{opt.label}</span>
+                    <span className="nes-item-role-tag">[{opt.role}]</span>
+                  </div>
+                  <div className="nes-item-desc">{opt.desc}</div>
                 </div>
-                <span className="nes-item-desc">{opt.desc}</span>
                 <span className="nes-quick-dive-badge">{isMobile ? 'PUSH TO DIVE' : 'DIVE'}</span>
               </button>
             );
