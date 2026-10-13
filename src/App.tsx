@@ -226,7 +226,7 @@ export function App() {
     };
   }, [gameState, isStarted, isFinished, startTime, timeLimit, handleComplete]);
 
-  // Input change handler with unblocked continuous progression and -500 penalty per error
+  // Input change handler with immutable previous history and unblocked continuous progression
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isFinished || gameState !== 'playing') return;
     const val = e.target.value;
@@ -237,14 +237,19 @@ export function App() {
       sound.playSonarPing();
     }
 
-    // Process new typed keystrokes
+    let nextVal = inputVal;
+
+    // Forward typing: Characters were added
     if (val.length > inputVal.length) {
-      const addedChars = val.length - inputVal.length;
-      setTotalKeystrokes(prev => prev + addedChars);
+      // Extract newly added characters from the end or diff
+      const addedChars = val.slice(inputVal.length);
+      setTotalKeystrokes(prev => prev + addedChars.length);
+
+      nextVal = (inputVal + addedChars).slice(0, targetText.length);
 
       let hadError = false;
-      for (let i = inputVal.length; i < val.length && i < targetText.length; i++) {
-        const typedChar = val[i];
+      for (let i = inputVal.length; i < nextVal.length; i++) {
+        const typedChar = nextVal[i];
         const expectedChar = targetText[i];
         const isMatch = typedChar === expectedChar || areCharsEquivalent(typedChar, expectedChar);
 
@@ -265,14 +270,21 @@ export function App() {
       } else {
         sound.playKeypress();
       }
+    } else if (val.length < inputVal.length) {
+      // Backspace: delete strictly from the end, protecting all earlier characters
+      const deleteCount = inputVal.length - val.length;
+      nextVal = inputVal.slice(0, Math.max(0, inputVal.length - deleteCount));
     }
 
-    const clampedVal = val.slice(0, targetText.length);
-    setInputVal(clampedVal);
+    setInputVal(nextVal);
+
+    if (inputRef.current) {
+      inputRef.current.value = nextVal;
+    }
 
     // Finished entire passage?
-    if (clampedVal.length >= targetText.length && targetText.length > 0) {
-      handleComplete(clampedVal);
+    if (nextVal.length >= targetText.length && targetText.length > 0) {
+      handleComplete(nextVal);
     }
   };
 
@@ -340,6 +352,10 @@ export function App() {
         const lastSpace = trimmed.lastIndexOf(' ');
         const nextVal = lastSpace === -1 ? '' : trimmed.slice(0, lastSpace + 1);
         setInputVal(nextVal);
+        if (inputRef.current) {
+          inputRef.current.value = nextVal;
+          inputRef.current.setSelectionRange(nextVal.length, nextVal.length);
+        }
         return;
       }
 
@@ -349,7 +365,10 @@ export function App() {
         if (inputRef.current.selectionStart !== len || inputRef.current.selectionEnd !== len) {
           e.preventDefault();
           if (len > 0) {
-            setInputVal(prev => prev.slice(0, -1));
+            const nextVal = inputVal.slice(0, -1);
+            setInputVal(nextVal);
+            inputRef.current.value = nextVal;
+            inputRef.current.setSelectionRange(nextVal.length, nextVal.length);
           }
           return;
         }
@@ -530,6 +549,8 @@ export function App() {
               }}
               onClick={syncCaretToEnd}
               onSelect={syncCaretToEnd}
+              onPaste={(e) => e.preventDefault()}
+              onCut={(e) => e.preventDefault()}
               onBlur={() => setIsFocused(false)}
               autoCapitalize="none"
               autoCorrect="off"
