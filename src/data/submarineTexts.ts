@@ -91,6 +91,8 @@ export interface HighScore {
   accuracy: number;
   level: number;
   date: string;
+  device?: 'desktop' | 'mobile';
+  failedChars?: number;
 }
 
 export const LEVEL_TIME_LIMITS: Record<number, number> = {
@@ -103,27 +105,59 @@ export const LEVEL_TIME_LIMITS: Record<number, number> = {
 
 export const INITIAL_HIGH_SCORES: HighScore[] = [
   // Level 5 - COMMANDER
-  { id: "501", initials: "RAM", score: 8500, wpm: 92, accuracy: 98, level: 5, date: "1984-11-23" },
-  { id: "502", initials: "KAP", score: 7600, wpm: 86, accuracy: 96, level: 5, date: "1985-02-14" },
-  { id: "503", initials: "RED", score: 6900, wpm: 80, accuracy: 95, level: 5, date: "1985-10-30" },
+  { id: "501", initials: "RAM", score: 8500, wpm: 92, accuracy: 98, level: 5, device: "desktop", failedChars: 3, date: "1984-11-23" },
+  { id: "502", initials: "KAP", score: 7600, wpm: 86, accuracy: 96, level: 5, device: "desktop", failedChars: 5, date: "1985-02-14" },
+  { id: "503", initials: "RED", score: 6900, wpm: 80, accuracy: 95, level: 5, device: "desktop", failedChars: 7, date: "1985-10-30" },
 
   // Level 4 - CHIEF ENG
-  { id: "401", initials: "BOR", score: 6200, wpm: 84, accuracy: 96, level: 4, date: "1985-04-12" },
-  { id: "402", initials: "DEL", score: 5400, wpm: 78, accuracy: 94, level: 4, date: "1986-09-01" },
-  { id: "403", initials: "ENG", score: 4900, wpm: 72, accuracy: 93, level: 4, date: "1987-05-18" },
+  { id: "401", initials: "BOR", score: 6200, wpm: 84, accuracy: 96, level: 4, device: "desktop", failedChars: 4, date: "1985-04-12" },
+  { id: "402", initials: "DEL", score: 5400, wpm: 78, accuracy: 94, level: 4, device: "desktop", failedChars: 6, date: "1986-09-01" },
+  { id: "403", initials: "ENG", score: 4900, wpm: 72, accuracy: 93, level: 4, device: "desktop", failedChars: 8, date: "1987-05-18" },
 
   // Level 3 - OFFICER
-  { id: "301", initials: "NAV", score: 4800, wpm: 75, accuracy: 95, level: 3, date: "1986-07-04" },
-  { id: "302", initials: "TAC", score: 4100, wpm: 70, accuracy: 93, level: 3, date: "1987-03-22" },
-  { id: "303", initials: "OFF", score: 3600, wpm: 66, accuracy: 92, level: 3, date: "1987-11-09" },
+  { id: "301", initials: "NAV", score: 4800, wpm: 75, accuracy: 95, level: 3, device: "desktop", failedChars: 5, date: "1986-07-04" },
+  { id: "302", initials: "TAC", score: 4100, wpm: 70, accuracy: 93, level: 3, device: "desktop", failedChars: 7, date: "1987-03-22" },
+  { id: "303", initials: "OFF", score: 3600, wpm: 66, accuracy: 92, level: 3, device: "desktop", failedChars: 9, date: "1987-11-09" },
 
   // Level 2 - SONAR TECH
-  { id: "201", initials: "SUB", score: 3200, wpm: 68, accuracy: 92, level: 2, date: "1987-10-18" },
-  { id: "202", initials: "SON", score: 2850, wpm: 62, accuracy: 91, level: 2, date: "1988-01-10" },
-  { id: "203", initials: "ACO", score: 2400, wpm: 58, accuracy: 90, level: 2, date: "1988-08-25" },
+  { id: "201", initials: "SUB", score: 3200, wpm: 68, accuracy: 92, level: 2, device: "desktop", failedChars: 6, date: "1987-10-18" },
+  { id: "202", initials: "SON", score: 2850, wpm: 62, accuracy: 91, level: 2, device: "desktop", failedChars: 8, date: "1988-01-10" },
+  { id: "203", initials: "ACO", score: 2400, wpm: 58, accuracy: 90, level: 2, device: "desktop", failedChars: 10, date: "1988-08-25" },
 
   // Level 1 - CADET
-  { id: "101", initials: "NES", score: 2400, wpm: 60, accuracy: 91, level: 1, date: "1988-05-15" },
-  { id: "102", initials: "CAD", score: 1950, wpm: 52, accuracy: 90, level: 1, date: "1989-06-30" },
-  { id: "103", initials: "HEL", score: 1620, wpm: 46, accuracy: 88, level: 1, date: "1990-04-12" }
+  { id: "101", initials: "NES", score: 2400, wpm: 60, accuracy: 91, level: 1, device: "desktop", failedChars: 4, date: "1988-05-15" },
+  { id: "102", initials: "CAD", score: 1950, wpm: 52, accuracy: 90, level: 1, device: "desktop", failedChars: 6, date: "1989-06-30" },
+  { id: "103", initials: "HEL", score: 1620, wpm: 46, accuracy: 88, level: 1, device: "desktop", failedChars: 8, date: "1990-04-12" }
+];
+
+export const INITIAL_MOBILE_HIGH_SCORES: HighScore[] = [
+  // Level 5 - COMMANDER (Mobile Touchscreen)
+  { id: "m501", initials: "MOB", score: 5200, wpm: 56, accuracy: 95, level: 5, device: "mobile", failedChars: 5, date: "2026-10-01" },
+  { id: "m502", initials: "IPH", score: 4600, wpm: 50, accuracy: 94, level: 5, device: "mobile", failedChars: 7, date: "2026-10-02" },
+  { id: "m503", initials: "AND", score: 4100, wpm: 45, accuracy: 93, level: 5, device: "mobile", failedChars: 9, date: "2026-10-03" },
+
+  // Level 4 - CHIEF ENG (Mobile Touchscreen)
+  { id: "m401", initials: "S94", score: 3900, wpm: 48, accuracy: 94, level: 4, device: "mobile", failedChars: 6, date: "2026-10-04" },
+  { id: "m402", initials: "TAC", score: 3400, wpm: 42, accuracy: 92, level: 4, device: "mobile", failedChars: 8, date: "2026-10-05" },
+  { id: "m403", initials: "RED", score: 3000, wpm: 38, accuracy: 91, level: 4, device: "mobile", failedChars: 10, date: "2026-10-06" },
+
+  // Level 3 - OFFICER (Mobile Touchscreen)
+  { id: "m301", initials: "SUB", score: 3100, wpm: 44, accuracy: 92, level: 3, device: "mobile", failedChars: 7, date: "2026-10-07" },
+  { id: "m302", initials: "GOT", score: 2700, wpm: 39, accuracy: 91, level: 3, device: "mobile", failedChars: 9, date: "2026-10-08" },
+  { id: "m303", initials: "NAV", score: 2300, wpm: 35, accuracy: 90, level: 3, device: "mobile", failedChars: 11, date: "2026-10-09" },
+
+  // Level 2 - SONAR TECH (Mobile Touchscreen)
+  { id: "m201", initials: "SON", score: 2100, wpm: 38, accuracy: 90, level: 2, device: "mobile", failedChars: 8, date: "2026-10-10" },
+  { id: "m202", initials: "ACO", score: 1850, wpm: 34, accuracy: 89, level: 2, device: "mobile", failedChars: 10, date: "2026-10-11" },
+  { id: "m203", initials: "RAD", score: 1600, wpm: 30, accuracy: 88, level: 2, device: "mobile", failedChars: 12, date: "2026-10-12" },
+
+  // Level 1 - CADET (Mobile Touchscreen)
+  { id: "m101", initials: "CAD", score: 1500, wpm: 36, accuracy: 89, level: 1, device: "mobile", failedChars: 6, date: "2026-10-12" },
+  { id: "m102", initials: "SMS", score: 1250, wpm: 30, accuracy: 88, level: 1, device: "mobile", failedChars: 8, date: "2026-10-12" },
+  { id: "m103", initials: "TAP", score: 1050, wpm: 26, accuracy: 86, level: 1, device: "mobile", failedChars: 10, date: "2026-10-12" }
+];
+
+export const ALL_INITIAL_HIGH_SCORES: HighScore[] = [
+  ...INITIAL_HIGH_SCORES,
+  ...INITIAL_MOBILE_HIGH_SCORES
 ];

@@ -41,6 +41,7 @@ const server = http.createServer((req, res) => {
 
     const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const levelParam = urlObj.searchParams.get('level');
+    const deviceParam = urlObj.searchParams.get('device');
 
     if (req.method === 'GET') {
       try {
@@ -50,6 +51,9 @@ const server = http.createServer((req, res) => {
         }
         const data = fs.readFileSync(SCORES_FILE, 'utf-8');
         let scores = JSON.parse(data);
+        if (deviceParam) {
+          scores = scores.filter(s => (s.device || 'desktop') === deviceParam);
+        }
         if (levelParam) {
           const targetLvl = parseInt(levelParam, 10);
           scores = scores.filter(s => Number(s.level) === targetLvl);
@@ -85,6 +89,7 @@ const server = http.createServer((req, res) => {
             }
           }
 
+          const device = newEntry.device === 'mobile' ? 'mobile' : 'desktop';
           const formattedEntry = {
             id: Date.now().toString(),
             initials: String(newEntry.initials).toUpperCase().slice(0, 3).padEnd(3, 'X'),
@@ -92,6 +97,8 @@ const server = http.createServer((req, res) => {
             wpm: Math.round(newEntry.wpm || 0),
             accuracy: Math.round(newEntry.accuracy || 100),
             level: Number(newEntry.level || 1),
+            device,
+            failedChars: Math.max(0, Math.round(newEntry.failedChars ?? newEntry.incorrectChars ?? 0)),
             date: new Date().toISOString().split('T')[0]
           };
 
@@ -115,7 +122,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Static File Serving
-  let safePath = path.normalize(decodeURI(req.url || '/')).replace(/^(\.\.[\/\\])+/, '');
+  let safePath = path.normalize(decodeURI(req.url || '/')).replace(/^(\.\.[/\\])+/, '');
   if (safePath === '/' || safePath === '') {
     safePath = '/index.html';
   }

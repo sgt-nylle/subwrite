@@ -24,6 +24,10 @@ function scoresApiPlugin(): Plugin {
           return res.end();
         }
 
+        const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const levelParam = urlObj.searchParams.get('level');
+        const deviceParam = urlObj.searchParams.get('device');
+
         if (req.method === 'GET') {
           try {
             if (!fs.existsSync(SCORES_FILE)) {
@@ -31,7 +35,14 @@ function scoresApiPlugin(): Plugin {
               fs.writeFileSync(SCORES_FILE, '[]', 'utf-8');
             }
             const data = fs.readFileSync(SCORES_FILE, 'utf-8');
-            const scores = JSON.parse(data);
+            let scores = JSON.parse(data);
+            if (deviceParam) {
+              scores = scores.filter((s: { device?: string }) => (s.device || 'desktop') === deviceParam);
+            }
+            if (levelParam) {
+              const targetLvl = parseInt(levelParam, 10);
+              scores = scores.filter((s: { level?: number }) => Number(s.level) === targetLvl);
+            }
             res.statusCode = 200;
             return res.end(JSON.stringify(scores));
           } catch (err) {
@@ -63,6 +74,7 @@ function scoresApiPlugin(): Plugin {
                 }
               }
 
+              const device = newEntry.device === 'mobile' ? 'mobile' : 'desktop';
               const formattedEntry = {
                 id: Date.now().toString(),
                 initials: String(newEntry.initials).toUpperCase().slice(0, 3).padEnd(3, 'X'),
@@ -70,18 +82,20 @@ function scoresApiPlugin(): Plugin {
                 wpm: Math.round(newEntry.wpm || 0),
                 accuracy: Math.round(newEntry.accuracy || 100),
                 level: Number(newEntry.level || 1),
+                device,
+                failedChars: Math.max(0, Math.round(newEntry.failedChars ?? newEntry.incorrectChars ?? 0)),
                 date: new Date().toISOString().split('T')[0]
               };
 
               currentScores.push(formattedEntry);
               currentScores.sort((a: { score: number }, b: { score: number }) => b.score - a.score);
-              currentScores = currentScores.slice(0, 50); // Keep top 50
+              currentScores = currentScores.slice(0, 100); // Keep top 100
 
               fs.mkdirSync(path.dirname(SCORES_FILE), { recursive: true });
               fs.writeFileSync(SCORES_FILE, JSON.stringify(currentScores, null, 2), 'utf-8');
 
               res.statusCode = 200;
-              return res.end(JSON.stringify(currentScores.slice(0, 10)));
+              return res.end(JSON.stringify(currentScores));
             } catch (err) {
               console.error('Error saving score:', err);
               res.statusCode = 500;

@@ -259,6 +259,24 @@
   color: var(--c64-gold);
 }
 
+/* Persistent Mission View container (keeps input mounted so mobile/iOS keyboards trigger instantly) */
+.c64-mission-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.mission-view-standby {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0.001;
+  overflow: hidden;
+}
+
 /* =========================================================================
    TYPING TERMINAL ARENA
    ========================================================================= */
@@ -324,7 +342,7 @@
   50% { opacity: 0.3; }
 }
 
-/* Rendered Text */
+/* Rendered Text with Unblocked Continuous Progression */
 .typing-text-display {
   font-family: var(--font-retro);
   font-size: 32px;
@@ -336,6 +354,7 @@
 }
 
 .terminal-char {
+  display: inline;
   position: relative;
   transition: color 0.05s;
 }
@@ -354,16 +373,28 @@
   color: #ffffff;
   background-color: #cc0000;
   text-shadow: 0 0 8px #ffffff;
-  animation: shake 0.2s;
 }
 
-.retro-block-cursor {
-  display: inline-block;
-  color: #ffffff;
-  background-color: var(--c64-red);
-  margin-right: -1ch;
-  animation: cursorBlink 0.85s infinite steps(2, start);
-  box-shadow: 0 0 10px var(--c64-red-glow);
+/* Authentic Commodore 64 / Terminal Block Cursor on the active character */
+.char-cursor {
+  background-color: var(--c64-red) !important;
+  color: #000000 !important;
+  animation: retroBlockBlink 0.8s infinite steps(2, start);
+  box-shadow: 0 0 8px var(--c64-red-glow);
+}
+
+@keyframes retroBlockBlink {
+  0%, 100% { opacity: 1; filter: brightness(1.2); }
+  50% { opacity: 0.35; filter: brightness(0.8); }
+}
+
+.telemetry-drain-sub {
+  font-family: var(--font-arcade);
+  font-size: 7px;
+  color: #ff8888;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  text-shadow: 0 0 4px var(--c64-red-glow);
 }
 
 @keyframes cursorBlink {
@@ -502,18 +533,23 @@
 .retro-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(3, 0, 0, 0.88);
+  background-color: rgba(3, 0, 0, 0.92);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 16px;
   z-index: 1000;
   backdrop-filter: blur(2px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 .retro-scoreboard-container {
   width: 100%;
-  max-width: 620px;
+  max-width: 680px;
   background-color: #0b0101;
   border: 6px solid var(--c64-border);
   box-shadow: 0 0 40px rgba(255, 34, 34, 0.5);
@@ -521,6 +557,8 @@
   flex-direction: column;
   gap: 16px;
   padding: 20px;
+  margin: auto 0;
+  box-sizing: border-box;
 }
 
 .c64-header-banner {
@@ -700,6 +738,54 @@
   border-top: 1px dashed #550000;
 }
 
+/* Scoreboard Device Tabs: PC/Mac vs Mobile */
+.scoreboard-device-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 6px 0;
+  width: 100%;
+}
+
+.device-tab-btn {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  background: linear-gradient(180deg, #240505 0%, #150202 100%);
+  border: 2px solid var(--c64-border);
+  color: #ffaaaa;
+  padding: 8px 18px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  box-shadow: 0 4px 0 #3a0000;
+}
+
+.device-tab-btn:hover {
+  background: #3b0a0a;
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 4px 0 #3a0000, 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.device-tab-btn.active-device-tab {
+  background: linear-gradient(180deg, #991b1b 0%, #600c0c 100%);
+  border-color: var(--c64-gold);
+  color: var(--c64-gold);
+  box-shadow: 0 2px 0 #3a0000, 0 0 14px rgba(255, 215, 0, 0.6);
+  transform: translateY(2px);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+}
+
+.debrief-device-badge {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  color: var(--c64-gold);
+  margin-left: 8px;
+  letter-spacing: 1px;
+}
+
 .scoreboard-level-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -735,6 +821,126 @@
   color: #ffffff;
   box-shadow: 0 0 12px var(--c64-red-glow);
   transform: translateY(-1px);
+}
+
+/* FLEET INTEL STATS SUMMARY BAR */
+.fleet-intel-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  padding: 8px 12px;
+  background-color: #120202;
+  border: 1px dashed var(--c64-frame);
+  width: 100%;
+}
+
+.intel-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #ffbbbb;
+  background-color: #200404;
+  padding: 4px 8px;
+  border: 1px solid #500000;
+}
+
+.intel-label {
+  color: #ff8888;
+}
+
+.intel-val {
+  letter-spacing: 0.5px;
+}
+
+/* TOP 3 PODIUM / HALL OF FAME CARDS */
+.scoreboard-podium-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin: 10px 0 14px 0;
+}
+
+.podium-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 8px;
+  gap: 5px;
+  background-color: #150202;
+  border-width: 3px;
+  transition: transform 0.15s ease-in-out;
+}
+
+.podium-card:hover {
+  transform: translateY(-2px);
+}
+
+.gold-podium {
+  border-color: #ffd700;
+  background: radial-gradient(circle at top, #3a2b00 0%, #150202 85%);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.silver-podium {
+  border-color: #c0c0c0;
+  background: radial-gradient(circle at top, #2b2b2b 0%, #150202 85%);
+  box-shadow: 0 0 12px rgba(192, 192, 192, 0.3);
+}
+
+.bronze-podium {
+  border-color: #cd7f32;
+  background: radial-gradient(circle at top, #351a08 0%, #150202 85%);
+  box-shadow: 0 0 12px rgba(205, 127, 50, 0.3);
+}
+
+.podium-badge {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.gold-podium .podium-badge { color: #ffd700; }
+.silver-podium .podium-badge { color: #ffffff; }
+.bronze-podium .podium-badge { color: #ffaa55; }
+
+.podium-initials {
+  font-family: var(--font-arcade);
+  font-size: 18px;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.podium-score {
+  font-family: var(--font-arcade);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.podium-stats-row {
+  display: flex;
+  gap: 6px;
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  margin-top: 2px;
+}
+
+.p-stat {
+  padding: 2px 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.failed-col {
+  color: #ff3333;
+  font-weight: bold;
 }
 
 .no-scores-cell {
@@ -863,6 +1069,9 @@
   align-items: center;
   gap: 4px;
   margin-top: 4px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .nes-star-flair {
@@ -874,14 +1083,30 @@
 
 .nes-main-title {
   font-family: var(--font-arcade);
-  font-size: 42px;
+  font-size: clamp(16px, 4.5vw, 38px);
   color: #ffffff;
-  letter-spacing: 6px;
+  letter-spacing: clamp(1.5px, 0.8vw, 6px);
   text-shadow: 
     0 0 15px var(--c64-red-glow),
-    4px 4px 0px #b30000,
-    6px 6px 0px #440000;
+    3px 3px 0px #b30000,
+    5px 5px 0px #440000;
   margin: 0;
+  max-width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.nes-main-title-mobile {
+  font-size: clamp(12px, 3.8vw, 16px) !important;
+  letter-spacing: 1px !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  margin: 0 auto !important;
+  text-shadow: 
+    0 0 8px var(--c64-red-glow),
+    2px 2px 0px #b30000 !important;
 }
 
 .nes-sub-banner {
@@ -962,7 +1187,90 @@
   font-size: 13px;
 }
 
-/* NES "PUSH START BUTTON" */
+/* TACTICAL ARCADE PUSH START BUTTON */
+.nes-start-control-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0 6px 0;
+}
+
+.nes-push-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #b31010 0%, #700606 50%, #4a0303 100%);
+  border: 3px solid #ff4444;
+  border-radius: 4px;
+  padding: 12px 28px;
+  cursor: pointer;
+  box-shadow:
+    0 6px 0 #2a0000,
+    0 10px 20px rgba(255, 34, 34, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.1s ease-in-out;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 280px;
+  max-width: 440px;
+  width: 100%;
+}
+
+.nes-push-button:hover {
+  background: linear-gradient(180deg, #c71515 0%, #820808 50%, #5a0404 100%);
+  border-color: #ffdd44;
+  box-shadow:
+    0 6px 0 #2a0000,
+    0 12px 25px rgba(255, 51, 51, 0.6),
+    inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.nes-push-button:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 #2a0000,
+    0 4px 10px rgba(255, 34, 34, 0.6),
+    inset 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.push-btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-arcade);
+  font-size: 15px;
+  color: #ffffff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px var(--c64-red-glow);
+}
+
+.push-btn-arrows {
+  color: var(--c64-gold);
+  animation: nesBlink 1s infinite steps(2, start);
+}
+
+.push-btn-lvl-tag {
+  font-size: 12px;
+  color: var(--c64-gold);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.push-btn-subtext {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  color: #ffbbbb;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 6px var(--c64-red-glow);
+}
+
+/* Backward-compatible prompt styles */
 .nes-start-prompt {
   cursor: pointer;
   padding: 8px 16px;
@@ -1002,6 +1310,7 @@
   font-size: 10px;
   color: #ff7777;
   letter-spacing: 1.5px;
+  text-align: center;
 }
 
 .nes-level-list {
@@ -1012,6 +1321,67 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.nes-menu-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #150202;
+  border: 1px solid #4a0000;
+  cursor: pointer;
+  transition: all 0.12s ease-in-out;
+  width: 100%;
+  text-align: left;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 34, 34, 0.3);
+}
+
+.nes-menu-item-btn:hover {
+  background-color: #2b0303;
+  border-color: var(--c64-red);
+}
+
+.nes-menu-item-btn.selected-item {
+  background: linear-gradient(90deg, #380505 0%, #200202 100%);
+  border: 1px solid var(--c64-red);
+  box-shadow: 0 0 10px rgba(255, 34, 34, 0.4);
+}
+
+.nes-menu-item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: #ff8888;
+  letter-spacing: 1px;
+}
+
+.selected-item .nes-menu-item-main {
+  color: #ffffff;
+}
+
+.nes-quick-dive-badge {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  color: var(--c64-gold);
+  background: rgba(80, 0, 0, 0.6);
+  border: 1px solid #992222;
+  padding: 3px 6px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.nes-menu-item-btn:hover .nes-quick-dive-badge,
+.nes-menu-item-btn.selected-item .nes-quick-dive-badge {
+  background: var(--c64-red);
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 6px var(--c64-red-glow);
 }
 
 .nes-menu-item {
@@ -1049,6 +1419,71 @@
 .selected-item .nes-cursor {
   color: var(--c64-red);
   text-shadow: 0 0 8px var(--c64-red-glow);
+}
+
+/* MAIN START SCREEN HALL OF FAME BUTTON */
+.nes-hall-of-fame-section {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.nes-hall-of-fame-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  background: linear-gradient(180deg, #380808 0%, #1a0202 100%);
+  border: 2px solid var(--c64-gold);
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #2a0000, 0 0 12px rgba(255, 215, 0, 0.35);
+  transition: all 0.15s ease-in-out;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.nes-hall-of-fame-btn:hover {
+  background: linear-gradient(180deg, #500e0e 0%, #290303 100%);
+  border-color: #ffffff;
+  box-shadow: 0 4px 0 #2a0000, 0 0 18px rgba(255, 215, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.nes-hall-of-fame-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #2a0000, 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.trophy-badge {
+  font-size: 20px;
+  animation: alertBlink 1.5s infinite;
+}
+
+.hof-btn-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.hof-btn-title {
+  font-family: var(--font-arcade);
+  font-size: 11px;
+  color: var(--c64-gold);
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+.hof-btn-subtitle {
+  font-family: var(--font-arcade);
+  font-size: 7px;
+  color: #ffbbbb;
+  letter-spacing: 1px;
 }
 
 .nes-item-text {
@@ -1132,6 +1567,131 @@
     border-width: 6px;
     padding: 8px;
     gap: 8px;
+  }
+
+  .retro-modal-overlay {
+    padding: 6px 4px 32px 4px;
+    align-items: flex-start;
+  }
+
+  .retro-scoreboard-container {
+    padding: 12px 8px 20px 8px;
+    border-width: 4px;
+    gap: 10px;
+    margin: 4px 0 24px 0;
+  }
+
+  .scores-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .c64-mission-view {
+    gap: 8px;
+  }
+
+  .nes-start-control-area {
+    margin: 8px 0;
+    width: 100%;
+  }
+
+  .nes-push-button {
+    min-width: 0;
+    width: 100%;
+    padding: 14px 12px;
+  }
+
+  .push-btn-content {
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .push-btn-lvl-tag {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  .push-btn-subtext {
+    font-size: 7px;
+  }
+
+  .nes-menu-item-btn {
+    padding: 10px 8px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .nes-menu-item-main {
+    font-size: 10px;
+  }
+
+  .nes-quick-dive-badge {
+    font-size: 7px;
+    padding: 2px 4px;
+  }
+
+  .scoreboard-device-tabs {
+    gap: 6px;
+    width: 100%;
+  }
+
+  .device-tab-btn {
+    font-size: 9px;
+    padding: 8px 10px;
+    flex: 1;
+  }
+
+  .nes-menu-item {
+    padding: 10px 8px;
+    font-size: 10px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255, 34, 34, 0.3);
+  }
+
+  .nes-item-desc {
+    font-size: 13px;
+    width: 100%;
+    margin-left: 20px;
+  }
+
+  /* Mobile Logo Resizing: Keep SUBWRITE! comfortably inside CRT frame */
+  .nes-logo-section {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 2px;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  .nes-main-title {
+    font-size: clamp(14px, 4.2vw, 18px);
+    letter-spacing: 1.5px;
+    text-shadow:
+      0 0 8px var(--c64-red-glow),
+      2px 2px 0px #b30000;
+    max-width: 100%;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .nes-star-flair {
+    font-size: 9px;
+    letter-spacing: 3px;
+  }
+
+  .nes-sub-banner {
+    font-size: 7px;
+    letter-spacing: 0.5px;
+    padding: 0 4px;
+    line-height: 1.3;
+    max-width: 100%;
+  }
+
+  .gotland-sub-svg {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
   }
 
   .main-logo-text {
@@ -1241,5 +1801,98 @@
 
   .c64-score-table {
     font-size: 8px;
+  }
+
+  .scoreboard-podium-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .podium-card {
+    padding: 8px 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .podium-initials {
+    font-size: 14px;
+  }
+
+  .podium-score {
+    font-size: 10px;
+  }
+
+  .fleet-intel-bar {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .intel-pill {
+    font-size: 7px;
+    padding: 3px 6px;
+  }
+
+  .c64-score-table th, .c64-score-table td {
+    padding: 6px 2px;
+    font-size: 8px;
+  }
+
+  .nes-hall-of-fame-btn {
+    padding: 8px 10px;
+  }
+
+  .hof-btn-title {
+    font-size: 9px;
+  }
+}
+
+/* Extra-compact styling for iPhone SE, mini, and compact screens (<= 480px) */
+@media (max-width: 480px) {
+  .c64-viewport {
+    padding: 4px;
+    overflow-x: hidden;
+  }
+
+  .c64-screen-frame {
+    border-width: 4px;
+    padding: 6px;
+    overflow-x: hidden;
+    box-shadow: 0 0 15px rgba(255, 34, 34, 0.3);
+  }
+
+  .retro-modal-overlay {
+    padding: 4px 2px 36px 2px;
+  }
+
+  .retro-scoreboard-container {
+    padding: 10px 6px 18px 6px;
+    border-width: 3px;
+    margin: 2px 0 20px 0;
+  }
+
+  .nes-main-title {
+    font-size: clamp(11px, 3.5vw, 14px) !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  .nes-main-title-mobile {
+    font-size: clamp(11px, 3.5vw, 14px) !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  .nes-star-flair {
+    font-size: 8px;
+    letter-spacing: 2px;
+  }
+
+  .nes-sub-banner {
+    font-size: 6px;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+  }
+
+  .gotland-sub-svg {
+    max-width: 170px;
   }
 }

@@ -6,6 +6,8 @@
     "wpm": 98,
     "accuracy": 99,
     "level": 5,
+    "device": "desktop",
+    "failedChars": 2,
     "date": "2026-10-12"
   },
   {
@@ -15,6 +17,8 @@
     "wpm": 28,
     "accuracy": 86,
     "level": 3,
+    "device": "desktop",
+    "failedChars": 12,
     "date": "2026-10-12"
   },
   {
@@ -24,6 +28,8 @@
     "wpm": 92,
     "accuracy": 98,
     "level": 5,
+    "device": "desktop",
+    "failedChars": 3,
     "date": "1984-11-23"
   },
   {
@@ -33,6 +39,8 @@
     "wpm": 84,
     "accuracy": 96,
     "level": 4,
+    "device": "desktop",
+    "failedChars": 4,
     "date": "1985-04-12"
   },
   {
@@ -42,7 +50,20 @@
     "wpm": 26,
     "accuracy": 88,
     "level": 2,
+    "device": "desktop",
+    "failedChars": 11,
     "date": "2026-10-12"
+  },
+  {
+    "id": "m501",
+    "initials": "MOB",
+    "score": 5200,
+    "wpm": 56,
+    "accuracy": 95,
+    "level": 5,
+    "device": "mobile",
+    "failedChars": 5,
+    "date": "2026-10-01"
   },
   {
     "id": "3",
@@ -51,7 +72,53 @@
     "wpm": 75,
     "accuracy": 95,
     "level": 3,
+    "device": "desktop",
+    "failedChars": 6,
     "date": "1986-07-04"
+  },
+  {
+    "id": "m502",
+    "initials": "IPH",
+    "score": 4600,
+    "wpm": 50,
+    "accuracy": 94,
+    "level": 5,
+    "device": "mobile",
+    "failedChars": 7,
+    "date": "2026-10-02"
+  },
+  {
+    "id": "m503",
+    "initials": "AND",
+    "score": 4100,
+    "wpm": 45,
+    "accuracy": 93,
+    "level": 5,
+    "device": "mobile",
+    "failedChars": 9,
+    "date": "2026-10-03"
+  },
+  {
+    "id": "m401",
+    "initials": "S94",
+    "score": 3900,
+    "wpm": 48,
+    "accuracy": 94,
+    "level": 4,
+    "device": "mobile",
+    "failedChars": 6,
+    "date": "2026-10-04"
+  },
+  {
+    "id": "m402",
+    "initials": "TAC",
+    "score": 3400,
+    "wpm": 42,
+    "accuracy": 92,
+    "level": 4,
+    "device": "mobile",
+    "failedChars": 8,
+    "date": "2026-10-05"
   },
   {
     "id": "4",
@@ -60,7 +127,42 @@
     "wpm": 68,
     "accuracy": 92,
     "level": 2,
+    "device": "desktop",
+    "failedChars": 7,
     "date": "1987-10-18"
+  },
+  {
+    "id": "m301",
+    "initials": "SUB",
+    "score": 3100,
+    "wpm": 44,
+    "accuracy": 92,
+    "level": 3,
+    "device": "mobile",
+    "failedChars": 7,
+    "date": "2026-10-07"
+  },
+  {
+    "id": "m403",
+    "initials": "RED",
+    "score": 3000,
+    "wpm": 38,
+    "accuracy": 91,
+    "level": 4,
+    "device": "mobile",
+    "failedChars": 10,
+    "date": "2026-10-06"
+  },
+  {
+    "id": "m302",
+    "initials": "GOT",
+    "score": 2700,
+    "wpm": 39,
+    "accuracy": 91,
+    "level": 3,
+    "device": "mobile",
+    "failedChars": 9,
+    "date": "2026-10-08"
   },
   {
     "id": "5",
@@ -69,6 +171,85 @@
     "wpm": 60,
     "accuracy": 91,
     "level": 1,
+    "device": "desktop",
+    "failedChars": 4,
     "date": "1988-05-15"
+  },
+  {
+    "id": "m303",
+    "initials": "NAV",
+    "score": 2300,
+    "wpm": 35,
+    "accuracy": 90,
+    "level": 3,
+    "device": "mobile",
+    "failedChars": 11,
+    "date": "2026-10-09"
+  },
+  {
+    "id": "m201",
+    "initials": "SON",
+    "score": 2100,
+    "wpm": 38,
+    "accuracy": 90,
+    "level": 2,
+    "device": "mobile",
+    "failedChars": 8,
+    "date": "2026-10-10"
+  },
+  {
+    "id": "m202",
+    "initials": "ACO",
+    "score": 1850,
+    "wpm": 34,
+    "accuracy": 89,
+    "level": 2,
+    "device": "mobile",
+    "failedChars": 10,
+    "date": "2026-10-11"
+  },
+  {
+    "id": "m203",
+    "initials": "RAD",
+    "score": 1600,
+    "wpm": 30,
+    "accuracy": 88,
+    "level": 2,
+    "device": "mobile",
+    "failedChars": 12,
+    "date": "2026-10-12"
+  },
+  {
+    "id": "m101",
+    "initials": "CAD",
+    "score": 1500,
+    "wpm": 36,
+    "accuracy": 89,
+    "level": 1,
+    "device": "mobile",
+    "failedChars": 6,
+    "date": "2026-10-12"
+  },
+  {
+    "id": "m102",
+    "initials": "SMS",
+    "score": 1250,
+    "wpm": 30,
+    "accuracy": 88,
+    "level": 1,
+    "device": "mobile",
+    "failedChars": 8,
+    "date": "2026-10-12"
+  },
+  {
+    "id": "m103",
+    "initials": "TAP",
+    "score": 1050,
+    "wpm": 26,
+    "accuracy": 86,
+    "level": 1,
+    "device": "mobile",
+    "failedChars": 10,
+    "date": "2026-10-12"
   }
 ]
