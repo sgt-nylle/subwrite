@@ -16,7 +16,7 @@ SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web applic
   - **Level 2 (Sonar Tech - 80m):** Standard sentences, capitalization, periods.
   - **Level 3 (Tactical Officer - 250m):** Nuclear submarine history, SSBN doctrine, complex vocabulary.
   - **Level 4 (Chief Engineer - 450m):** Deep technical specifications, reactor power ratings, cavitation physics, and numbers.
-  - **Level 5 (Red October Commander - 700m):** Typhoon-class stealth doctrine, symbols, quotes, numbers, and Cyrillic transliterations.
+  - **Level 5 (Fleet Admiral - 700m):** Typhoon-class stealth doctrine, symbols, quotes, numbers, and Cyrillic transliterations.
 - **Wikipedia Submarine Articles:** Curated passages extracted directly from submarine history and naval doctrine.
 - **Arcade High Scoreboard:**
   - Retro 3-character initials input (e.g. `RAM`, `NYL`, `RED`).

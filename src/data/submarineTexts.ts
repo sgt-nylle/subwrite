@@ -69,8 +69,8 @@ export const SUBMARINE_LEVELS: SubmarineLevel[] = [
   },
   {
     level: 5,
-    name: "COMMANDER",
-    rank: "Red October Captain",
+    name: "ADMIRAL",
+    rank: "Fleet Admiral / Red October",
     depth: "700 METERS (TEST DEPTH)",
     description: "Maximum difficulty: Typhoon-class stealth doctrine, symbols, quotes, numbers, and Cyrillic transliterations.",
     multiplier: 5.0,
@@ -104,7 +104,7 @@ export const LEVEL_TIME_LIMITS: Record<number, number> = {
 };
 
 export const INITIAL_HIGH_SCORES: HighScore[] = [
-  // Level 5 - COMMANDER
+  // Level 5 - ADMIRAL
   { id: "501", initials: "RAM", score: 8500, wpm: 92, accuracy: 98, level: 5, device: "desktop", failedChars: 3, date: "1984-11-23" },
   { id: "502", initials: "KAP", score: 7600, wpm: 86, accuracy: 96, level: 5, device: "desktop", failedChars: 5, date: "1985-02-14" },
   { id: "503", initials: "RED", score: 6900, wpm: 80, accuracy: 95, level: 5, device: "desktop", failedChars: 7, date: "1985-10-30" },
@@ -131,7 +131,7 @@ export const INITIAL_HIGH_SCORES: HighScore[] = [
 ];
 
 export const INITIAL_MOBILE_HIGH_SCORES: HighScore[] = [
-  // Level 5 - COMMANDER (Mobile Touchscreen)
+  // Level 5 - ADMIRAL (Mobile Touchscreen)
   { id: "m501", initials: "MOB", score: 5200, wpm: 56, accuracy: 95, level: 5, device: "mobile", failedChars: 5, date: "2026-10-01" },
   { id: "m502", initials: "IPH", score: 4600, wpm: 50, accuracy: 94, level: 5, device: "mobile", failedChars: 7, date: "2026-10-02" },
   { id: "m503", initials: "AND", score: 4100, wpm: 45, accuracy: 93, level: 5, device: "mobile", failedChars: 9, date: "2026-10-03" },

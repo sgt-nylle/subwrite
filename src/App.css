@@ -1216,7 +1216,7 @@
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   min-width: 280px;
-  max-width: 440px;
+  max-width: 600px;
   width: 100%;
 }
 
@@ -1295,7 +1295,7 @@
 /* NES Level Menu Box */
 .nes-menu-box {
   width: 100%;
-  max-width: 480px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1327,8 +1327,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 10px 14px;
   background-color: #150202;
   border: 1px solid #4a0000;
   cursor: pointer;
@@ -1363,12 +1363,19 @@
 .nes-menu-item-main {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   gap: 8px;
   font-family: var(--font-arcade);
-  font-size: 11px;
+  font-size: 10.5px;
   color: #ff8888;
   letter-spacing: 0.5px;
+}
+
+.nes-item-text {
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nes-item-role-tag {
@@ -1377,9 +1384,10 @@
   color: var(--c64-gold);
   background-color: rgba(255, 215, 0, 0.15);
   border: 1px solid rgba(255, 215, 0, 0.4);
-  padding: 1px 5px;
+  padding: 2px 6px;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .selected-item .nes-menu-item-main {
@@ -1445,7 +1453,7 @@
 /* MAIN START SCREEN HALL OF FAME BUTTON */
 .nes-hall-of-fame-section {
   width: 100%;
-  max-width: 480px;
+  max-width: 600px;
   display: flex;
   justify-content: center;
   margin: 8px 0;

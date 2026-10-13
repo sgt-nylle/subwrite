@@ -99,7 +99,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     { lvl: 2, label: 'LEVEL 2 [EASY-MED]', role: 'SONAR TECH', desc: '80m depth • punctuation & speed' },
     { lvl: 3, label: 'LEVEL 3 [MEDIUM]', role: 'OFFICER', desc: '250m depth • nuclear submarine history' },
     { lvl: 4, label: 'LEVEL 4 [HARD]', role: 'CHIEF ENG', desc: '450m depth • technical specifications' },
-    { lvl: 5, label: 'LEVEL 5 [SUPER HARD]', role: 'COMMANDER', desc: '700m depth • Red October doctrine' }
+    { lvl: 5, label: 'LEVEL 5 [SUPER HARD]', role: 'ADMIRAL', desc: '700m depth • Red October doctrine' }
   ];
 
   return (
