@@ -58,11 +58,13 @@ A dedicated CLI tool `subwrite-status` is available to check health and incoming
 # Instant status snapshot (Services, CPU, Memory, Disk, and Recent Visitors)
 subwrite-status
 
-# Live auto-refreshing dashboard (refreshes every 2s)
-subwrite-status -w
+# REAL-TIME LIVE connection stream (watch hits as they arrive with IP, device, latency)
+subwrite-status -l
+# or
+subwrite-status --live
 
-# Stream incoming connections in real time
-subwrite-status -t
+# Continuous auto-refreshing dashboard (refreshes every 2s)
+subwrite-status -w
 
 # Show last 30 requests
 subwrite-status -n 30

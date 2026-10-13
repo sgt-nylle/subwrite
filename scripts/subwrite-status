@@ -26,32 +26,35 @@ usage() {
 Usage: subwrite-status [OPTIONS]
 
 Options:
-  -w, --watch        Run in continuous live dashboard mode (refreshes every 2s)
-  -t, --tail         Stream new incoming connections in real time
-  -n <number>        Number of recent connections to display (default: 15)
+  -l, --live         Stream incoming connections in REAL TIME (live sonar mode)
+  -w, --watch        Run continuous auto-refreshing dashboard (refreshes every 2s)
+  -f, --follow       Alias for --live
+  -t, --tail         Alias for --live
+  -n <number>        Number of initial/recent connections to display (default: 15)
   -h, --help         Display this help message
 
 Examples:
   subwrite-status            # Show instant status snapshot
+  subwrite-status -l         # Real-time LIVE connection stream
+  subwrite-status --live     # Real-time LIVE connection stream
   subwrite-status -w         # Live interactive monitoring dashboard
   subwrite-status -n 25      # Show last 25 connections
-  subwrite-status -t         # Tail incoming requests in real time
 EOF
     exit 0
 }
 
 # Parse flags
 WATCH_MODE=false
-TAIL_MODE=false
+LIVE_MODE=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -w|--watch)
-            WATCH_MODE=true
+        -l|--live|-f|--follow|-t|--tail)
+            LIVE_MODE=true
             shift
             ;;
-        -t|--tail)
-            TAIL_MODE=true
+        -w|--watch)
+            WATCH_MODE=true
             shift
             ;;
         -n)
@@ -68,11 +71,15 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Tail mode: stream live connections
-if [ "$TAIL_MODE" = true ]; then
-    echo -e "${CYAN}${BOLD}=== STREAMING INCOMING CONNECTIONS (Ctrl+C to exit) ===${RESET}"
-    printf "%-19s | %-15s | %-5s | %-4s | %s\n" "DATE & TIME" "CLIENT IP" "MTHD" "STAT" "PATH / URI"
-    echo "--------------------+-----------------+-------+------+-------------------------------------"
+# Live mode: stream live connections in real time
+if [ "$LIVE_MODE" = true ]; then
+    echo -e "${CYAN}${BOLD}========================================================================================${RESET}"
+    echo -e "${WHITE}${BOLD}            ★ SUBWRITE.SE - REAL-TIME LIVE CONNECTION STREAM ★${RESET}"
+    echo -e "${CYAN}${BOLD}========================================================================================${RESET}"
+    echo -e "${DIM}Listening on https://subwrite.se via Caddy... (Press Ctrl+C to exit)${RESET}"
+    echo ""
+    printf "${BOLD}%-19s | %-15s | %-5s | %-6s | %-8s | %-10s | %s${RESET}\n" "DATE & TIME" "CLIENT IP" "MTHD" "STATUS" "LATENCY" "DEVICE" "PATH / URI"
+    echo "--------------------+-----------------+-------+--------+----------+------------+-------------------------"
     
     if [ ! -f "$LOG_FILE" ]; then
         echo -e "${RED}Log file not found at $LOG_FILE${RESET}"
@@ -95,6 +102,34 @@ for line in sys.stdin:
         uri = req.get("uri", "/")
         status = d.get("status", 200)
 
+        # Calculate latency
+        dur = d.get("duration", 0)
+        latency_ms = dur * 1000.0
+        if latency_ms < 10:
+            latency_str = f"{latency_ms:.1f}ms"
+        else:
+            latency_str = f"{int(latency_ms)}ms"
+
+        # Detect client device from User-Agent
+        headers = req.get("headers", {})
+        ua = (headers.get("User-Agent") or [""])[0]
+        if "iPhone" in ua:
+            dev = "📱 iPhone"
+        elif "Android" in ua:
+            dev = "📱 Android"
+        elif "iPad" in ua:
+            dev = "📱 iPad"
+        elif "Macintosh" in ua or "Mac OS" in ua:
+            dev = "💻 Mac"
+        elif "Windows" in ua:
+            dev = "💻 Win"
+        elif "Linux" in ua:
+            dev = "💻 Linux"
+        elif "curl" in ua:
+            dev = "⚡ curl"
+        else:
+            dev = "🌐 Web"
+
         # ANSI color status
         if status < 300:
             stat_col = "\033[1;32m" + str(status) + "\033[0m"
@@ -103,7 +138,7 @@ for line in sys.stdin:
         else:
             stat_col = "\033[1;31m" + str(status) + "\033[0m"
 
-        print(f"{dt} | {ip:<15} | {mthd:<5} | {stat_col:<13} | {uri[:55]}")
+        print(f"{dt} | {ip:<15} | {mthd:<5} | {stat_col:<15} | {latency_str:<8} | {dev:<10} | {uri[:45]}")
     except:
         pass
 '
