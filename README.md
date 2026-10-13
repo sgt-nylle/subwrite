@@ -43,3 +43,9 @@ npm run dev
 # Build for production
 npm run build
 ```
+
+---
+
+## Production
+
+The live application is hosted at [subwrite.se](https://subwrite.se).
