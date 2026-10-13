@@ -92,12 +92,25 @@ export function App() {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
-  // Initialize or reset passage
+  // Initialize or reset passage with high variation (no back-to-back repeats)
   const loadPassage = useCallback((lvl: number, idx?: number) => {
     const lData = SUBMARINE_LEVELS.find(l => l.level === lvl) || SUBMARINE_LEVELS[0];
-    const newIdx = idx !== undefined ? idx : Math.floor(Math.random() * lData.passages.length);
-    setPassageIndex(newIdx);
-    setTargetText(lData.passages[newIdx]);
+    let selectedIdx = 0;
+    if (idx !== undefined) {
+      selectedIdx = idx;
+      setPassageIndex(selectedIdx);
+    } else {
+      let candidate = Math.floor(Math.random() * lData.passages.length);
+      setPassageIndex(prev => {
+        if (lData.passages.length > 1 && candidate === prev) {
+          candidate = (candidate + 1 + Math.floor(Math.random() * (lData.passages.length - 1))) % lData.passages.length;
+        }
+        return candidate;
+      });
+      selectedIdx = candidate;
+    }
+
+    setTargetText(lData.passages[selectedIdx]);
     setInputVal('');
     setIsStarted(false);
     setIsFinished(false);

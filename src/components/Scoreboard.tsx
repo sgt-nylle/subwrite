@@ -63,6 +63,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
   const [initials, setInitials] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [displayLimit, setDisplayLimit] = useState<number>(10);
   const [isLoading, setIsLoading] = useState(false);
 
   // Fetch shared global scores from backend API
@@ -94,16 +96,16 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     return () => { isMounted = false; };
   }, []);
 
-  // Check if current trial qualifies as a new high score for that specific level AND device
-  const isNewHighScore = useMemo(() => {
-    if (!currentScore || submitted) return false;
+  // Check if current trial qualifies as a top 3 podium score for that level & device
+  const isPodiumScore = useMemo(() => {
+    if (!currentScore) return false;
     const curDev = currentScore.device || 'desktop';
     const levelScores = scores
       .filter(s => (s.device || 'desktop') === curDev && Number(s.level) === currentScore.level)
       .sort((a, b) => b.score - a.score);
 
-    return levelScores.length < 10 || currentScore.score > (levelScores[levelScores.length - 1]?.score || 0);
-  }, [currentScore, submitted, scores]);
+    return levelScores.length < 3 || currentScore.score >= (levelScores[2]?.score || 0);
+  }, [currentScore, scores]);
 
   const handleSubmitInitials = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,8 +114,9 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     sound.playVictory();
     const entryInitials = initials.toUpperCase().slice(0, 3).padEnd(3, 'X');
     const entryDevice = currentScore.device || selectedDevice;
+    const newId = Date.now().toString();
     const newEntry: HighScore = {
-      id: Date.now().toString(),
+      id: newId,
       initials: entryInitials,
       score: currentScore.score,
       wpm: currentScore.wpm,
@@ -128,6 +131,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     const updated = [...scores, newEntry].sort((a, b) => b.score - a.score);
     setScores(updated);
     setSubmitted(true);
+    setSubmittedId(newId);
     setSelectedLevel(currentScore.level);
     setSelectedDevice(entryDevice);
 
@@ -156,36 +160,39 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     }
   };
 
-  // Filter and sort scores for the currently active device and level tab
-  const filteredScores = useMemo(() => {
+  // All matching scores for active device and level filter
+  const totalMatchingScores = useMemo(() => {
     const deviceScores = scores.filter(s => (s.device || 'desktop') === selectedDevice);
     const list = selectedLevel === 'all'
       ? deviceScores
       : deviceScores.filter(s => Number(s.level) === selectedLevel);
 
-    return [...list]
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+    return [...list].sort((a, b) => b.score - a.score);
   }, [scores, selectedDevice, selectedLevel]);
+
+  // Paginated/limited view of scores according to displayLimit (default 10)
+  const filteredScores = useMemo(() => {
+    return totalMatchingScores.slice(0, displayLimit);
+  }, [totalMatchingScores, displayLimit]);
 
   const currentLevelInfo = useMemo(() => {
     if (selectedLevel === 'all') return null;
     return SUBMARINE_LEVELS.find(l => l.level === selectedLevel) || null;
   }, [selectedLevel]);
 
-  // Intel summary metrics for the currently active level & device filter
+  // Intel summary metrics across all logged records for this level
   const levelStats = useMemo(() => {
-    if (filteredScores.length === 0) return null;
-    const topScoreVal = filteredScores[0]?.score || 0;
-    const topWpmVal = Math.max(...filteredScores.map(s => s.wpm || 0));
-    const minFailedVal = Math.min(...filteredScores.map(s => s.failedChars !== undefined ? s.failedChars : 0));
+    if (totalMatchingScores.length === 0) return null;
+    const topScoreVal = totalMatchingScores[0]?.score || 0;
+    const topWpmVal = Math.max(...totalMatchingScores.map(s => s.wpm || 0));
+    const minFailedVal = Math.min(...totalMatchingScores.map(s => s.failedChars !== undefined ? s.failedChars : 0));
     return {
       topScore: topScoreVal,
       topWpm: topWpmVal,
       minFailed: minFailedVal,
-      totalPatrols: filteredScores.length
+      totalPatrols: totalMatchingScores.length
     };
-  }, [filteredScores]);
+  }, [totalMatchingScores]);
 
   // Top 3 Hall of Fame podium for the active view
   const topThree = useMemo(() => {
@@ -286,15 +293,17 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
           </div>
         )}
 
-        {/* 3-LETTER INITIALS PROMPT IF HIGH SCORE FOR THIS LEVEL AND DEVICE */}
-        {currentScore && !submitted && isNewHighScore && (
-          <div className="new-record-prompt">
-            <div className="blinking-alert">
-              ★★★ NEW LEVEL {currentScore.level} [{getDeviceLabel(currentScore.device)}] RECORD REGISTERED ★★★
+        {/* 3-LETTER INITIALS / USERNAME PROMPT: ALWAYS SHOWN AFTER COMPLETING A GAME */}
+        {currentScore && !submitted && (
+          <div className="new-record-prompt c64-box">
+            <div className={`blinking-alert ${isPodiumScore ? 'podium-alert' : ''}`}>
+              {isPodiumScore
+                ? `★★★ FLEET PODIUM RECORD FOR LEVEL ${currentScore.level} [${getDeviceLabel(currentScore.device)}] ★★★`
+                : `★ MISSION COMPLETED — ENTER 3-LETTER CALL-SIGN FOR LEVEL ${currentScore.level} ARCHIVE ★`}
             </div>
             <form onSubmit={handleSubmitInitials} className="initials-form">
               <label htmlFor="initials-input">
-                ENTER 3-LETTER INITIALS FOR LEVEL {currentScore.level} ({getDeviceLabel(currentScore.device)}) LOG:
+                ENTER 3-LETTER CALL-SIGN TO LOG SCORE (3 CHARS + ENTER):
               </label>
               <div className="initials-input-wrapper">
                 <input
@@ -308,11 +317,18 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                   autoComplete="off"
                   className="initials-input"
                 />
-                <button type="submit" disabled={initials.length === 0} className="retro-btn btn-primary">
-                  [LOG RECORD]
+                <button type="submit" disabled={initials.trim().length === 0} className="retro-btn btn-primary">
+                  [LOG SCORE • ENTER]
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* LOGGED CONFIRMATION BANNER */}
+        {currentScore && submitted && (
+          <div className="submission-confirmed-banner">
+            ✓ CALL-SIGN <span className="highlight-gold">[{initials.toUpperCase().slice(0, 3).padEnd(3, 'X')}]</span> LOGGED TO LEVEL {currentScore.level} FLEET ARCHIVE!
           </div>
         )}
 
@@ -423,7 +439,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                 </tr>
               ) : (
                 filteredScores.map((entry, index) => {
-                  const isCurrent = submitted && currentScore && entry.score === currentScore.score && entry.initials === initials.toUpperCase() && Number(entry.level) === currentScore.level;
+                  const isCurrent = submitted && (entry.id === submittedId || (entry.initials === initials.toUpperCase().slice(0, 3) && currentScore && entry.score === currentScore.score));
                   return (
                     <tr key={entry.id || index} className={isCurrent ? "current-player-row blinking-row" : index === 0 ? "rank-1-row" : ""}>
                       <td className="rank-col">
@@ -443,6 +459,29 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* HIGH SCORE ARCHIVE RESULT LIMIT SELECTOR */}
+        <div className="scoreboard-limit-selector">
+          <div className="limit-legend">
+            <span>ARCHIVE VIEW:</span>
+            <span className="total-archive-count">{totalMatchingScores.length} LOGGED</span>
+          </div>
+          <div className="limit-buttons-group">
+            {[10, 25, 50, 100, 1000].map(limit => (
+              <button
+                key={limit}
+                type="button"
+                className={`limit-btn ${displayLimit === limit ? 'active-limit-btn' : ''}`}
+                onClick={() => {
+                  sound.playKeypress();
+                  setDisplayLimit(limit);
+                }}
+              >
+                {limit === 1000 ? 'SHOW ALL' : `TOP ${limit}`}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="scoreboard-actions">

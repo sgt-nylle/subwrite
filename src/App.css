@@ -586,20 +586,103 @@
 }
 
 .new-record-prompt {
-  background-color: #260202;
-  border: 3px solid var(--c64-gold);
-  padding: 14px;
+  background: linear-gradient(180deg, #2a0404 0%, #150202 100%);
+  border: 3px double var(--c64-gold);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+  padding: 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  animation: promptPulse 2s ease-in-out infinite;
+}
+
+@keyframes promptPulse {
+  0%, 100% { border-color: var(--c64-gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+  50% { border-color: #ffffff; box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); }
 }
 
 .blinking-alert {
   font-family: var(--font-arcade);
   font-size: 11px;
   color: var(--c64-gold);
+  letter-spacing: 1px;
+  line-height: 1.4;
   animation: alertBlink 1s infinite;
+}
+
+.podium-alert {
+  color: #ffdd44 !important;
+  text-shadow: 0 0 12px #ffdd44, 0 0 20px #ff3333;
+}
+
+.submission-confirmed-banner {
+  font-family: var(--font-arcade);
+  font-size: 10px;
+  color: var(--c64-green);
+  background-color: #0d260d;
+  border: 2px solid var(--c64-green);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+  padding: 10px 14px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.scoreboard-limit-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #120202;
+  border: 1px solid #4a0000;
+  margin-top: 4px;
+}
+
+.limit-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #ffaaaa;
+  letter-spacing: 0.5px;
+}
+
+.total-archive-count {
+  color: var(--c64-gold);
+}
+
+.limit-buttons-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.limit-btn {
+  font-family: var(--font-arcade);
+  font-size: 8px;
+  color: #ff8888;
+  background-color: #240202;
+  border: 1px solid #661111;
+  padding: 4px 8px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.1s;
+}
+
+.limit-btn:hover {
+  background-color: #420404;
+  color: #ffffff;
+  border-color: var(--c64-red);
+}
+
+.limit-btn.active-limit-btn {
+  background-color: var(--c64-red);
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 8px var(--c64-red-glow);
 }
 
 .score-summary {
@@ -1669,6 +1752,22 @@
     font-size: 13px;
     margin-left: 16px;
     width: auto;
+  }
+
+  .scoreboard-limit-selector {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .limit-buttons-group {
+    justify-content: center;
+  }
+
+  .limit-btn {
+    font-size: 7.5px;
+    padding: 3px 6px;
   }
 
   /* Mobile Logo Resizing: Keep SUBWRITE! comfortably inside CRT frame */

@@ -103,8 +103,23 @@ const server = http.createServer((req, res) => {
           };
 
           currentScores.push(formattedEntry);
-          currentScores.sort((a, b) => b.score - a.score);
-          currentScores = currentScores.slice(0, 200);
+
+          // Retain at least 1,000 high score records per level per device
+          const recordsByBucket = new Map();
+          for (const s of currentScores) {
+            const key = `${s.level || 1}_${s.device || 'desktop'}`;
+            if (!recordsByBucket.has(key)) recordsByBucket.set(key, []);
+            recordsByBucket.get(key).push(s);
+          }
+
+          const prunedScores = [];
+          for (const [, list] of recordsByBucket) {
+            list.sort((a, b) => b.score - a.score);
+            prunedScores.push(...list.slice(0, 1000));
+          }
+
+          prunedScores.sort((a, b) => b.score - a.score);
+          currentScores = prunedScores;
 
           fs.mkdirSync(path.dirname(SCORES_FILE), { recursive: true });
           fs.writeFileSync(SCORES_FILE, JSON.stringify(currentScores, null, 2), 'utf-8');
