@@ -49,3 +49,21 @@ npm run build
 ## Production
 
 The live application is hosted at [subwrite.se](https://subwrite.se).
+
+### Server Status Dashboard & Connection Monitor
+
+A dedicated CLI tool `subwrite-status` is available to check health and incoming traffic:
+
+```bash
+# Instant status snapshot (Services, CPU, Memory, Disk, and Recent Visitors)
+subwrite-status
+
+# Live auto-refreshing dashboard (refreshes every 2s)
+subwrite-status -w
+
+# Stream incoming connections in real time
+subwrite-status -t
+
+# Show last 30 requests
+subwrite-status -n 30
+```
