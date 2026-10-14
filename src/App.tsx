@@ -42,9 +42,31 @@ const areCharsEquivalent = (typed?: string, expected?: string): boolean => {
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
   const [level, setLevel] = useState<number>(1);
-  const [language, setLanguage] = useState<'en' | 'sv'>('en');
+  const [language, setLanguage] = useState<'en' | 'sv'>(() => {
+    try {
+      const saved = localStorage.getItem('subwrite_language');
+      if (saved === 'en' || saved === 'sv') return saved;
+      if (typeof navigator !== 'undefined' && navigator.language && navigator.language.toLowerCase().startsWith('sv')) {
+        return 'sv';
+      }
+    } catch {
+      // Ignore
+    }
+    return 'en';
+  });
   const [, setPassageIndex] = useState<number>(0);
-  const [targetText, setTargetText] = useState<string>(() => SUBMARINE_LEVELS[0]?.passages[0] || '');
+  const [targetText, setTargetText] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('subwrite_language');
+      const lang: 'en' | 'sv' = (saved === 'en' || saved === 'sv')
+        ? saved
+        : (typeof navigator !== 'undefined' && navigator.language && navigator.language.toLowerCase().startsWith('sv') ? 'sv' : 'en');
+      const p = getPassages(1, lang);
+      return p[0] || SUBMARINE_LEVELS[0]?.passages[0] || '';
+    } catch {
+      return SUBMARINE_LEVELS[0]?.passages[0] || '';
+    }
+  });
   
   // Typing state
   const [inputVal, setInputVal] = useState<string>('');
@@ -143,6 +165,11 @@ export function App() {
     }
     if (selectedLang && selectedLang !== language) {
       setLanguage(targetLang);
+      try {
+        localStorage.setItem('subwrite_language', targetLang);
+      } catch {
+        // Ignore
+      }
     }
     setGameState('playing');
     loadPassage(targetLvl, targetLang);
@@ -155,6 +182,16 @@ export function App() {
       setIsFocused(true);
     }
   };
+
+  const handleSelectLanguage = useCallback((newLang: 'en' | 'sv') => {
+    setLanguage(newLang);
+    try {
+      localStorage.setItem('subwrite_language', newLang);
+    } catch {
+      // Ignore
+    }
+    loadPassage(level, newLang);
+  }, [level, loadPassage]);
 
   // Return to title screen
   const handleReturnToMenu = () => {
@@ -439,10 +476,7 @@ export function App() {
             selectedLanguage={language}
             isMobile={isMobile}
             onSelectLevel={handleLevelSelect}
-            onSelectLanguage={(lang) => {
-              setLanguage(lang);
-              loadPassage(level, lang); // refresh passage in new language in background
-            }}
+            onSelectLanguage={handleSelectLanguage}
             onStartGame={handleStartGame}
             onOpenScoreboard={() => setShowScoreboard(true)}
             soundEnabled={soundEnabled}
@@ -462,6 +496,14 @@ export function App() {
               <span className="kernel-tag">RED OCTOBER / LEVEL {level} ({currentLevelData.name})</span>
             </div>
             <div className="top-bar-controls">
+              <button
+                onClick={() => handleSelectLanguage(language === 'en' ? 'sv' : 'en')}
+                className="retro-header-btn retro-lang-btn"
+                title="Change Mission Language: English / Svenska"
+                type="button"
+              >
+                {language === 'en' ? '🇬🇧 EN' : '🇸🇪 SV'}
+              </button>
               <button
                 onClick={handleReturnToMenu}
                 className="retro-header-btn"

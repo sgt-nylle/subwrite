@@ -15,10 +15,33 @@ for (let lvl = 1; lvl <= 5; lvl++) {
   const key = `level${lvl}`;
   console.assert(passages[key], `Should have key ${key}`);
   console.assert(passages[key].length >= 200, `${key} should have at least 200 distinct passages`);
-  console.log(`[PASSAGES] Level ${lvl} has ${passages[key].length} distinct passages`);
+  console.log(`[PASSAGES EN] Level ${lvl} has ${passages[key].length} distinct passages`);
 }
 console.assert(passages.totalCount >= 1000, "Total passages must be >= 1000");
-console.log(`[PASSAGES] Total verified passages: ${passages.totalCount}`);
+console.log(`[PASSAGES EN] Total verified passages: ${passages.totalCount}`);
+
+// Verify Swedish passages
+const passagesSvPath = path.resolve(__dirname, '../src/data/passages_sv.json');
+const passagesSv = JSON.parse(fs.readFileSync(passagesSvPath, 'utf8'));
+for (let lvl = 1; lvl <= 5; lvl++) {
+  const key = `level${lvl}`;
+  console.assert(passagesSv[key], `Should have key ${key}`);
+  console.assert(passagesSv[key].length >= 200, `${key} should have at least 200 distinct Swedish passages`);
+  // Ensure no duplicate sentences within any passage
+  passagesSv[key].forEach((p, idx) => {
+    const sentences = p.split(/(?<=[.!?])\s+/);
+    for (let i = 0; i < sentences.length; i++) {
+      for (let j = i + 1; j < sentences.length; j++) {
+        if (sentences[i] === sentences[j]) {
+          throw new Error(`Duplicate sentence detected in Swedish ${key} index ${idx}: "${sentences[i]}"`);
+        }
+      }
+    }
+  });
+  console.log(`[PASSAGES SV] Level ${lvl} has ${passagesSv[key].length} verified distinct passages without sentence duplicates`);
+}
+console.assert(passagesSv.totalCount >= 1000, "Total Swedish passages must be >= 1000");
+console.log(`[PASSAGES SV] Total verified passages: ${passagesSv.totalCount}`);
 
 console.log("\n=== 2. VERIFYING 1000-RECORD HIGH SCORE RETENTION LOGIC ===");
 // Simulate 1200 scores submitted for Level 1 Desktop and 1200 for Level 5 Mobile

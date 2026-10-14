@@ -550,7 +550,7 @@
 
 .retro-scoreboard-container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1080px;
   background-color: #0b0101;
   border: 6px solid var(--c64-border);
   box-shadow: 0 0 40px rgba(255, 34, 34, 0.5);
@@ -1038,6 +1038,8 @@
 
 .scores-table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 .c64-score-table {
@@ -1049,11 +1051,12 @@
 }
 
 .c64-score-table th {
-  padding: 8px 4px;
+  padding: 8px 6px;
   background-color: #240202;
   border-bottom: 2px solid var(--c64-border);
   color: var(--c64-dim-red);
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .sortable-header {
@@ -1069,9 +1072,17 @@
 }
 
 .c64-score-table td {
-  padding: 8px 4px;
+  padding: 8px 6px;
   border-bottom: 1px dashed #330000;
   color: #dd8888;
+  white-space: nowrap;
+}
+
+.date-col,
+.date-header-col {
+  white-space: nowrap !important;
+  min-width: 86px;
+  letter-spacing: 0.5px;
 }
 
 .c64-score-table tr:hover td {
@@ -1312,6 +1323,142 @@
 
 .sweden-flag {
   font-size: 13px;
+}
+
+/* =========================================================================
+   PROMINENT ARCADE LANGUAGE SELECTOR PANEL
+   ========================================================================= */
+
+.nes-language-panel {
+  width: 100%;
+  max-width: 600px;
+  background-color: #0d0101;
+  border: 2px dashed #992222;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  margin: 6px 0 2px 0;
+}
+
+.nes-language-panel-header {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: var(--c64-gold);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+}
+
+.lang-header-star {
+  color: var(--c64-red);
+}
+
+.nes-language-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.nes-lang-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  background-color: #160202;
+  border: 2px solid #5a0a0a;
+  color: #ff9999;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  touch-action: manipulation;
+  user-select: none;
+  font-family: var(--font-arcade);
+  text-align: left;
+}
+
+.nes-lang-card-btn:hover {
+  background-color: #2e0404;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 34, 34, 0.4);
+  transform: translateY(-1px);
+}
+
+.nes-lang-card-btn.active-lang-card {
+  background: linear-gradient(180deg, #420606 0%, #200202 100%);
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.5), inset 0 0 8px rgba(255, 34, 34, 0.3);
+}
+
+.lang-flag-icon {
+  font-size: 24px;
+  line-height: 1;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.8));
+}
+
+.lang-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.lang-primary-title {
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.active-lang-card .lang-primary-title {
+  color: var(--c64-gold);
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.lang-sub-title {
+  font-family: var(--font-retro);
+  font-size: 14px;
+  color: #bb7777;
+}
+
+.active-lang-card .lang-sub-title {
+  color: #ffbbbb;
+}
+
+.lang-status-badge {
+  font-size: 8px;
+  padding: 3px 6px;
+  letter-spacing: 0.5px;
+  background-color: #240202;
+  border: 1px solid #661111;
+  color: #888888;
+  white-space: nowrap;
+}
+
+.active-lang-card .lang-status-badge {
+  background-color: var(--c64-red);
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 8px var(--c64-red-glow);
+  font-weight: bold;
+}
+
+.nes-mini-lang-btn {
+  border-color: var(--c64-gold) !important;
+  color: var(--c64-gold) !important;
+  font-weight: bold;
+}
+
+.retro-lang-btn {
+  border-color: var(--c64-gold) !important;
+  color: var(--c64-gold) !important;
+  letter-spacing: 0.5px;
 }
 
 /* TACTICAL ARCADE PUSH START BUTTON */
@@ -2053,5 +2200,22 @@
 
   .gotland-sub-svg {
     max-width: 170px;
+  }
+
+  .nes-language-options {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .nes-lang-card-btn {
+    padding: 8px 10px;
+  }
+
+  .lang-flag-icon {
+    font-size: 20px;
+  }
+
+  .lang-primary-title {
+    font-size: 10px;
   }
 }

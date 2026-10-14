@@ -30,6 +30,20 @@ interface ScoreboardProps {
 
 const STORAGE_KEY = 'subwrite_high_scores_v2';
 
+/**
+ * Formats ISO date (YYYY-MM-DD) into compact YY-MM-DD format (e.g. 26-10-14)
+ * to prevent date from breaking onto 2 rows on arcade displays.
+ */
+const formatDisplayDate = (dateStr?: string): string => {
+  if (!dateStr) return '---';
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const yy = match[1].slice(-2);
+    return `${yy}-${match[2]}-${match[3]}`;
+  }
+  return dateStr;
+};
+
 export const Scoreboard: React.FC<ScoreboardProps> = ({
   currentScore,
   initialLevel,
@@ -467,7 +481,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                 <th className="sortable-header" onClick={() => handleSort('device')}>
                   PLATFORM {sortConfig.key === 'device' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                 </th>
-                <th className="sortable-header" onClick={() => handleSort('date')}>
+                <th className="sortable-header date-header-col" onClick={() => handleSort('date')}>
                   DATE {sortConfig.key === 'date' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                 </th>
               </tr>
@@ -499,7 +513,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                         </span>
                       </td>
                       <td className="platform-col">{entry.device === 'mobile' ? '📱 PHONE' : '💻 PC'}</td>
-                      <td className="date-col">{entry.date || '---'}</td>
+                      <td className="date-col" title={entry.date}>{formatDisplayDate(entry.date)}</td>
                     </tr>
                   );
                 })

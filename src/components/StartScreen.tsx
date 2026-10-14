@@ -81,16 +81,24 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         e.preventDefault();
         sound.playSonarPing();
         onStartGame(selectedLevel);
-      } else if (e.key === 's' || e.key === 'S' || e.key === 'l' || e.key === 'L') {
+      } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         sound.playKeypress();
         onOpenScoreboard();
+      } else if (e.key === 'e' || e.key === 'E') {
+        e.preventDefault();
+        sound.playKeypress();
+        onSelectLanguage('en');
+      } else if (e.key === 'v' || e.key === 'V') {
+        e.preventDefault();
+        sound.playKeypress();
+        onSelectLanguage('sv');
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedLevel, onSelectLevel, onStartGame, onOpenScoreboard]);
+  }, [selectedLevel, onSelectLevel, onStartGame, onOpenScoreboard, onSelectLanguage]);
 
   const handleLevelClick = (lvl: number) => {
     sound.playSonarPing();
@@ -121,10 +129,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               sound.playKeypress();
               onSelectLanguage(selectedLanguage === 'en' ? 'sv' : 'en');
             }}
-            className="nes-mini-btn"
+            className="nes-mini-btn nes-mini-lang-btn"
             type="button"
+            title="Toggle Language: [E] English / [V] Svenska"
           >
-            {selectedLanguage === 'en' ? '🇬🇧 EN' : '🇸🇪 SV'}
+            {selectedLanguage === 'en' ? '🇬🇧 ENGLISH' : '🇸🇪 SVENSKA'}
           </button>
           <button
             onClick={onOpenScoreboard}
@@ -154,6 +163,53 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
       {/* 8-BIT RED GOTLAND-CLASS SWEDISH SUBMARINE */}
       <GotlandSubmarine />
+
+      {/* PROMINENT ARCADE LANGUAGE SELECTOR PANEL */}
+      <div className="nes-language-panel">
+        <div className="nes-language-panel-header">
+          <span className="lang-header-star">★</span>
+          <span className="lang-header-text">MISSION LANGUAGE / VÄLJ SPRÅK</span>
+          <span className="lang-header-star">★</span>
+        </div>
+        <div className="nes-language-options">
+          <button
+            type="button"
+            className={`nes-lang-card-btn ${selectedLanguage === 'en' ? 'active-lang-card' : ''}`}
+            onClick={() => {
+              sound.playKeypress();
+              onSelectLanguage('en');
+            }}
+            aria-pressed={selectedLanguage === 'en'}
+          >
+            <span className="lang-flag-icon">🇬🇧</span>
+            <div className="lang-card-info">
+              <span className="lang-primary-title">ENGLISH</span>
+              <span className="lang-sub-title">Naval Archives</span>
+            </div>
+            <span className="lang-status-badge">
+              {selectedLanguage === 'en' ? '► ACTIVE ◄' : 'SELECT [E]'}
+            </span>
+          </button>
+          <button
+            type="button"
+            className={`nes-lang-card-btn ${selectedLanguage === 'sv' ? 'active-lang-card' : ''}`}
+            onClick={() => {
+              sound.playKeypress();
+              onSelectLanguage('sv');
+            }}
+            aria-pressed={selectedLanguage === 'sv'}
+          >
+            <span className="lang-flag-icon">🇸🇪</span>
+            <div className="lang-card-info">
+              <span className="lang-primary-title">SVENSKA</span>
+              <span className="lang-sub-title">Gotland & Marinen</span>
+            </div>
+            <span className="lang-status-badge">
+              {selectedLanguage === 'sv' ? '► ACTIVE ◄' : 'VÄLJ [V]'}
+            </span>
+          </button>
+        </div>
+      </div>
 
       {/* TACTILE NES/ARCADE PUSH START BUTTON */}
       <div className="nes-start-control-area">
