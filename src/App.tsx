@@ -46,9 +46,6 @@ export function App() {
     try {
       const saved = localStorage.getItem('subwrite_language');
       if (saved === 'en' || saved === 'sv') return saved;
-      if (typeof navigator !== 'undefined' && navigator.language && navigator.language.toLowerCase().startsWith('sv')) {
-        return 'sv';
-      }
     } catch {
       // Ignore
     }
@@ -58,9 +55,7 @@ export function App() {
   const [targetText, setTargetText] = useState<string>(() => {
     try {
       const saved = localStorage.getItem('subwrite_language');
-      const lang: 'en' | 'sv' = (saved === 'en' || saved === 'sv')
-        ? saved
-        : (typeof navigator !== 'undefined' && navigator.language && navigator.language.toLowerCase().startsWith('sv') ? 'sv' : 'en');
+      const lang: 'en' | 'sv' = (saved === 'en' || saved === 'sv') ? saved : 'en';
       const p = getPassages(1, lang);
       return p[0] || SUBMARINE_LEVELS[0]?.passages[0] || '';
     } catch {
