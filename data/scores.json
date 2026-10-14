@@ -262,5 +262,16 @@
     "device": "mobile",
     "failedChars": 10,
     "date": "2026-10-12"
+  },
+  {
+    "id": "1792003367068",
+    "initials": "NYL",
+    "score": 0,
+    "wpm": 43,
+    "accuracy": 91,
+    "level": 3,
+    "device": "desktop",
+    "failedChars": 34,
+    "date": "2026-10-14"
   }
 ]
