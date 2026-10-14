@@ -5,9 +5,11 @@ import { sound } from '../utils/audio';
 
 interface StartScreenProps {
   selectedLevel: number;
+  selectedLanguage: 'en' | 'sv';
   isMobile: boolean;
   onSelectLevel: (lvl: number) => void;
-  onStartGame: (lvl?: number) => void;
+  onSelectLanguage: (lang: 'en' | 'sv') => void;
+  onStartGame: (lvl?: number, lang?: 'en' | 'sv') => void;
   onOpenScoreboard: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
@@ -15,8 +17,10 @@ interface StartScreenProps {
 
 export const StartScreen: React.FC<StartScreenProps> = ({
   selectedLevel,
+  selectedLanguage,
   isMobile,
   onSelectLevel,
+  onSelectLanguage,
   onStartGame,
   onOpenScoreboard,
   soundEnabled,
@@ -112,6 +116,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           <span className="top-initials"> {topScore?.initials || (isMobile ? 'MOB' : 'RAM')}</span>
         </div>
         <div className="nes-hud-buttons">
+          <button
+            onClick={() => {
+              sound.playKeypress();
+              onSelectLanguage(selectedLanguage === 'en' ? 'sv' : 'en');
+            }}
+            className="nes-mini-btn"
+            type="button"
+          >
+            {selectedLanguage === 'en' ? '🇬🇧 EN' : '🇸🇪 SV'}
+          </button>
           <button
             onClick={onOpenScoreboard}
             className="nes-mini-btn"

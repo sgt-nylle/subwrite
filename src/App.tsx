@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { SUBMARINE_LEVELS, type SubmarineLevel, LEVEL_TIME_LIMITS } from './data/submarineTexts';
+import { SUBMARINE_LEVELS, type SubmarineLevel, LEVEL_TIME_LIMITS, getPassages } from './data/submarineTexts';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
 import { sound } from './utils/audio';
@@ -10,6 +10,12 @@ import './App.css';
 const areCharsEquivalent = (typed?: string, expected?: string): boolean => {
   if (!typed || !expected) return false;
   if (typed === expected) return true;
+
+  // Swedish special characters mapping if user types without local layout
+  const isA = (c: string) => c === 'a' || c === 'A';
+  const isO = (c: string) => c === 'o' || c === 'O';
+  if ((expected === 'å' || expected === 'ä' || expected === 'Å' || expected === 'Ä') && isA(typed)) return true;
+  if ((expected === 'ö' || expected === 'Ö') && isO(typed)) return true;
 
   // Single quotes, apostrophes, backticks, acute accents
   const isSingleQuote = (c: string) => c === "'" || c === '’' || c === '‘' || c === '`' || c === '´';
@@ -36,6 +42,7 @@ const areCharsEquivalent = (typed?: string, expected?: string): boolean => {
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
   const [level, setLevel] = useState<number>(1);
+  const [language, setLanguage] = useState<'en' | 'sv'>('en');
   const [, setPassageIndex] = useState<number>(0);
   const [targetText, setTargetText] = useState<string>(() => SUBMARINE_LEVELS[0]?.passages[0] || '');
   
@@ -93,24 +100,24 @@ export function App() {
   };
 
   // Initialize or reset passage with high variation (no back-to-back repeats)
-  const loadPassage = useCallback((lvl: number, idx?: number) => {
-    const lData = SUBMARINE_LEVELS.find(l => l.level === lvl) || SUBMARINE_LEVELS[0];
+  const loadPassage = useCallback((lvl: number, lang: 'en' | 'sv', idx?: number) => {
+    const passages = getPassages(lvl, lang);
     let selectedIdx = 0;
     if (idx !== undefined) {
       selectedIdx = idx;
       setPassageIndex(selectedIdx);
     } else {
-      let candidate = Math.floor(Math.random() * lData.passages.length);
+      let candidate = Math.floor(Math.random() * passages.length);
       setPassageIndex(prev => {
-        if (lData.passages.length > 1 && candidate === prev) {
-          candidate = (candidate + 1 + Math.floor(Math.random() * (lData.passages.length - 1))) % lData.passages.length;
+        if (passages.length > 1 && candidate === prev) {
+          candidate = (candidate + 1 + Math.floor(Math.random() * (passages.length - 1))) % passages.length;
         }
         return candidate;
       });
       selectedIdx = candidate;
     }
 
-    setTargetText(lData.passages[selectedIdx]);
+    setTargetText(passages[selectedIdx]);
     setInputVal('');
     setIsStarted(false);
     setIsFinished(false);
@@ -128,13 +135,17 @@ export function App() {
   }, []);
 
   // Start game from title screen with selected level and synchronous input focus
-  const handleStartGame = (selectedLvl?: number) => {
+  const handleStartGame = (selectedLvl?: number, selectedLang?: 'en' | 'sv') => {
     const targetLvl = selectedLvl ?? level;
+    const targetLang = selectedLang ?? language;
     if (selectedLvl && selectedLvl !== level) {
       setLevel(targetLvl);
     }
+    if (selectedLang && selectedLang !== language) {
+      setLanguage(targetLang);
+    }
     setGameState('playing');
-    loadPassage(targetLvl);
+    loadPassage(targetLvl, targetLang);
 
     // Synchronously focus so mobile browsers (iOS Safari) trigger virtual keyboard immediately
     if (inputRef.current) {
@@ -309,7 +320,7 @@ export function App() {
       if (e.key === 'Escape') {
         e.preventDefault();
         if (gameState === 'playing') {
-          loadPassage(level);
+          loadPassage(level, language);
         }
         return;
       }
@@ -320,7 +331,7 @@ export function App() {
         const newLvl = parseInt(e.key, 10);
         sound.playLevelSelect();
         setLevel(newLvl);
-        loadPassage(newLvl);
+        loadPassage(newLvl, language);
         return;
       }
 
@@ -343,7 +354,7 @@ export function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, isStarted, level, showScoreboard, loadPassage, inputVal.length]);
+  }, [gameState, isStarted, level, language, showScoreboard, loadPassage, inputVal.length]);
 
   // Ensure caret always stays locked to the active typing position at the end of input
   const syncCaretToEnd = useCallback(() => {
@@ -405,7 +416,7 @@ export function App() {
   const handleLevelSelect = (lvl: number) => {
     sound.playLevelSelect();
     setLevel(lvl);
-    loadPassage(lvl);
+    loadPassage(lvl, language);
   };
 
   // Progress percentage
@@ -425,8 +436,13 @@ export function App() {
              ============================================================= */
           <StartScreen
             selectedLevel={level}
+            selectedLanguage={language}
             isMobile={isMobile}
             onSelectLevel={handleLevelSelect}
+            onSelectLanguage={(lang) => {
+              setLanguage(lang);
+              loadPassage(level, lang); // refresh passage in new language in background
+            }}
             onStartGame={handleStartGame}
             onOpenScoreboard={() => setShowScoreboard(true)}
             soundEnabled={soundEnabled}
@@ -623,7 +639,7 @@ export function App() {
             </div>
             <div className="footer-actions">
               <button
-                onClick={() => loadPassage(level)}
+                onClick={() => loadPassage(level, language)}
                 className="retro-btn btn-warning"
                 type="button"
               >

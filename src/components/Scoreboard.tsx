@@ -66,6 +66,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [displayLimit, setDisplayLimit] = useState<number>(10);
   const [isLoading, setIsLoading] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof HighScore, direction: 'asc' | 'desc' }>({ key: 'score', direction: 'desc' });
 
   // Fetch shared global scores from backend API
   useEffect(() => {
@@ -167,8 +168,33 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
       ? deviceScores
       : deviceScores.filter(s => Number(s.level) === selectedLevel);
 
-    return [...list].sort((a, b) => b.score - a.score);
-  }, [scores, selectedDevice, selectedLevel]);
+    return [...list].sort((a, b) => {
+      const { key, direction } = sortConfig;
+      let valA = a[key] ?? 0;
+      let valB = b[key] ?? 0;
+
+      if (key === 'initials' || key === 'date') {
+        const strA = String(valA).toLowerCase();
+        const strB = String(valB).toLowerCase();
+        if (strA < strB) return direction === 'asc' ? -1 : 1;
+        if (strA > strB) return direction === 'asc' ? 1 : -1;
+        return 0;
+      }
+
+      if (valA < valB) return direction === 'asc' ? -1 : 1;
+      if (valA > valB) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [scores, selectedDevice, selectedLevel, sortConfig]);
+
+  const handleSort = (key: keyof HighScore) => {
+    sound.playKeypress();
+    let direction: 'asc' | 'desc' = 'desc';
+    if (sortConfig.key === key && sortConfig.direction === 'desc') {
+      direction = 'asc';
+    }
+    setSortConfig({ key, direction });
+  };
 
   // Paginated/limited view of scores according to displayLimit (default 10)
   const filteredScores = useMemo(() => {
@@ -205,7 +231,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         <div className="c64-header-banner">
           <span className="star-icon">★</span>
           <h2>
-            {selectedDevice === 'mobile' ? '📱 SMARTPHONE FLEET' : '💻 PC / MAC FLEET'}
+            {selectedDevice === 'mobile' ? '📱 TOUCHSCREEN FLEET' : '💻 KEYBOARD FLEET'}
             {selectedLevel === 'all'
               ? ' RECORDS (ALL LEVELS)'
               : ` - LEVEL ${selectedLevel}: ${currentLevelInfo?.name || ''}`}
@@ -213,7 +239,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
           <span className="star-icon">★</span>
         </div>
 
-        {/* DEVICE SELECTOR TABS: PC/MAC VS SMARTPHONE */}
+        {/* DEVICE SELECTOR TABS: KEYBOARD VS TOUCHSCREEN */}
         <div className="scoreboard-device-tabs">
           <button
             type="button"
@@ -223,7 +249,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               setSelectedDevice('desktop');
             }}
           >
-            💻 PC / MAC (KEYBOARD FLEET)
+            💻 KEYBOARD FLEET
           </button>
           <button
             type="button"
@@ -233,7 +259,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               setSelectedDevice('mobile');
             }}
           >
-            📱 SMARTPHONE (TOUCHSCREEN FLEET)
+            📱 TOUCHSCREEN FLEET
           </button>
         </div>
 
@@ -410,7 +436,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         <div className="scores-table-wrapper">
           <div className="global-sync-tag">
             <span>
-              ● {selectedDevice === 'mobile' ? '📱 SMARTPHONE FLEET' : '💻 PC/MAC FLEET'} - {selectedLevel === 'all'
+              ● {selectedDevice === 'mobile' ? '📱 TOUCHSCREEN FLEET' : '💻 KEYBOARD FLEET'} - {selectedLevel === 'all'
                 ? 'ALL LEVELS'
                 : `LEVEL ${selectedLevel} [${currentLevelInfo?.name || ''}] RECORDS`}
             </span>
@@ -420,37 +446,58 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
             <thead>
               <tr>
                 <th>RANK</th>
-                <th>COMMANDER</th>
-                <th>FINAL SCORE</th>
-                <th>SPEED (WPM)</th>
-                <th>FAILED CHARS</th>
-                <th>ACCURACY</th>
-                <th>LEVEL</th>
-                <th>PLATFORM</th>
-                <th>DATE</th>
+                <th className="sortable-header" onClick={() => handleSort('initials')}>
+                  COMMANDER {sortConfig.key === 'initials' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('score')}>
+                  FINAL SCORE {sortConfig.key === 'score' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('wpm')}>
+                  SPEED (WPM) {sortConfig.key === 'wpm' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('failedChars')}>
+                  ERRORS {sortConfig.key === 'failedChars' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('accuracy')}>
+                  ACCURACY {sortConfig.key === 'accuracy' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('level')}>
+                  LEVEL {sortConfig.key === 'level' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('device')}>
+                  PLATFORM {sortConfig.key === 'device' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="sortable-header" onClick={() => handleSort('date')}>
+                  DATE {sortConfig.key === 'date' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredScores.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="no-scores-cell">
-                    NO {selectedDevice === 'mobile' ? 'SMARTPHONE' : 'PC/MAC'} FLEET RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
+                    NO {selectedDevice === 'mobile' ? 'TOUCHSCREEN' : 'KEYBOARD'} FLEET RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
                   </td>
                 </tr>
               ) : (
                 filteredScores.map((entry, index) => {
                   const isCurrent = submitted && (entry.id === submittedId || (entry.initials === initials.toUpperCase().slice(0, 3) && currentScore && entry.score === currentScore.score));
+                  const entryLevelInfo = SUBMARINE_LEVELS.find(l => l.level === Number(entry.level));
                   return (
-                    <tr key={entry.id || index} className={isCurrent ? "current-player-row blinking-row" : index === 0 ? "rank-1-row" : ""}>
+                    <tr key={entry.id || index} className={isCurrent ? "current-player-row blinking-row" : index === 0 && sortConfig.key === 'score' ? "rank-1-row" : ""}>
                       <td className="rank-col">
-                        {index === 0 ? '🥇 #1' : index === 1 ? '🥈 #2' : index === 2 ? '🥉 #3' : `#${index + 1}`}
+                        {index === 0 && sortConfig.key === 'score' ? '🥇 #1' : index === 1 && sortConfig.key === 'score' ? '🥈 #2' : index === 2 && sortConfig.key === 'score' ? '🥉 #3' : `#${index + 1}`}
                       </td>
                       <td className="name-col">{entry.initials}</td>
                       <td className="score-col highlight-gold">{entry.score.toLocaleString()}</td>
                       <td className="wpm-col highlight-green">{entry.wpm} WPM</td>
                       <td className="failed-col highlight-penalty">{entry.failedChars ?? 0} ERR</td>
                       <td className="acc-col highlight-amber">{entry.accuracy}%</td>
-                      <td className="lvl-col">L{entry.level}</td>
+                      <td className="lvl-col">
+                        <span className={`badge-level-${entry.level}`}>
+                          LVL {entry.level} [{entryLevelInfo?.name || 'UNKNOWN'}]
+                        </span>
+                      </td>
                       <td className="platform-col">{entry.device === 'mobile' ? '📱 PHONE' : '💻 PC'}</td>
                       <td className="date-col">{entry.date || '---'}</td>
                     </tr>
@@ -493,8 +540,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
             ▶ DIVE {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} (BEAT RECORD)
           </button>
           {onReturnToMenu && (
-            <button onClick={onReturnToMenu} className="retro-btn btn-warning" type="button">
-              ◄ TITLE SCREEN
+            <button onClick={onReturnToMenu} className="retro-btn btn-back-to-game" type="button">
+              ◄ BACK TO GAME
             </button>
           )}
         </div>

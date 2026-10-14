@@ -522,8 +522,9 @@
 }
 
 .large-btn {
-  padding: 12px 24px;
-  font-size: 12px;
+  padding: 16px 24px;
+  font-size: 14px;
+  width: 100%;
 }
 
 /* =========================================================================
@@ -549,7 +550,7 @@
 
 .retro-scoreboard-container {
   width: 100%;
-  max-width: 680px;
+  max-width: 960px;
   background-color: #0b0101;
   border: 6px solid var(--c64-border);
   box-shadow: 0 0 40px rgba(255, 34, 34, 0.5);
@@ -1055,6 +1056,18 @@
   letter-spacing: 1px;
 }
 
+.sortable-header {
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+}
+
+.sortable-header:hover {
+  background-color: #3b0505;
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--c64-red-glow);
+}
+
 .c64-score-table td {
   padding: 8px 4px;
   border-bottom: 1px dashed #330000;
@@ -1077,12 +1090,43 @@
   border: 2px solid var(--c64-gold);
 }
 
+.badge-level-1 { color: #88ff88; }
+.badge-level-2 { color: #88ccff; }
+.badge-level-3 { color: #ffaa55; }
+.badge-level-4 { color: #ff5555; }
+.badge-level-5 { color: #ff33ff; font-weight: bold; text-shadow: 0 0 5px #ff33ff; }
+
 .scoreboard-actions {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 12px;
   margin-top: 8px;
+  width: 100%;
+}
+
+.btn-back-to-game {
+  width: 100%;
+  padding: 14px;
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #052605;
+  border: 2px solid var(--c64-green);
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+  animation: greenBlink 2s infinite;
+}
+
+.btn-back-to-game:hover {
+  background-color: #0a4d0a;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
+}
+
+@keyframes greenBlink {
+  0%, 100% { border-color: var(--c64-green); box-shadow: 0 0 10px rgba(0, 255, 102, 0.3); }
+  50% { border-color: #ffffff; box-shadow: 0 0 20px rgba(0, 255, 102, 0.8); }
 }
 
 /* =========================================================================

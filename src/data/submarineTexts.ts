@@ -1,4 +1,5 @@
 import passagesData from './passages.json' with { type: 'json' };
+import passagesDataSV from './passages_sv.json' with { type: 'json' };
 
 export interface SubmarineLevel {
   level: number;
@@ -9,6 +10,18 @@ export interface SubmarineLevel {
   multiplier: number;
   passages: string[];
 }
+
+export const getPassages = (lvl: number, lang: 'en' | 'sv'): string[] => {
+  const data = lang === 'sv' ? passagesDataSV : passagesData;
+  switch (lvl) {
+    case 1: return data.level1;
+    case 2: return data.level2;
+    case 3: return data.level3;
+    case 4: return data.level4;
+    case 5: return data.level5;
+    default: return data.level1;
+  }
+};
 
 export const SUBMARINE_LEVELS: SubmarineLevel[] = [
   {
