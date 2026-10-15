@@ -284,7 +284,7 @@
 .c64-terminal-arena {
   position: relative;
   min-height: 240px;
-  background-color: #050000;
+  background-color: #000000;
   border: 4px solid var(--c64-border);
   padding: 20px;
   display: flex;
@@ -296,7 +296,7 @@
 
 .arena-focused {
   border-color: var(--c64-red);
-  box-shadow: 0 0 20px rgba(255, 34, 34, 0.5), inset 0 0 20px rgba(70, 0, 0, 0.6);
+  box-shadow: 0 0 16px rgba(255, 34, 34, 0.4), inset 0 0 16px rgba(0, 0, 0, 0.9);
 }
 
 .arena-unfocused {
@@ -321,8 +321,8 @@
   top: 8px;
   right: 12px;
   left: 12px;
-  background-color: rgba(60, 0, 0, 0.85);
-  border: 2px dashed var(--c64-red);
+  background-color: rgba(0, 0, 0, 0.92);
+  border: 2px dashed #ffffff;
   padding: 8px;
   text-align: center;
   z-index: 4;
@@ -334,7 +334,7 @@
   font-size: 10px;
   color: #ffffff;
   animation: alertBlink 1.2s infinite;
-  text-shadow: 0 0 6px var(--c64-red-glow);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
 }
 
 @keyframes alertBlink {
@@ -361,7 +361,7 @@
 
 /* Character states */
 .char-pending {
-  color: #ff8888;
+  color: #d8e2ec;
 }
 
 .char-correct {
@@ -457,7 +457,7 @@
 .footer-keys-legend {
   font-family: var(--font-retro);
   font-size: 20px;
-  color: #ffaaaa;
+  color: #ffffff;
 }
 
 .footer-actions {
@@ -2568,17 +2568,75 @@
   color: #bae6fd;
 }
 
+/* Tactical Telemetry Panel & Status Icons in Airforce Mode */
+.c64-viewport[data-theme="airforce"] .telemetry-item {
+  background-color: #04162a;
+  border: 2px solid #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .telemetry-label {
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .telemetry-drain-sub {
+  color: #bae6fd;
+  text-shadow: 0 0 4px rgba(56, 189, 248, 0.7);
+}
+
+/* Typing Terminal Arena & Input in Airforce Mode */
 .c64-viewport[data-theme="airforce"] .c64-terminal-arena {
   background-color: #020a14;
+  border-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .arena-focused {
+  border-color: #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5), inset 0 0 20px rgba(8, 41, 70, 0.65);
 }
 
 .c64-viewport[data-theme="airforce"] .arena-unfocused {
   border-color: #0c3866;
 }
 
+.c64-viewport[data-theme="airforce"] .char-pending {
+  color: #bae6fd;
+}
+
+/* Terminal Focus Warning & Engagement Banner in Airforce Mode */
+.c64-viewport[data-theme="airforce"] .focus-warning-overlay {
+  background-color: rgba(3, 16, 32, 0.92);
+  border: 2px dashed #38bdf8;
+}
+
+.c64-viewport[data-theme="airforce"] .blinking-cursor-prompt {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+}
+
+/* Progress Meter in Airforce Mode */
+.c64-viewport[data-theme="airforce"] .depth-progress-container {
+  background-color: #04162a;
+  border: 2px solid #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .progress-labels {
+  color: #7dd3fc;
+}
+
 .c64-viewport[data-theme="airforce"] .c64-progress-bar {
   background-color: #031020;
   border-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .progress-fill {
+  background: repeating-linear-gradient(
+    90deg,
+    #0284c7,
+    #0284c7 8px,
+    #0369a1 8px,
+    #0369a1 12px
+  );
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
 }
 
 .c64-viewport[data-theme="airforce"] .retro-header-btn {
