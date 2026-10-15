@@ -2219,3 +2219,307 @@
     font-size: 10px;
   }
 }
+
+/* =========================================================================
+   RETRO THEME SELECTOR BAR (ABOVE TOP HUD / TOP MENU)
+   ========================================================================= */
+
+.retro-theme-selector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background-color: var(--c64-bg);
+  border: 2px solid var(--c64-border);
+  padding: 8px 14px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+  width: 100%;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+}
+
+.mission-theme-selector-bar {
+  margin-bottom: 10px;
+}
+
+.theme-selector-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-arcade);
+  font-size: 9.5px;
+  color: var(--c64-red);
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.theme-selector-star {
+  color: var(--c64-gold);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+  animation: starPulse 1.8s infinite ease-in-out;
+}
+
+.theme-selector-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.retro-theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #999999;
+  border: 2px solid #333333;
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.retro-theme-btn:hover {
+  border-color: var(--c64-red);
+  color: var(--c64-white);
+  box-shadow: 0 0 10px var(--c64-red-glow);
+  transform: translateY(-1px);
+}
+
+.retro-theme-btn.active-theme-btn {
+  color: #ffffff;
+  border-width: 2px;
+  font-weight: bold;
+}
+
+.theme-btn-submarine.active-theme-btn {
+  background-color: #550a0a;
+  border-color: #ff3333;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 51, 51, 0.7), inset 0 0 8px rgba(255, 51, 51, 0.3);
+}
+
+.theme-btn-airforce.active-theme-btn {
+  background-color: #0c3359;
+  border-color: #00d4ff;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.7), inset 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.theme-btn-icon {
+  font-size: 11px;
+}
+
+.theme-btn-name {
+  font-size: 9px;
+  letter-spacing: 0.8px;
+}
+
+.theme-active-indicator {
+  font-size: 8px;
+  color: var(--c64-green);
+  margin-left: 2px;
+  text-shadow: 0 0 6px var(--c64-green-glow);
+}
+
+/* =========================================================================
+   8-BIT SAAB JAS 39 GRIPEN FIGHTER SPRITE STYLING
+   ========================================================================= */
+
+.gripen-fighter-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0 10px 0;
+  animation: gripenFlight 3.5s ease-in-out infinite;
+}
+
+@keyframes gripenFlight {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(0.8deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(-0.8deg);
+  }
+}
+
+.gripen-fighter-svg {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.7));
+}
+
+.gripen-badge-text {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #38bdf8;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =========================================================================
+   AIRFORCE THEME OVERRIDES (HEAVEN BLUE CRT MONITOR)
+   ========================================================================= */
+
+.c64-viewport[data-theme="airforce"] {
+  background: radial-gradient(circle at center, #061e38 0%, #020914 100%);
+  color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="airforce"] .crt-vignette {
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.65), inset 0 0 35px rgba(0, 160, 255, 0.25);
+}
+
+.c64-viewport[data-theme="airforce"] .c64-screen-frame {
+  box-shadow: 
+    0 0 0 4px var(--c64-frame),
+    0 0 35px rgba(56, 189, 248, 0.35),
+    inset 0 0 30px rgba(8, 41, 70, 0.7);
+}
+
+.c64-viewport[data-theme="airforce"] .c64-box {
+  background-color: #031427;
+  border-color: var(--c64-border);
+  box-shadow: inset 0 0 14px rgba(14, 61, 100, 0.55);
+}
+
+.c64-viewport[data-theme="airforce"] .c64-top-bar {
+  background-color: #051d38;
+  border-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-main-title {
+  text-shadow: 
+    0 0 15px var(--c64-red-glow),
+    3px 3px 0px #0284c7,
+    5px 5px 0px #033a68;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-main-title-mobile {
+  text-shadow: 
+    0 0 8px var(--c64-red-glow),
+    2px 2px 0px #0284c7 !important;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-menu-item-btn {
+  background-color: #04162a;
+  border: 1px solid #0d3d63;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-menu-item-btn:hover {
+  background-color: #08294a;
+  border-color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-menu-item-btn.selected-item {
+  background: linear-gradient(90deg, #0b3760 0%, #061e38 100%);
+  border: 1px solid var(--c64-red);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.45);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-menu-item-main {
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-push-button {
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 50%, #075985 100%);
+  border: 3px solid #38bdf8;
+  box-shadow:
+    0 6px 0 #082f49,
+    0 10px 20px rgba(56, 189, 248, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-push-button:hover {
+  background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
+  border-color: #ffd700;
+  box-shadow:
+    0 6px 0 #082f49,
+    0 12px 25px rgba(56, 189, 248, 0.65),
+    inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-push-button:active {
+  box-shadow:
+    0 2px 0 #082f49,
+    0 4px 10px rgba(56, 189, 248, 0.6),
+    inset 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.c64-viewport[data-theme="airforce"] .push-btn-subtext {
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .level-btn:hover {
+  background-color: #0b355d;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+
+.c64-viewport[data-theme="airforce"] .retro-scoreboard-container {
+  background-color: #020c18;
+  border-color: var(--c64-border);
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.45);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-lang-card-btn {
+  background-color: #04162a;
+  border-color: #0d3d63;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-lang-card-btn:hover {
+  background-color: #08294a;
+  border-color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-lang-card-btn.active-lang-card {
+  background: linear-gradient(135deg, #0e3f6d 0%, #051d38 100%);
+  border-color: var(--c64-gold);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.5), inset 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .retro-theme-selector-bar {
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 8px;
+  }
+  .theme-selector-label {
+    font-size: 8px;
+  }
+  .theme-selector-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  .retro-theme-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 8px;
+    padding: 5px 8px;
+  }
+  .gripen-fighter-svg {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gripen-fighter-svg {
+    max-width: 170px;
+  }
+}

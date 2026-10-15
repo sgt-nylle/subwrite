@@ -106,6 +106,7 @@ export interface HighScore {
   date: string;
   device?: 'desktop' | 'mobile';
   failedChars?: number;
+  theme?: string;
 }
 
 export const LEVEL_TIME_LIMITS: Record<number, number> = {

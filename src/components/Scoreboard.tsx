@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { type HighScore, ALL_INITIAL_HIGH_SCORES, SUBMARINE_LEVELS } from '../data/submarineTexts';
+import { type HighScore } from '../data/submarineTexts';
 import { sound } from '../utils/audio';
 import { detectDeviceType, getDeviceLabel } from '../utils/device';
+import { type ThemeId, getTheme } from '../themes';
 
 export interface FinalTrialResult {
   score: number;
@@ -18,17 +19,17 @@ export interface FinalTrialResult {
   initialReserve?: number;
   timeDrain?: number;
   continuedErrors?: number;
+  theme?: ThemeId;
 }
 
 interface ScoreboardProps {
   currentScore?: FinalTrialResult | null;
   initialLevel?: number;
   initialDevice?: 'desktop' | 'mobile';
+  theme?: ThemeId;
   onPlayAgain: (lvl?: number) => void;
   onReturnToMenu?: () => void;
 }
-
-const STORAGE_KEY = 'subwrite_high_scores_v2';
 
 /**
  * Formats ISO date (YYYY-MM-DD) into compact YY-MM-DD format (e.g. 26-10-14)
@@ -48,19 +49,23 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   currentScore,
   initialLevel,
   initialDevice,
+  theme = 'submarine',
   onPlayAgain,
   onReturnToMenu
 }) => {
+  const activeTheme = getTheme(currentScore?.theme || theme);
+  const storageKey = `subwrite_high_scores_${activeTheme.id}_v2`;
+
   const [scores, setScores] = useState<HighScore[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(storageKey);
       if (saved) {
         return JSON.parse(saved);
       }
     } catch {
       // Ignore
     }
-    return ALL_INITIAL_HIGH_SCORES;
+    return [...activeTheme.initialScores, ...activeTheme.initialMobileScores];
   });
 
   // Selected device tab: defaults to the device of the played score, or user's active device
@@ -82,19 +87,19 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: keyof HighScore, direction: 'asc' | 'desc' }>({ key: 'score', direction: 'desc' });
 
-  // Fetch shared global scores from backend API
+  // Fetch shared global scores from backend API for current theme
   useEffect(() => {
     let isMounted = true;
     const fetchSharedScores = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch('/api/scores');
+        const res = await fetch(`/api/scores?theme=${activeTheme.id}`);
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0 && isMounted) {
             setScores(data);
             try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+              localStorage.setItem(storageKey, JSON.stringify(data));
             } catch {
               // Ignore
             }
@@ -109,7 +114,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
     fetchSharedScores();
     return () => { isMounted = false; };
-  }, []);
+  }, [activeTheme.id, storageKey]);
 
   // Check if current trial qualifies as a top 3 podium score for that level & device
   const isPodiumScore = useMemo(() => {
@@ -138,6 +143,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
       accuracy: currentScore.accuracy,
       level: currentScore.level,
       device: entryDevice,
+      theme: activeTheme.id,
       failedChars: currentScore.continuedErrors ?? currentScore.incorrectChars ?? 0,
       date: new Date().toISOString().split('T')[0]
     };
@@ -151,7 +157,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     setSelectedDevice(entryDevice);
 
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      localStorage.setItem(storageKey, JSON.stringify(updated));
     } catch {
       // Ignore
     }
@@ -167,7 +173,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         const serverData = await res.json();
         if (Array.isArray(serverData)) {
           setScores(serverData);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(serverData));
+          localStorage.setItem(storageKey, JSON.stringify(serverData));
         }
       }
     } catch (err) {
@@ -217,8 +223,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
   const currentLevelInfo = useMemo(() => {
     if (selectedLevel === 'all') return null;
-    return SUBMARINE_LEVELS.find(l => l.level === selectedLevel) || null;
-  }, [selectedLevel]);
+    return activeTheme.levels.find(l => l.level === selectedLevel) || null;
+  }, [selectedLevel, activeTheme]);
 
   // Intel summary metrics across all logged records for this level
   const levelStats = useMemo(() => {
@@ -239,18 +245,20 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     return filteredScores.slice(0, 3);
   }, [filteredScores]);
 
+  const groupLabel = activeTheme.id === 'airforce' ? 'SQUADRON' : 'FLEET';
+
   return (
     <div className="retro-modal-overlay">
       <div className="retro-scoreboard-container c64-box">
         <div className="c64-header-banner">
-          <span className="star-icon">★</span>
+          <span className="star-icon">{activeTheme.flair}</span>
           <h2>
-            {selectedDevice === 'mobile' ? '📱 TOUCHSCREEN FLEET' : '💻 KEYBOARD FLEET'}
+            {selectedDevice === 'mobile' ? `📱 TOUCHSCREEN ${groupLabel}` : `💻 KEYBOARD ${groupLabel}`}
             {selectedLevel === 'all'
               ? ' RECORDS (ALL LEVELS)'
               : ` - LEVEL ${selectedLevel}: ${currentLevelInfo?.name || ''}`}
           </h2>
-          <span className="star-icon">★</span>
+          <span className="star-icon">{activeTheme.flair}</span>
         </div>
 
         {/* DEVICE SELECTOR TABS: KEYBOARD VS TOUCHSCREEN */}
@@ -263,7 +271,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               setSelectedDevice('desktop');
             }}
           >
-            💻 KEYBOARD FLEET
+            💻 KEYBOARD {groupLabel}
           </button>
           <button
             type="button"
@@ -382,9 +390,9 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               setSelectedLevel('all');
             }}
           >
-            ★ ALL FLEET
+            {activeTheme.flair} ALL {groupLabel}
           </button>
-          {SUBMARINE_LEVELS.map(lvl => {
+          {activeTheme.levels.map(lvl => {
             const count = scores.filter(s => (s.device || 'desktop') === selectedDevice && Number(s.level) === lvl.level).length;
             return (
               <button
@@ -402,7 +410,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
           })}
         </div>
 
-        {/* FLEET INTEL STATS SUMMARY BAR */}
+        {/* FLEET/SQUADRON INTEL STATS SUMMARY BAR */}
         {levelStats && (
           <div className="fleet-intel-bar">
             <div className="intel-pill">
@@ -418,7 +426,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               <span className="intel-val highlight-cyan">{levelStats.minFailed} FAILED CHARS</span>
             </div>
             <div className="intel-pill">
-              <span className="intel-label">⚓ TOTAL PATROLS:</span>
+              <span className="intel-label">{activeTheme.icon} TOTAL {activeTheme.id === 'airforce' ? 'SORTIES' : 'PATROLS'}:</span>
               <span className="intel-val">{levelStats.totalPatrols} LOGGED</span>
             </div>
           </div>
@@ -490,13 +498,13 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               {filteredScores.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="no-scores-cell">
-                    NO {selectedDevice === 'mobile' ? 'TOUCHSCREEN' : 'KEYBOARD'} FLEET RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
+                    NO {selectedDevice === 'mobile' ? 'TOUCHSCREEN' : 'KEYBOARD'} {activeTheme.id === 'airforce' ? 'SQUADRON' : 'FLEET'} RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
                   </td>
                 </tr>
               ) : (
                 filteredScores.map((entry, index) => {
                   const isCurrent = submitted && (entry.id === submittedId || (entry.initials === initials.toUpperCase().slice(0, 3) && currentScore && entry.score === currentScore.score));
-                  const entryLevelInfo = SUBMARINE_LEVELS.find(l => l.level === Number(entry.level));
+                  const entryLevelInfo = activeTheme.levels.find(l => l.level === Number(entry.level));
                   return (
                     <tr key={entry.id || index} className={isCurrent ? "current-player-row blinking-row" : index === 0 && sortConfig.key === 'score' ? "rank-1-row" : ""}>
                       <td className="rank-col">

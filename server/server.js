@@ -42,6 +42,7 @@ const server = http.createServer((req, res) => {
     const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const levelParam = urlObj.searchParams.get('level');
     const deviceParam = urlObj.searchParams.get('device');
+    const themeParam = urlObj.searchParams.get('theme');
 
     if (req.method === 'GET') {
       try {
@@ -51,6 +52,9 @@ const server = http.createServer((req, res) => {
         }
         const data = fs.readFileSync(SCORES_FILE, 'utf-8');
         let scores = JSON.parse(data);
+        if (themeParam) {
+          scores = scores.filter(s => (s.theme || 'submarine') === themeParam);
+        }
         if (deviceParam) {
           scores = scores.filter(s => (s.device || 'desktop') === deviceParam);
         }
@@ -90,6 +94,7 @@ const server = http.createServer((req, res) => {
           }
 
           const device = newEntry.device === 'mobile' ? 'mobile' : 'desktop';
+          const theme = newEntry.theme || 'submarine';
           const formattedEntry = {
             id: Date.now().toString(),
             initials: String(newEntry.initials).toUpperCase().slice(0, 3).padEnd(3, 'X'),
@@ -97,6 +102,7 @@ const server = http.createServer((req, res) => {
             wpm: Math.round(newEntry.wpm || 0),
             accuracy: Math.round(newEntry.accuracy || 100),
             level: Number(newEntry.level || 1),
+            theme,
             device,
             failedChars: Math.max(0, Math.round(newEntry.failedChars ?? newEntry.incorrectChars ?? 0)),
             date: new Date().toISOString().split('T')[0]
@@ -104,10 +110,10 @@ const server = http.createServer((req, res) => {
 
           currentScores.push(formattedEntry);
 
-          // Retain at least 1,000 high score records per level per device
+          // Retain at least 1,000 high score records per theme per level per device
           const recordsByBucket = new Map();
           for (const s of currentScores) {
-            const key = `${s.level || 1}_${s.device || 'desktop'}`;
+            const key = `${s.theme || 'submarine'}_${s.level || 1}_${s.device || 'desktop'}`;
             if (!recordsByBucket.has(key)) recordsByBucket.set(key, []);
             recordsByBucket.get(key).push(s);
           }
@@ -125,7 +131,8 @@ const server = http.createServer((req, res) => {
           fs.writeFileSync(SCORES_FILE, JSON.stringify(currentScores, null, 2), 'utf-8');
 
           res.statusCode = 200;
-          return res.end(JSON.stringify(currentScores));
+          const returnScores = currentScores.filter(s => (s.theme || 'submarine') === theme);
+          return res.end(JSON.stringify(returnScores));
         } catch (err) {
           console.error('Error saving score:', err);
           res.statusCode = 500;

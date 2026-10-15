@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { type HighScore, ALL_INITIAL_HIGH_SCORES } from '../data/submarineTexts';
-import { GotlandSubmarine } from './GotlandSubmarine';
+import { type HighScore } from '../data/submarineTexts';
+import { ThemeSelector } from './ThemeSelector';
+import { type ThemeId, getTheme } from '../themes';
 import { sound } from '../utils/audio';
 
 interface StartScreenProps {
   selectedLevel: number;
   selectedLanguage: 'en' | 'sv';
+  theme: ThemeId;
   isMobile: boolean;
+  onSelectTheme: (theme: ThemeId) => void;
   onSelectLevel: (lvl: number) => void;
   onSelectLanguage: (lang: 'en' | 'sv') => void;
   onStartGame: (lvl?: number, lang?: 'en' | 'sv') => void;
@@ -18,7 +21,9 @@ interface StartScreenProps {
 export const StartScreen: React.FC<StartScreenProps> = ({
   selectedLevel,
   selectedLanguage,
+  theme,
   isMobile,
+  onSelectTheme,
   onSelectLevel,
   onSelectLanguage,
   onStartGame,
@@ -26,24 +31,26 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   soundEnabled,
   onToggleSound
 }) => {
+  const activeTheme = getTheme(theme);
   const [topScore, setTopScore] = useState<HighScore | null>(null);
   const targetDevice = isMobile ? 'mobile' : 'desktop';
 
-  // Load top score for current device to display on NES header (like classic "TOP - 050000")
+  // Load top score for current theme & device to display on NES header (like classic "TOP - 050000")
   useEffect(() => {
-    fetch(`/api/scores?device=${targetDevice}`)
+    fetch(`/api/scores?theme=${activeTheme.id}&device=${targetDevice}`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
           setTopScore(data[0]);
         } else {
-          const fallback = ALL_INITIAL_HIGH_SCORES.find(s => (s.device || 'desktop') === targetDevice);
+          const fallback = [...activeTheme.initialScores, ...activeTheme.initialMobileScores]
+            .find(s => (s.device || 'desktop') === targetDevice);
           if (fallback) setTopScore(fallback);
         }
       })
       .catch(() => {
         try {
-          const local = localStorage.getItem('subwrite_high_scores_v2');
+          const local = localStorage.getItem(`subwrite_high_scores_${activeTheme.id}_v2`);
           if (local) {
             const parsed: HighScore[] = JSON.parse(local);
             const filtered = parsed.filter(s => (s.device || 'desktop') === targetDevice);
@@ -55,10 +62,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         } catch {
           // Ignore
         }
-        const fallback = ALL_INITIAL_HIGH_SCORES.find(s => (s.device || 'desktop') === targetDevice);
+        const fallback = [...activeTheme.initialScores, ...activeTheme.initialMobileScores]
+          .find(s => (s.device || 'desktop') === targetDevice);
         if (fallback) setTopScore(fallback);
       });
-  }, [targetDevice]);
+  }, [activeTheme.id, activeTheme.initialScores, activeTheme.initialMobileScores, targetDevice]);
 
   // Keyboard navigation for NES style: Up/Down arrow moves level, Enter starts, 1-5 starts immediately
   useEffect(() => {
@@ -106,16 +114,18 @@ export const StartScreen: React.FC<StartScreenProps> = ({
     onStartGame(lvl);
   };
 
-  const levelOptions = [
-    { lvl: 1, label: 'LEVEL 1 [EASY]', role: 'CADET', desc: '20m depth • simple naval words' },
-    { lvl: 2, label: 'LEVEL 2 [EASY-MED]', role: 'SONAR TECH', desc: '80m depth • punctuation & speed' },
-    { lvl: 3, label: 'LEVEL 3 [MEDIUM]', role: 'OFFICER', desc: '250m depth • nuclear submarine history' },
-    { lvl: 4, label: 'LEVEL 4 [HARD]', role: 'CHIEF ENG', desc: '450m depth • technical specifications' },
-    { lvl: 5, label: 'LEVEL 5 [SUPER HARD]', role: 'ADMIRAL', desc: '700m depth • Red October doctrine' }
-  ];
+  const levelOptions = activeTheme.levels.map(l => ({
+    lvl: l.level,
+    label: `LEVEL ${l.level} [${l.level === 1 ? 'EASY' : l.level === 2 ? 'EASY-MED' : l.level === 3 ? 'MEDIUM' : l.level === 4 ? 'HARD' : 'SUPER HARD'}]`,
+    role: l.name,
+    desc: `${l.dimensionValue} • ${l.description}`
+  }));
 
   return (
     <div className="nes-title-screen">
+      {/* RETRO ARCADE THEME SELECTOR ROW (ABOVE TOP HUD) */}
+      <ThemeSelector currentTheme={theme} onSelectTheme={onSelectTheme} />
+
       {/* NES TOP HUD (TOP SCORE & SOUND) */}
       <div className="nes-top-hud">
         <div className="nes-score-display">
@@ -154,22 +164,22 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
       {/* ICONIC NES LOGO & TITLE */}
       <div className="nes-logo-section">
-        <div className="nes-star-flair">★ ★ ★</div>
-        <h1 className={`nes-main-title ${isMobile ? 'nes-main-title-mobile' : ''}`}>SUBWRITE!</h1>
+        <div className="nes-star-flair">{activeTheme.flair} {activeTheme.flair} {activeTheme.flair}</div>
+        <h1 className={`nes-main-title ${isMobile ? 'nes-main-title-mobile' : ''}`}>{activeTheme.title}</h1>
         <div className="nes-sub-banner">
-          subwrite.se - your personal submarine type challenge!
+          {activeTheme.subtitle}
         </div>
       </div>
 
-      {/* 8-BIT RED GOTLAND-CLASS SWEDISH SUBMARINE */}
-      <GotlandSubmarine />
+      {/* 8-BIT THEME VEHICLE SPRITE */}
+      <activeTheme.GraphicComponent />
 
       {/* PROMINENT ARCADE LANGUAGE SELECTOR PANEL */}
       <div className="nes-language-panel">
         <div className="nes-language-panel-header">
-          <span className="lang-header-star">★</span>
+          <span className="lang-header-star">{activeTheme.flair}</span>
           <span className="lang-header-text">MISSION LANGUAGE / VÄLJ SPRÅK</span>
-          <span className="lang-header-star">★</span>
+          <span className="lang-header-star">{activeTheme.flair}</span>
         </div>
         <div className="nes-language-options">
           <button
@@ -184,7 +194,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <span className="lang-flag-icon">🇬🇧</span>
             <div className="lang-card-info">
               <span className="lang-primary-title">ENGLISH</span>
-              <span className="lang-sub-title">Naval Archives</span>
+              <span className="lang-sub-title">{activeTheme.id === 'airforce' ? 'Aviation Archives' : 'Naval Archives'}</span>
             </div>
             <span className="lang-status-badge">
               {selectedLanguage === 'en' ? '► ACTIVE ◄' : 'SELECT [E]'}
@@ -202,7 +212,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <span className="lang-flag-icon">🇸🇪</span>
             <div className="lang-card-info">
               <span className="lang-primary-title">SVENSKA</span>
-              <span className="lang-sub-title">Gotland & Marinen</span>
+              <span className="lang-sub-title">{activeTheme.id === 'airforce' ? 'Gripen & Flygvapnet' : 'Gotland & Marinen'}</span>
             </div>
             <span className="lang-status-badge">
               {selectedLanguage === 'sv' ? '► ACTIVE ◄' : 'VÄLJ [V]'}

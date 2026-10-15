@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { SUBMARINE_LEVELS, type SubmarineLevel, LEVEL_TIME_LIMITS, getPassages } from './data/submarineTexts';
+import { LEVEL_TIME_LIMITS } from './data/submarineTexts';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
+import { ThemeSelector } from './components/ThemeSelector';
+import { type ThemeId, getTheme, DEFAULT_THEME_ID } from './themes';
 import { sound } from './utils/audio';
 import { detectDeviceType } from './utils/device';
 import './App.css';
@@ -49,8 +51,37 @@ const pickRandomPassageIndex = (total: number, excludeIdx: number = -1): number 
   return next;
 };
 
+// Helper to load initial passage config
+const getInitialPassage = (): { index: number; text: string } => {
+  let initialLang: 'en' | 'sv' = 'en';
+  let initialThemeId: ThemeId = DEFAULT_THEME_ID;
+  try {
+    const savedLang = localStorage.getItem('subwrite_language');
+    if (savedLang === 'en' || savedLang === 'sv') initialLang = savedLang;
+    const savedTheme = localStorage.getItem('subwrite_theme');
+    if (savedTheme === 'submarine' || savedTheme === 'airforce') initialThemeId = savedTheme;
+  } catch {
+    // Ignore
+  }
+  const passages = getTheme(initialThemeId).getPassages(1, initialLang);
+  if (passages && passages.length > 0) {
+    const rand = pickRandomPassageIndex(passages.length);
+    return { index: rand, text: passages[rand] };
+  }
+  return { index: 0, text: getTheme(DEFAULT_THEME_ID).levels[0]?.description || '' };
+};
+
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
+  const [theme, setTheme] = useState<ThemeId>(() => {
+    try {
+      const saved = localStorage.getItem('subwrite_theme');
+      if (saved === 'submarine' || saved === 'airforce') return saved as ThemeId;
+    } catch {
+      // Ignore
+    }
+    return DEFAULT_THEME_ID;
+  });
   const [level, setLevel] = useState<number>(1);
   const [language, setLanguage] = useState<'en' | 'sv'>(() => {
     try {
@@ -61,23 +92,10 @@ export function App() {
     }
     return 'en';
   });
-  const currentPassageIndexRef = useRef<number>(-1);
-  const [, setPassageIndex] = useState<number>(-1);
-  const [targetText, setTargetText] = useState<string>(() => {
-    try {
-      const saved = localStorage.getItem('subwrite_language');
-      const lang: 'en' | 'sv' = (saved === 'en' || saved === 'sv') ? saved : 'en';
-      const p = getPassages(1, lang);
-      if (p && p.length > 0) {
-        const rand = pickRandomPassageIndex(p.length);
-        currentPassageIndexRef.current = rand;
-        return p[rand];
-      }
-      return SUBMARINE_LEVELS[0]?.passages[0] || '';
-    } catch {
-      return SUBMARINE_LEVELS[0]?.passages[0] || '';
-    }
-  });
+  const [initialData] = useState(getInitialPassage);
+  const currentPassageIndexRef = useRef<number>(initialData.index);
+  const [, setPassageIndex] = useState<number>(initialData.index);
+  const [targetText, setTargetText] = useState<string>(initialData.text);
   
   // Typing state
   const [inputVal, setInputVal] = useState<string>('');
@@ -110,8 +128,9 @@ export function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Current level details & time limit
-  const currentLevelData: SubmarineLevel = SUBMARINE_LEVELS.find(l => l.level === level) || SUBMARINE_LEVELS[0];
+  // Active theme and level configuration
+  const activeTheme = getTheme(theme);
+  const activeLevel = activeTheme.levels.find(l => l.level === level) || activeTheme.levels[0];
   const timeLimit = LEVEL_TIME_LIMITS[level] || 180;
   const timeRemaining = Math.max(0, timeLimit - elapsedSeconds);
 
@@ -133,8 +152,9 @@ export function App() {
   };
 
   // Initialize or reset passage with high variation (randomly pick a text template, never repeat current)
-  const loadPassage = useCallback((lvl: number, lang: 'en' | 'sv', forcedIdx?: number) => {
-    const passages = getPassages(lvl, lang);
+  const loadPassage = useCallback((lvl: number, lang: 'en' | 'sv', forcedIdx?: number, themeIdOverride?: ThemeId) => {
+    const currentTheme = getTheme(themeIdOverride ?? theme);
+    const passages = currentTheme.getPassages(lvl, lang);
     if (!passages || passages.length === 0) return;
 
     let selectedIdx: number;
@@ -161,7 +181,21 @@ export function App() {
     setTimeout(() => {
       inputRef.current?.focus();
     }, 100);
-  }, []);
+  }, [theme]);
+
+  // Switch operational theme (Submarine / Airforce)
+  const handleSelectTheme = (newTheme: ThemeId) => {
+    if (newTheme === theme) return;
+    setTheme(newTheme);
+    try {
+      localStorage.setItem('subwrite_theme', newTheme);
+    } catch {
+      // Ignore
+    }
+    sound.playLevelSelect();
+    currentPassageIndexRef.current = -1;
+    loadPassage(level, language, undefined, newTheme);
+  };
 
   // Start game from title screen with selected level and synchronous input focus
   const handleStartGame = (selectedLvl?: number, selectedLang?: 'en' | 'sv') => {
@@ -270,12 +304,13 @@ export function App() {
       device: isMobile ? 'mobile' : 'desktop',
       initialReserve,
       timeDrain: finalDrain,
-      continuedErrors: finalErrors
+      continuedErrors: finalErrors,
+      theme
     });
     setTimeout(() => {
       setShowScoreboard(true);
     }, 600);
-  }, [elapsedSeconds, drainRate, initialReserve, targetText, totalKeystrokes, errorCount, level, timeLimit, isMobile, inputVal, continuedErrors]);
+  }, [elapsedSeconds, drainRate, initialReserve, targetText, totalKeystrokes, errorCount, level, timeLimit, isMobile, inputVal, continuedErrors, theme]);
 
   // Timer loop with countdown clock
   useEffect(() => {
@@ -477,7 +512,7 @@ export function App() {
     : 0;
 
   return (
-    <div className="c64-viewport">
+    <div className="c64-viewport" data-theme={theme}>
       <div className="crt-overlay"></div>
       <div className="crt-vignette"></div>
 
@@ -489,7 +524,9 @@ export function App() {
           <StartScreen
             selectedLevel={level}
             selectedLanguage={language}
+            theme={theme}
             isMobile={isMobile}
+            onSelectTheme={handleSelectTheme}
             onSelectLevel={handleLevelSelect}
             onSelectLanguage={handleSelectLanguage}
             onStartGame={handleStartGame}
@@ -503,12 +540,15 @@ export function App() {
            TYPING ARENA (LIVE MISSION) - Kept mounted to enable synchronous iOS Safari keyboard popup on tap
            ============================================================= */}
         <div className={`c64-mission-view ${gameState === 'start' ? 'mission-view-standby' : ''}`}>
+          {/* RETRO ARCADE THEME SELECTOR ROW IN MISSION VIEW */}
+          <ThemeSelector currentTheme={theme} onSelectTheme={handleSelectTheme} className="mission-theme-selector-bar" />
+
           {/* TOP STATUS BAR */}
           <header className="c64-top-bar">
             <div className="c64-branding">
-              <span className="soviet-star">★</span>
+              <span className="soviet-star">{activeTheme.flair}</span>
               <span className="brand-name">subwrite.se</span>
-              <span className="kernel-tag">RED OCTOBER / LEVEL {level} ({currentLevelData.name})</span>
+              <span className="kernel-tag">{activeTheme.vesselName} / LEVEL {level} ({activeLevel.name})</span>
             </div>
             <div className="top-bar-controls">
               <button
@@ -546,11 +586,11 @@ export function App() {
             </div>
           </header>
 
-          {/* SUBMARINE TACTICAL TELEMETRY PANEL (WITH TIME COUNTDOWN) */}
+          {/* TACTICAL TELEMETRY PANEL (WITH TIME COUNTDOWN) */}
           <section className="c64-telemetry-panel c64-box">
             <div className="telemetry-item">
-              <span className="telemetry-label">VESSEL</span>
-              <span className="telemetry-val highlight-red">HSwMS GOTLAND</span>
+              <span className="telemetry-label">{activeTheme.vesselLabel}</span>
+              <span className="telemetry-val highlight-red">{activeTheme.vesselName}</span>
             </div>
             <div className="telemetry-item">
               <span className="telemetry-label">SPEED (WPM)</span>
@@ -561,8 +601,8 @@ export function App() {
               <span className="telemetry-val highlight-amber">{accuracy}%</span>
             </div>
             <div className="telemetry-item">
-              <span className="telemetry-label">DEPTH</span>
-              <span className="telemetry-val">{currentLevelData.depth}</span>
+              <span className="telemetry-label">{activeTheme.dimensionLabel}</span>
+              <span className="telemetry-val">{activeLevel.dimensionValue}</span>
             </div>
             <div className="telemetry-item score-telemetry-item">
               <span className="telemetry-label">SCORE</span>
@@ -583,10 +623,10 @@ export function App() {
           {/* LEVEL SELECTOR (LEVELS 1 - 5) */}
           <section className="c64-level-selector c64-box">
             <div className="level-bar-label">
-              <span>[ TACTICAL DIVE LEVEL ]:</span>
+              <span>[ {activeTheme.id === 'airforce' ? 'TACTICAL FLIGHT LEVEL' : 'TACTICAL DIVE LEVEL'} ]:</span>
             </div>
             <div className="level-buttons-grid">
-              {SUBMARINE_LEVELS.map((lvl) => {
+              {activeTheme.levels.map((lvl) => {
                 const active = lvl.level === level;
                 return (
                   <button
@@ -603,7 +643,7 @@ export function App() {
               })}
             </div>
             <div className="level-status-desc">
-              <span className="status-bullet">►</span> {currentLevelData.rank}: {currentLevelData.description} (TIME: {Math.floor((LEVEL_TIME_LIMITS[level] || 180) / 60)} MIN)
+              <span className="status-bullet">►</span> {activeLevel.rank}: {activeLevel.description} (TIME: {Math.floor((LEVEL_TIME_LIMITS[level] || 180) / 60)} MIN)
             </div>
           </section>
 
@@ -674,11 +714,11 @@ export function App() {
               )}
             </div>
 
-            {/* SUBMARINE DIVING PROGRESS METER */}
+            {/* PROGRESS METER */}
             <div className="depth-progress-container">
               <div className="progress-labels">
-                <span>BALLAST TANKS FLOODING...</span>
-                <span>DEPTH REACHED: {progressPercent}%</span>
+                <span>{activeTheme.id === 'airforce' ? 'AFTERBURNER ENGAGED • CLIMBING...' : 'BALLAST TANKS FLOODING...'}</span>
+                <span>{activeTheme.id === 'airforce' ? 'ALTITUDE REACHED:' : 'DEPTH REACHED:'} {progressPercent}%</span>
               </div>
               <div className="c64-progress-bar">
                 <div
@@ -720,6 +760,7 @@ export function App() {
           currentScore={finalScoreData}
           initialLevel={level}
           initialDevice={isMobile ? 'mobile' : 'desktop'}
+          theme={theme}
           onPlayAgain={(lvl?: number) => {
             const target = lvl ?? level;
             setShowScoreboard(false);

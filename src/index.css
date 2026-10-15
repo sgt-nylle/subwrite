@@ -16,6 +16,25 @@
   --font-arcade: 'Press Start 2P', monospace;
 }
 
+/* =========================================================================
+   AIRFORCE (FLYGVAPNET / HEAVEN BLUE) THEME PALETTE
+   ========================================================================= */
+[data-theme="airforce"] {
+  --c64-bg: #030d1a;
+  --c64-frame: #0e3d64;
+  --c64-border: #1664a3;
+  --c64-red: #38bdf8;          /* Heaven Blue / Cyan Accent */
+  --c64-red-glow: rgba(56, 189, 248, 0.75);
+  --c64-dim-red: #7dd3fc;
+  --c64-dark-red: #082946;
+  --c64-green: #34d399;
+  --c64-green-glow: rgba(52, 211, 153, 0.6);
+  --c64-amber: #fbbf24;
+  --c64-gold: #fde047;
+  --c64-cyan: #a5f3fc;
+  --c64-white: #f0f9ff;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
