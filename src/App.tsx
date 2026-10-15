@@ -39,6 +39,16 @@ const areCharsEquivalent = (typed?: string, expected?: string): boolean => {
   return false;
 };
 
+// Helper to pick a random index from a passages list, avoiding the currently active index
+const pickRandomPassageIndex = (total: number, excludeIdx: number = -1): number => {
+  if (total <= 1) return 0;
+  let next = Math.floor(Math.random() * total);
+  if (next === excludeIdx) {
+    next = (next + 1 + Math.floor(Math.random() * (total - 1))) % total;
+  }
+  return next;
+};
+
 export function App() {
   const [gameState, setGameState] = useState<'start' | 'playing'>('start');
   const [level, setLevel] = useState<number>(1);
@@ -51,13 +61,19 @@ export function App() {
     }
     return 'en';
   });
-  const [, setPassageIndex] = useState<number>(0);
+  const currentPassageIndexRef = useRef<number>(-1);
+  const [, setPassageIndex] = useState<number>(-1);
   const [targetText, setTargetText] = useState<string>(() => {
     try {
       const saved = localStorage.getItem('subwrite_language');
       const lang: 'en' | 'sv' = (saved === 'en' || saved === 'sv') ? saved : 'en';
       const p = getPassages(1, lang);
-      return p[0] || SUBMARINE_LEVELS[0]?.passages[0] || '';
+      if (p && p.length > 0) {
+        const rand = pickRandomPassageIndex(p.length);
+        currentPassageIndexRef.current = rand;
+        return p[rand];
+      }
+      return SUBMARINE_LEVELS[0]?.passages[0] || '';
     } catch {
       return SUBMARINE_LEVELS[0]?.passages[0] || '';
     }
@@ -116,24 +132,20 @@ export function App() {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
-  // Initialize or reset passage with high variation (no back-to-back repeats)
-  const loadPassage = useCallback((lvl: number, lang: 'en' | 'sv', idx?: number) => {
+  // Initialize or reset passage with high variation (randomly pick a text template, never repeat current)
+  const loadPassage = useCallback((lvl: number, lang: 'en' | 'sv', forcedIdx?: number) => {
     const passages = getPassages(lvl, lang);
-    let selectedIdx = 0;
-    if (idx !== undefined) {
-      selectedIdx = idx;
-      setPassageIndex(selectedIdx);
+    if (!passages || passages.length === 0) return;
+
+    let selectedIdx: number;
+    if (forcedIdx !== undefined && forcedIdx >= 0 && forcedIdx < passages.length) {
+      selectedIdx = forcedIdx;
     } else {
-      let candidate = Math.floor(Math.random() * passages.length);
-      setPassageIndex(prev => {
-        if (passages.length > 1 && candidate === prev) {
-          candidate = (candidate + 1 + Math.floor(Math.random() * (passages.length - 1))) % passages.length;
-        }
-        return candidate;
-      });
-      selectedIdx = candidate;
+      selectedIdx = pickRandomPassageIndex(passages.length, currentPassageIndexRef.current);
     }
 
+    currentPassageIndexRef.current = selectedIdx;
+    setPassageIndex(selectedIdx);
     setTargetText(passages[selectedIdx]);
     setInputVal('');
     setIsStarted(false);
@@ -167,6 +179,8 @@ export function App() {
       }
     }
     setGameState('playing');
+    // Ensure every time a level is selected or game started, a fresh random template is loaded
+    currentPassageIndexRef.current = -1;
     loadPassage(targetLvl, targetLang);
 
     // Synchronously focus so mobile browsers (iOS Safari) trigger virtual keyboard immediately
@@ -185,6 +199,7 @@ export function App() {
     } catch {
       // Ignore
     }
+    currentPassageIndexRef.current = -1;
     loadPassage(level, newLang);
   }, [level, loadPassage]);
 
@@ -352,6 +367,7 @@ export function App() {
       if (e.key === 'Escape') {
         e.preventDefault();
         if (gameState === 'playing') {
+          sound.playLevelSelect();
           loadPassage(level, language);
         }
         return;
@@ -363,6 +379,7 @@ export function App() {
         const newLvl = parseInt(e.key, 10);
         sound.playLevelSelect();
         setLevel(newLvl);
+        currentPassageIndexRef.current = -1;
         loadPassage(newLvl, language);
         return;
       }
@@ -448,7 +465,10 @@ export function App() {
   const handleLevelSelect = (lvl: number) => {
     sound.playLevelSelect();
     setLevel(lvl);
-    loadPassage(lvl, language);
+    if (gameState === 'playing') {
+      currentPassageIndexRef.current = -1;
+      loadPassage(lvl, language);
+    }
   };
 
   // Progress percentage
