@@ -1162,11 +1162,11 @@
   font-family: var(--font-arcade);
   font-size: 10px;
   padding: 4px 8px;
-  border-bottom: 2px solid #4a0000;
+  border-bottom: 2px solid #ffffff;
 }
 
 .nes-score-display {
-  color: var(--c64-dim-red);
+  color: #ffffff;
 }
 
 .top-val {
@@ -1186,9 +1186,9 @@
 .nes-mini-btn {
   font-family: var(--font-arcade);
   font-size: 9px;
-  background-color: #200202;
-  border: 1px solid var(--c64-border);
-  color: var(--c64-gold);
+  background-color: #000000;
+  border: 1px solid #ffffff;
+  color: #ffffff;
   padding: 4px 8px;
   cursor: pointer;
   transition: all 0.15s;
@@ -1197,6 +1197,8 @@
 .nes-mini-btn:hover {
   background-color: var(--c64-red);
   color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 8px var(--c64-red-glow);
 }
 
 /* NES Title Section */
@@ -1332,8 +1334,8 @@
 .nes-language-panel {
   width: 100%;
   max-width: 600px;
-  background-color: #0d0101;
-  border: 2px dashed #992222;
+  background-color: #000000;
+  border: 2px dashed #ffffff;
   padding: 10px 14px;
   display: flex;
   flex-direction: column;
@@ -1574,15 +1576,15 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  background-color: #0d0101;
-  border: 2px dashed #992222;
+  background-color: #000000;
+  border: 2px dashed #ffffff;
   padding: 12px 16px;
 }
 
 .nes-menu-header {
   font-family: var(--font-arcade);
   font-size: 10px;
-  color: #ff7777;
+  color: #ffffff;
   letter-spacing: 1.5px;
   text-align: center;
 }
@@ -1785,7 +1787,7 @@
 .hof-btn-subtitle {
   font-family: var(--font-arcade);
   font-size: 7px;
-  color: #ffbbbb;
+  color: #ffffff;
   letter-spacing: 1px;
 }
 
@@ -1797,7 +1799,7 @@
 .nes-item-desc {
   font-family: var(--font-retro);
   font-size: 16px;
-  color: #ffb8b8;
+  color: #ffffff;
   letter-spacing: 0.5px;
   line-height: 1.2;
   margin-left: 20px;
@@ -1806,38 +1808,25 @@
 /* NES Footer */
 .nes-footer-credits {
   font-family: var(--font-arcade);
-  font-size: 8px;
-  color: #e07070;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   letter-spacing: 1px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
-.copyright-line {
-  color: #b05050;
+.nes-footer-prompt {
+  color: #ffffff;
+  font-size: 9px;
+  letter-spacing: 1.5px;
 }
 
-.nes-subtle-contact {
-  margin-top: 4px;
-  line-height: 1.5;
-  padding: 0 10px;
-}
-
-.subtle-email-link {
-  font-family: var(--font-arcade);
+.nes-footer-credits .footer p {
+  color: #a0a0a0;
   font-size: 8px;
-  color: #ffffff;
-  text-decoration: underline;
   letter-spacing: 1px;
-  transition: color 0.15s, text-shadow 0.15s;
-}
-
-.subtle-email-link:hover {
-  color: #ffffff;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  margin: 0;
 }
 
 .global-sync-tag {
@@ -1847,8 +1836,8 @@
   font-size: 9px;
   color: var(--c64-gold);
   padding: 4px 6px;
-  background-color: #1a0202;
-  border: 1px solid #4a0000;
+  background-color: #000000;
+  border: 1px solid #444444;
   margin-bottom: 6px;
 }
 
@@ -2418,8 +2407,8 @@
 
 /* 1. Language Selection Panel in Airforce Mode */
 .c64-viewport[data-theme="airforce"] .nes-language-panel {
-  background-color: #030d1a;
-  border-color: #1664a3;
+  background-color: #000000;
+  border-color: #ffffff;
 }
 
 .c64-viewport[data-theme="airforce"] .nes-lang-card-btn {
@@ -2465,7 +2454,7 @@
 
 /* 2. Start Screen Level List & Menu Options */
 .c64-viewport[data-theme="airforce"] .nes-menu-header {
-  color: #7dd3fc;
+  color: #ffffff;
 }
 
 .c64-viewport[data-theme="airforce"] .nes-menu-item-btn {
@@ -2488,8 +2477,8 @@
   color: #e0f2fe;
 }
 
-.c64-viewport[data-theme="airforce"] .nes-menu-item-sub {
-  color: #93c5fd;
+.c64-viewport[data-theme="airforce"] .nes-item-desc {
+  color: #ffffff;
 }
 
 .c64-viewport[data-theme="airforce"] .nes-quick-dive-badge {

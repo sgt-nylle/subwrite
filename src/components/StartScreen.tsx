@@ -295,7 +295,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         >
           <span className="trophy-badge">🏆</span>
           <span className="hof-btn-content">
-            <span className="hof-btn-title">FLEET HALL OF FAME & RECORDS</span>
+            <span className="hof-btn-title">{activeTheme.id === 'airforce' ? 'SQUADRON' : 'FLEET'} HALL OF FAME & RECORDS</span>
             <span className="hof-btn-subtitle">
               NAVIGATE LEVELS 1-5 • PC/MAC & SMARTPHONE STATS
             </span>
@@ -306,17 +306,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
       {/* FOOTER COPYRIGHT */}
       <div className="nes-footer-credits">
-        <div>
-          {isMobile
-            ? 'PUSH ANY BUTTON TO COMMENCE DIVE IMMEDIATELY'
-            : 'TAP LEVEL TO DIVE • [1-5] SELECT • [ENTER] START'}
-        </div>
-        <div className="copyright-line">© 1984 RED OCTOBER FLEET CORP. • ALL RIGHTS RESERVED</div>
-        <div className="nes-subtle-contact">
-          <a href="mailto:mnewlund@gmail.com" className="subtle-email-link" title="Contact Developer">
-            a great sub-spelling service provided by Nylle! email:mnewlund@gmail.com
-          </a>
-        </div>
+        <div className="nes-footer-prompt">PRESS ENTER TO LAUNCH</div>
+        <footer className="footer">
+          <p>© 2026 subwrite.se · All rights reserved</p>
+        </footer>
       </div>
     </div>
   );

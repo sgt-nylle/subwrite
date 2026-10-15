@@ -294,7 +294,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               setSelectedDevice('mobile');
             }}
           >
-            📱 TOUCHSCREEN FLEET
+            📱 TOUCHSCREEN {groupLabel}
           </button>
         </div>
 
@@ -471,11 +471,11 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         <div className="scores-table-wrapper">
           <div className="global-sync-tag">
             <span>
-              ● {selectedDevice === 'mobile' ? '📱 TOUCHSCREEN FLEET' : '💻 KEYBOARD FLEET'} - {selectedLevel === 'all'
+              ● {selectedDevice === 'mobile' ? `📱 TOUCHSCREEN ${groupLabel}` : `💻 KEYBOARD ${groupLabel}`} - {selectedLevel === 'all'
                 ? 'ALL LEVELS'
                 : `LEVEL ${selectedLevel} [${currentLevelInfo?.name || ''}] RECORDS`}
             </span>
-            {isLoading && <span className="syncing-text">[SYNCING FLEET...]</span>}
+            {isLoading && <span className="syncing-text">[{`SYNCING ${groupLabel}...`}]</span>}
           </div>
           <table className="c64-score-table">
             <thead>
