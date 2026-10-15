@@ -116,6 +116,19 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     return () => { isMounted = false; };
   }, [activeTheme.id, storageKey]);
 
+  // ESC key listener to return to the main menu for the current theme
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        sound.playKeypress();
+        onReturnToMenu?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onReturnToMenu]);
+
   // Check if current trial qualifies as a top 3 podium score for that level & device
   const isPodiumScore = useMemo(() => {
     if (!currentScore) return false;
@@ -559,11 +572,16 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
             className="retro-btn btn-danger large-btn"
             type="button"
           >
-            ▶ DIVE {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} (BEAT RECORD)
+            ▶ GO {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} (BEAT RECORD)
           </button>
           {onReturnToMenu && (
-            <button onClick={onReturnToMenu} className="retro-btn btn-back-to-game" type="button">
-              ◄ BACK TO GAME
+            <button
+              onClick={onReturnToMenu}
+              className="retro-btn btn-back-to-game"
+              type="button"
+              title="Return to Main Menu [ESC]"
+            >
+              ◄ MAIN MENU [ESC]
             </button>
           )}
         </div>

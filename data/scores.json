@@ -66,6 +66,18 @@
     "date": "2026-10-01"
   },
   {
+    "id": "1792097083089",
+    "initials": "NYL",
+    "score": 5175,
+    "wpm": 46,
+    "accuracy": 95,
+    "level": 3,
+    "theme": "airforce",
+    "device": "desktop",
+    "failedChars": 8,
+    "date": "2026-10-15"
+  },
+  {
     "id": "3",
     "initials": "KAP",
     "score": 4800,
@@ -240,6 +252,18 @@
     "device": "mobile",
     "failedChars": 6,
     "date": "2026-10-12"
+  },
+  {
+    "id": "1792097021862",
+    "initials": "NYL",
+    "score": 1410,
+    "wpm": 52,
+    "accuracy": 94,
+    "level": 1,
+    "theme": "airforce",
+    "device": "desktop",
+    "failedChars": 5,
+    "date": "2026-10-15"
   },
   {
     "id": "m102",

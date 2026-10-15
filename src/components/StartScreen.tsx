@@ -234,12 +234,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         >
           <span className="push-btn-content">
             <span className="push-btn-arrows">►</span>
-            <span className="push-btn-text">{isMobile ? 'PUSH TO DIVE' : 'PUSH START'}</span>
+            <span className="push-btn-text">
+              {isMobile ? (activeTheme.id === 'airforce' ? 'PUSH TO FLY' : 'PUSH TO DIVE') : 'PUSH START'}
+            </span>
             <span className="push-btn-lvl-tag">[LVL {selectedLevel}]</span>
             <span className="push-btn-arrows">◄</span>
           </span>
           <span className="push-btn-subtext">
-            {isMobile ? 'ONE TOUCH TO COMMENCE DIVE' : 'COMMENCE MISSION • [ENTER]'}
+            {isMobile
+              ? (activeTheme.id === 'airforce' ? 'ONE TOUCH TO COMMENCE FLIGHT' : 'ONE TOUCH TO COMMENCE DIVE')
+              : 'COMMENCE MISSION • [ENTER]'}
           </span>
         </button>
       </div>
@@ -247,7 +251,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       {/* NES LEVEL SELECT MENU WITH CURSOR */}
       <div className="nes-menu-box">
         <div className="nes-menu-header">
-          {isMobile ? '-- PUSH ANY BUTTON TO DIVE IMMEDIATELY --' : '-- SELECT LEVEL TO DIVE IMMEDIATELY --'}
+          {isMobile ? '-- PUSH ANY BUTTON TO START IMMEDIATELY --' : '-- SELECT LEVEL TO START IMMEDIATELY --'}
         </div>
         <div className="nes-level-list">
           {levelOptions.map(opt => {
@@ -267,7 +271,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   </div>
                   <div className="nes-item-desc">{opt.desc}</div>
                 </div>
-                <span className="nes-quick-dive-badge">{isMobile ? 'PUSH TO DIVE' : 'DIVE'}</span>
+                <span className="nes-quick-dive-badge">
+                  {isMobile
+                    ? (activeTheme.id === 'airforce' ? 'PUSH TO FLY' : 'PUSH TO DIVE')
+                    : (activeTheme.id === 'airforce' ? 'FLY' : 'DIVE')}
+                </span>
               </button>
             );
           })}

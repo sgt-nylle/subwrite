@@ -2373,7 +2373,7 @@
 }
 
 /* =========================================================================
-   AIRFORCE THEME OVERRIDES (HEAVEN BLUE CRT MONITOR)
+   AIRFORCE THEME OVERRIDES (HEAVEN BLUE / DEEP NAVY CRT MONITOR)
    ========================================================================= */
 
 .c64-viewport[data-theme="airforce"] {
@@ -2416,26 +2416,109 @@
     2px 2px 0px #0284c7 !important;
 }
 
+/* 1. Language Selection Panel in Airforce Mode */
+.c64-viewport[data-theme="airforce"] .nes-language-panel {
+  background-color: #030d1a;
+  border-color: #1664a3;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-lang-card-btn {
+  background-color: #051930;
+  border-color: #0e3d64;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-lang-card-btn:hover {
+  background-color: #0b355d;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-lang-card-btn.active-lang-card {
+  background: linear-gradient(180deg, #0e467b 0%, #062444 100%);
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.5), inset 0 0 8px rgba(56, 189, 248, 0.35);
+}
+
+.c64-viewport[data-theme="airforce"] .lang-sub-title {
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .active-lang-card .lang-sub-title {
+  color: #e0f2fe;
+}
+
+.c64-viewport[data-theme="airforce"] .lang-status-badge {
+  background-color: #06223e;
+  border-color: #0e3d64;
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .active-lang-card .lang-status-badge {
+  background-color: #0284c7;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+}
+
+/* 2. Start Screen Level List & Menu Options */
+.c64-viewport[data-theme="airforce"] .nes-menu-header {
+  color: #7dd3fc;
+}
+
 .c64-viewport[data-theme="airforce"] .nes-menu-item-btn {
-  background-color: #04162a;
-  border: 1px solid #0d3d63;
+  background-color: #051930;
+  border: 1px solid #0e3d64;
 }
 
 .c64-viewport[data-theme="airforce"] .nes-menu-item-btn:hover {
-  background-color: #08294a;
+  background-color: #0a2d52;
   border-color: var(--c64-red);
 }
 
 .c64-viewport[data-theme="airforce"] .nes-menu-item-btn.selected-item {
-  background: linear-gradient(90deg, #0b3760 0%, #061e38 100%);
+  background: linear-gradient(90deg, #0e3f6d 0%, #051d38 100%);
   border: 1px solid var(--c64-red);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.45);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
 }
 
 .c64-viewport[data-theme="airforce"] .nes-menu-item-main {
-  color: #7dd3fc;
+  color: #e0f2fe;
 }
 
+.c64-viewport[data-theme="airforce"] .nes-menu-item-sub {
+  color: #93c5fd;
+}
+
+.c64-viewport[data-theme="airforce"] .nes-quick-dive-badge {
+  background: rgba(14, 61, 100, 0.7);
+  border-color: #1664a3;
+  color: var(--c64-gold);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-menu-item-btn:hover .nes-quick-dive-badge,
+.c64-viewport[data-theme="airforce"] .nes-menu-item-btn.selected-item .nes-quick-dive-badge {
+  background: #0284c7;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.75);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-hall-of-fame-btn {
+  background: linear-gradient(180deg, #0c3e6d 0%, #06203a 100%);
+  border-color: var(--c64-gold);
+  box-shadow: 0 4px 0 #031427, 0 0 12px rgba(255, 215, 0, 0.35);
+}
+
+.c64-viewport[data-theme="airforce"] .nes-hall-of-fame-btn:hover {
+  background: linear-gradient(180deg, #0e4c87 0%, #08294a 100%);
+  border-color: #ffffff;
+  box-shadow: 0 4px 0 #031427, 0 0 18px rgba(255, 215, 0, 0.55);
+}
+
+/* 3. Push Start Button in Airforce Mode */
 .c64-viewport[data-theme="airforce"] .nes-push-button {
   background: linear-gradient(180deg, #0284c7 0%, #0369a1 50%, #075985 100%);
   border: 3px solid #38bdf8;
@@ -2465,31 +2548,271 @@
   color: #bae6fd;
 }
 
-.c64-viewport[data-theme="airforce"] .level-btn:hover {
-  background-color: #0b355d;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+/* 4. Live Mission Arena Level Selector & Terminal */
+.c64-viewport[data-theme="airforce"] .c64-level-selector {
+  background-color: #041427;
+  border-color: #0e3d64;
 }
 
+.c64-viewport[data-theme="airforce"] .level-btn {
+  background-color: #061e38;
+  border: 3px solid #0e3d64;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .level-btn:hover {
+  background-color: #0c3866;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
+}
+
+.c64-viewport[data-theme="airforce"] .level-btn.active-level {
+  background-color: #0284c7;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.75), inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.c64-viewport[data-theme="airforce"] .level-status-desc {
+  background-color: #030d1a;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .c64-terminal-arena {
+  background-color: #020a14;
+}
+
+.c64-viewport[data-theme="airforce"] .arena-unfocused {
+  border-color: #0c3866;
+}
+
+.c64-viewport[data-theme="airforce"] .c64-progress-bar {
+  background-color: #031020;
+  border-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .retro-header-btn {
+  background-color: #061e38;
+  border-color: #0e3d64;
+  color: #e0f2fe;
+}
+
+.c64-viewport[data-theme="airforce"] .retro-header-btn:hover {
+  background-color: #0c3866;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.c64-viewport[data-theme="airforce"] .retro-btn.btn-warning {
+  background-color: #2b1f02;
+  border-color: #f59e0b;
+}
+
+.c64-viewport[data-theme="airforce"] .retro-btn.btn-danger {
+  background-color: #08294a;
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="airforce"] .retro-btn.btn-danger:hover {
+  background-color: #0e3f6d;
+  border-color: #7dd3fc;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.c64-viewport[data-theme="airforce"] .c64-footer {
+  background-color: #051d38;
+  border-color: #0e3d64;
+}
+
+/* 5. Scoreboard & Hall of Fame Modal */
 .c64-viewport[data-theme="airforce"] .retro-scoreboard-container {
   background-color: #020c18;
-  border-color: var(--c64-border);
-  box-shadow: 0 0 40px rgba(0, 212, 255, 0.45);
+  border-color: #1664a3;
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.45);
 }
 
-.c64-viewport[data-theme="airforce"] .nes-lang-card-btn {
+.c64-viewport[data-theme="airforce"] .c64-header-banner {
+  border-bottom-color: #1664a3;
+}
+
+.c64-viewport[data-theme="airforce"] .new-record-prompt {
+  background: linear-gradient(180deg, #0b355d 0%, #04162a 100%);
+}
+
+.c64-viewport[data-theme="airforce"] .scoreboard-limit-selector {
   background-color: #04162a;
-  border-color: #0d3d63;
+  border-color: #0e3d64;
 }
 
-.c64-viewport[data-theme="airforce"] .nes-lang-card-btn:hover {
-  background-color: #08294a;
-  border-color: var(--c64-red);
+.c64-viewport[data-theme="airforce"] .limit-legend {
+  color: #bae6fd;
 }
 
-.c64-viewport[data-theme="airforce"] .nes-lang-card-btn.active-lang-card {
-  background: linear-gradient(135deg, #0e3f6d 0%, #051d38 100%);
+.c64-viewport[data-theme="airforce"] .limit-btn {
+  color: #7dd3fc;
+  background-color: #07223d;
+  border-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .limit-btn:hover {
+  background-color: #0e3f6d;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+.c64-viewport[data-theme="airforce"] .limit-btn.active-limit-btn {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+}
+
+.c64-viewport[data-theme="airforce"] .initials-form label {
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .initials-input {
+  background-color: #020a14;
+  border-color: #38bdf8;
+  color: var(--c64-green);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.c64-viewport[data-theme="airforce"] .mission-debrief-card {
+  background-color: #04162a;
+  border-color: #1664a3;
+}
+
+.c64-viewport[data-theme="airforce"] .debrief-header {
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+}
+
+.c64-viewport[data-theme="airforce"] .debrief-item {
+  background-color: #020d1a;
+  border-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .debrief-lbl {
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .debrief-final-score {
+  border-top-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .device-tab-btn {
+  background: linear-gradient(180deg, #07223d 0%, #031222 100%);
+  border-color: #0e3d64;
+  color: #bae6fd;
+  box-shadow: 0 4px 0 #020a14;
+}
+
+.c64-viewport[data-theme="airforce"] .device-tab-btn:hover {
+  background: #0b355d;
   border-color: var(--c64-gold);
-  box-shadow: 0 0 14px rgba(255, 215, 0, 0.5), inset 0 0 8px rgba(0, 212, 255, 0.3);
+  color: #ffffff;
+  box-shadow: 0 4px 0 #020a14, 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.c64-viewport[data-theme="airforce"] .device-tab-btn.active-device-tab {
+  background: linear-gradient(180deg, #0284c7 0%, #075985 100%);
+  border-color: var(--c64-gold);
+  color: var(--c64-gold);
+  box-shadow: 0 2px 0 #020a14, 0 0 14px rgba(255, 215, 0, 0.6);
+}
+
+.c64-viewport[data-theme="airforce"] .level-tab-btn {
+  background-color: #051930;
+  border-color: #0e3d64;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .level-tab-btn:hover {
+  background-color: #0c3866;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.c64-viewport[data-theme="airforce"] .level-tab-btn.active-tab {
+  background-color: #0284c7;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+}
+
+.c64-viewport[data-theme="airforce"] .fleet-intel-bar {
+  background-color: #04162a;
+  border-color: #0e3d64;
+}
+
+.c64-viewport[data-theme="airforce"] .intel-pill {
+  background-color: #07223d;
+  border-color: #0e3d64;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .intel-label {
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .podium-card {
+  background-color: #04162a;
+}
+
+.c64-viewport[data-theme="airforce"] .gold-podium {
+  background: radial-gradient(circle at top, #3a2b00 0%, #04162a 85%);
+}
+
+.c64-viewport[data-theme="airforce"] .silver-podium {
+  background: radial-gradient(circle at top, #1e293b 0%, #04162a 85%);
+}
+
+.c64-viewport[data-theme="airforce"] .bronze-podium {
+  background: radial-gradient(circle at top, #351a08 0%, #04162a 85%);
+}
+
+.c64-viewport[data-theme="airforce"] .c64-score-table th {
+  background-color: #07223d;
+  border-bottom-color: #1664a3;
+  color: #7dd3fc;
+}
+
+.c64-viewport[data-theme="airforce"] .sortable-header:hover {
+  background-color: #0b355d;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+}
+
+.c64-viewport[data-theme="airforce"] .c64-score-table td {
+  border-bottom-color: #0a2744;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .c64-score-table tr:hover td {
+  background-color: #092e52;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="airforce"] .current-player-row td {
+  background-color: #0c4a7e;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="airforce"] .btn-back-to-game {
+  background-color: #051930;
+  border-color: #0e3d64;
+  color: #bae6fd;
+}
+
+.c64-viewport[data-theme="airforce"] .btn-back-to-game:hover {
+  background-color: #0a2d52;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
 }
 
 /* Responsive adjustments */
