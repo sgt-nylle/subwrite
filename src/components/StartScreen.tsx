@@ -308,7 +308,17 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       <div className="nes-footer-credits">
         <div className="nes-footer-prompt">PRESS ENTER TO LAUNCH</div>
         <footer className="footer">
-          <p>© 2026 subwrite.se · All rights reserved</p>
+          <p>© 2026 SUBWRITE // CLASSIFIED RETRO SYSTEMS</p>
+          <p>
+            SOURCE CODE & DISPATCH:{' '}
+            <a
+              href="https://github.com/sgt-nylle/subwrite"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              [ GITHUB REPO ]
+            </a>
+          </p>
         </footer>
       </div>
     </div>
