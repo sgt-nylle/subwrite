@@ -178,10 +178,12 @@ export function App() {
     setRecentPenalty(null);
     setFinalScoreData(null);
     if (timerRef.current) clearInterval(timerRef.current);
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 100);
-  }, [theme]);
+    if (!showScoreboard) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [theme, showScoreboard]);
 
   // Switch operational theme (Submarine / Airforce)
   const handleSelectTheme = (newTheme: ThemeId) => {
@@ -223,6 +225,9 @@ export function App() {
       const len = inputRef.current.value.length;
       inputRef.current.setSelectionRange(len, len);
       setIsFocused(true);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 80);
     }
   };
 
@@ -234,8 +239,11 @@ export function App() {
       // Ignore
     }
     currentPassageIndexRef.current = -1;
-    loadPassage(level, newLang);
-  }, [level, loadPassage]);
+    // Only reload active gameplay passage if in active game and scoreboard is NOT showing
+    if (gameState === 'playing' && !showScoreboard) {
+      loadPassage(level, newLang);
+    }
+  }, [level, loadPassage, gameState, showScoreboard]);
 
   // Return to title screen
   const handleReturnToMenu = () => {

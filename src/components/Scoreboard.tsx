@@ -84,12 +84,24 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     currentScore ? currentScore.level : (initialLevel ?? 'all')
   );
 
-  const [initials, setInitials] = useState('');
+  const SAVED_CALLSIGN_KEY = 'subwrite_player_callsign';
+  const [initials, setInitials] = useState(() => {
+    try {
+      return localStorage.getItem(SAVED_CALLSIGN_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
   const [submitted, setSubmitted] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [displayLimit, setDisplayLimit] = useState<number>(10);
   const [isLoading, setIsLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: keyof HighScore, direction: 'asc' | 'desc' }>({ key: 'score', direction: 'desc' });
+
+  // DOM Refs for reliable keyboard autofocus and focus retention
+  const initialsInputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playAgainBtnRef = useRef<HTMLButtonElement>(null);
 
   // Refs for seamless keyboard event listener access without closure staleness
   const submitTimestampRef = useRef<number>(0);
@@ -115,6 +127,23 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
       setLocalLanguage(nextLang);
     }
   }, [onSelectLanguage]);
+
+  // Programmatic focus management:
+  // - If initials prompt is shown, automatically focus the input field so typing/Enter works immediately without clicking
+  // - If already submitted or viewing scores, focus the Play Again button so Enter/L/Arrows work immediately without clicking
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentScore && !submitted) {
+        if (initialsInputRef.current) {
+          initialsInputRef.current.focus();
+          initialsInputRef.current.select();
+        }
+      } else {
+        playAgainBtnRef.current?.focus();
+      }
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [currentScore, submitted]);
 
   // Fetch shared global scores from backend API for current theme
   useEffect(() => {
@@ -145,13 +174,93 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     return () => { isMounted = false; };
   }, [activeTheme.id, storageKey]);
 
+  // Check if current trial qualifies as a top 3 podium score for that level & device
+  const isPodiumScore = useMemo(() => {
+    if (!currentScore) return false;
+    const curDev = currentScore.device || 'desktop';
+    const levelScores = scores
+      .filter(s => (s.device || 'desktop') === curDev && Number(s.level) === currentScore.level)
+      .sort((a, b) => b.score - a.score);
+
+    return levelScores.length < 3 || currentScore.score >= (levelScores[2]?.score || 0);
+  }, [currentScore, scores]);
+
+  const handleSubmitInitials = useCallback(async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!currentScore) return;
+
+    submitTimestampRef.current = Date.now();
+    sound.playVictory();
+
+    const trimmed = initials.trim();
+    const entryInitials = (trimmed.length > 0 ? trimmed : 'AAA').toUpperCase().slice(0, 3).padEnd(3, 'X');
+
+    try {
+      localStorage.setItem(SAVED_CALLSIGN_KEY, entryInitials);
+    } catch {
+      // Ignore
+    }
+
+    const entryDevice = currentScore.device || selectedDevice;
+    const newId = Date.now().toString();
+    const newEntry: HighScore = {
+      id: newId,
+      initials: entryInitials,
+      score: currentScore.score,
+      wpm: currentScore.wpm,
+      accuracy: currentScore.accuracy,
+      level: currentScore.level,
+      device: entryDevice,
+      theme: activeTheme.id,
+      failedChars: currentScore.continuedErrors ?? currentScore.incorrectChars ?? 0,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    // Optimistically update locally
+    const updated = [...scores, newEntry].sort((a, b) => b.score - a.score);
+    setScores(updated);
+    setSubmitted(true);
+    setSubmittedId(newId);
+    setSelectedLevel(currentScore.level);
+    setSelectedDevice(entryDevice);
+
+    // Ensure focus immediately transfers to Play Again button
+    setTimeout(() => {
+      playAgainBtnRef.current?.focus();
+    }, 60);
+
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch {
+      // Ignore
+    }
+
+    // Post to shared global backend
+    try {
+      const res = await fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEntry)
+      });
+      if (res.ok) {
+        const serverData = await res.json();
+        if (Array.isArray(serverData)) {
+          setScores(serverData);
+          localStorage.setItem(storageKey, JSON.stringify(serverData));
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to sync score to shared server:', err);
+    }
+  }, [currentScore, initials, selectedDevice, activeTheme.id, scores, storageKey]);
+
   // Keyboard navigation listener:
   // - ESC: Return to Main Menu
   // - ArrowLeft / ArrowUp: Cycle to previous level (1..5)
   // - ArrowRight / ArrowDown: Cycle to next level (1..5)
   // - Number keys 1..5: Jump to level directly
   // - L: Toggle language (English / Svenska)
-  // - Enter: Start the selected level (or previous level if unchanged) once initials are logged
+  // - Enter: If initials not submitted, submits initials; otherwise starts the selected level
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // 1. ESC: Always return to Main Menu
@@ -162,14 +271,20 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // If the user is currently typing into an input field, do not hijack typing
-      const isInputFocused = (e.target as HTMLElement)?.tagName === 'INPUT';
-      if (isInputFocused) {
+      // Only suppress global shortcuts if typing specifically into the initials input field
+      const isInitialsFocused = e.target === initialsInputRef.current;
+      if (isInitialsFocused) {
         return;
       }
 
-      // If a game was just completed and initials have not yet been submitted, do not trigger play again or settings change
+      // If a game was completed and initials have not yet been submitted:
       if (currentScore && !submitted) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSubmitInitials();
+          return;
+        }
+        // Do not trigger settings changes until initials are logged
         return;
       }
 
@@ -212,7 +327,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
       // 5. Enter to start the selected level (or previous game level if not changed)
       if (e.key === 'Enter') {
         // Prevent accidental double-fire if user just pressed Enter to submit initials
-        if (Date.now() - submitTimestampRef.current < 400) {
+        if (Date.now() - submitTimestampRef.current < 350) {
           return;
         }
         e.preventDefault();
@@ -227,73 +342,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onReturnToMenu, onPlayAgain, currentScore, submitted, handleToggleLanguage]);
-
-  // Check if current trial qualifies as a top 3 podium score for that level & device
-  const isPodiumScore = useMemo(() => {
-    if (!currentScore) return false;
-    const curDev = currentScore.device || 'desktop';
-    const levelScores = scores
-      .filter(s => (s.device || 'desktop') === curDev && Number(s.level) === currentScore.level)
-      .sort((a, b) => b.score - a.score);
-
-    return levelScores.length < 3 || currentScore.score >= (levelScores[2]?.score || 0);
-  }, [currentScore, scores]);
-
-  const handleSubmitInitials = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (initials.trim().length === 0 || !currentScore) return;
-
-    submitTimestampRef.current = Date.now();
-    sound.playVictory();
-    const entryInitials = initials.toUpperCase().slice(0, 3).padEnd(3, 'X');
-    const entryDevice = currentScore.device || selectedDevice;
-    const newId = Date.now().toString();
-    const newEntry: HighScore = {
-      id: newId,
-      initials: entryInitials,
-      score: currentScore.score,
-      wpm: currentScore.wpm,
-      accuracy: currentScore.accuracy,
-      level: currentScore.level,
-      device: entryDevice,
-      theme: activeTheme.id,
-      failedChars: currentScore.continuedErrors ?? currentScore.incorrectChars ?? 0,
-      date: new Date().toISOString().split('T')[0]
-    };
-
-    // Optimistically update locally
-    const updated = [...scores, newEntry].sort((a, b) => b.score - a.score);
-    setScores(updated);
-    setSubmitted(true);
-    setSubmittedId(newId);
-    setSelectedLevel(currentScore.level);
-    setSelectedDevice(entryDevice);
-
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(updated));
-    } catch {
-      // Ignore
-    }
-
-    // Post to shared global backend
-    try {
-      const res = await fetch('/api/scores', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEntry)
-      });
-      if (res.ok) {
-        const serverData = await res.json();
-        if (Array.isArray(serverData)) {
-          setScores(serverData);
-          localStorage.setItem(storageKey, JSON.stringify(serverData));
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to sync score to shared server:', err);
-    }
-  };
+  }, [onReturnToMenu, onPlayAgain, currentScore, submitted, handleToggleLanguage, handleSubmitInitials]);
 
   // All matching scores for active device and level filter
   const totalMatchingScores = useMemo(() => {
@@ -362,8 +411,19 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   const groupLabel = activeTheme.groupLabel;
 
   return (
-    <div className="retro-modal-overlay">
-      <div className="retro-scoreboard-container c64-box">
+    <div
+      className="retro-modal-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          playAgainBtnRef.current?.focus();
+        }
+      }}
+    >
+      <div
+        ref={containerRef}
+        tabIndex={-1}
+        className="retro-scoreboard-container c64-box"
+      >
         <div className="c64-header-banner">
           <span className="star-icon">{activeTheme.flair}</span>
           <h2>
@@ -469,11 +529,18 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               </label>
               <div className="initials-input-wrapper">
                 <input
+                  ref={initialsInputRef}
                   id="initials-input"
                   type="text"
                   maxLength={3}
                   value={initials}
                   onChange={(e) => setInitials(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSubmitInitials();
+                    }
+                  }}
                   placeholder="AAA"
                   autoFocus
                   autoComplete="off"
@@ -674,6 +741,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
         <div className="scoreboard-actions">
           <button
+            ref={playAgainBtnRef}
             onClick={() => onPlayAgain(selectedLevel === 'all' ? undefined : selectedLevel, currentLanguage)}
             className="retro-btn btn-danger large-btn"
             type="button"
