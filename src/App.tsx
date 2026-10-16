@@ -246,13 +246,13 @@ export function App() {
   }, [level, loadPassage, gameState, showScoreboard]);
 
   // Return to title screen
-  const handleReturnToMenu = () => {
+  const handleReturnToMenu = useCallback(() => {
     setGameState('start');
     setShowScoreboard(false);
     setIsStarted(false);
     setIsFinished(false);
     if (timerRef.current) clearInterval(timerRef.current);
-  };
+  }, []);
 
   // Calculate live metrics
   const calculateMetrics = useCallback(() => {
@@ -402,7 +402,7 @@ export function App() {
     }
   };
 
-  // Keyboard shortcut listener for level change (1-5), restart (Escape)
+  // Keyboard shortcut listener for level change (1-5), restart (Enter), exit to menu (Escape)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (showScoreboard) return;
@@ -410,7 +410,17 @@ export function App() {
       if (e.key === 'Escape') {
         e.preventDefault();
         if (gameState === 'playing') {
+          sound.playKeypress();
+          handleReturnToMenu();
+        }
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (gameState === 'playing') {
           sound.playLevelSelect();
+          currentPassageIndexRef.current = -1;
           loadPassage(level, language);
         }
         return;
@@ -446,7 +456,7 @@ export function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, isStarted, level, language, showScoreboard, loadPassage, inputVal.length]);
+  }, [gameState, isStarted, level, language, showScoreboard, loadPassage, handleReturnToMenu, inputVal.length]);
 
   // Ensure caret always stays locked to the active typing position at the end of input
   const syncCaretToEnd = useCallback(() => {
@@ -458,6 +468,21 @@ export function App() {
 
   // Handle direct keydown events on the typing input
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      sound.playKeypress();
+      handleReturnToMenu();
+      return;
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sound.playLevelSelect();
+      currentPassageIndexRef.current = -1;
+      loadPassage(level, language);
+      return;
+    }
+
     if (e.key === 'Backspace') {
       sound.playKeypress();
 
@@ -570,10 +595,10 @@ export function App() {
               <button
                 onClick={handleReturnToMenu}
                 className="retro-header-btn"
-                title="Return to Title Menu"
+                title="Return to Main Menu [ESC]"
                 type="button"
               >
-                ◄ MENU
+                ◄ MENU [ESC]
               </button>
               <button
                 onClick={() => setShowScoreboard(true)}
@@ -740,15 +765,20 @@ export function App() {
           {/* BOTTOM ACTION BAR */}
           <footer className="c64-footer c64-box">
             <div className="footer-keys-legend">
-              <span>[ESC] RESET</span> | <span>[1-5] CHANGE LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span>
+              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span>
             </div>
             <div className="footer-actions">
               <button
-                onClick={() => loadPassage(level, language)}
+                onClick={() => {
+                  sound.playLevelSelect();
+                  currentPassageIndexRef.current = -1;
+                  loadPassage(level, language);
+                }}
                 className="retro-btn btn-warning"
                 type="button"
+                title="Restart Mission with New Text [ENTER]"
               >
-                ⟳ NEXT PASSAGE
+                ⟳ RESTART [ENTER]
               </button>
               <button
                 onClick={() => setShowScoreboard(true)}

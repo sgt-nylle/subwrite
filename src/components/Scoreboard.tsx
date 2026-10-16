@@ -539,6 +539,10 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                     if (e.key === 'Enter') {
                       e.preventDefault();
                       handleSubmitInitials();
+                    } else if (e.key === 'Escape') {
+                      e.preventDefault();
+                      sound.playKeypress();
+                      onReturnToMenu?.();
                     }
                   }}
                   placeholder="AAA"
