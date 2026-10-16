@@ -18,6 +18,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
       <div className="theme-selector-label">
         <span className="theme-selector-star">★</span>
         <span className="theme-selector-title">OPERATIONAL THEME:</span>
+        <span className="theme-selector-shortcut">[◀ / ▶]</span>
       </div>
       <div className="theme-selector-buttons">
         {AVAILABLE_THEMES.map(t => {

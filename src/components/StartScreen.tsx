@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { type HighScore } from '../data/submarineTexts';
 import { ThemeSelector } from './ThemeSelector';
-import { type ThemeId, getTheme } from '../themes';
+import { AVAILABLE_THEMES, type ThemeId, getTheme } from '../themes';
 import { sound } from '../utils/audio';
 
 interface StartScreenProps {
@@ -85,6 +85,18 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         e.preventDefault();
         sound.playLevelSelect();
         onSelectLevel(selectedLevel < 5 ? selectedLevel + 1 : 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        sound.playLevelSelect();
+        const currentIndex = AVAILABLE_THEMES.findIndex(t => t.id === theme);
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : AVAILABLE_THEMES.length - 1;
+        onSelectTheme(AVAILABLE_THEMES[prevIndex].id);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        sound.playLevelSelect();
+        const currentIndex = AVAILABLE_THEMES.findIndex(t => t.id === theme);
+        const nextIndex = currentIndex < AVAILABLE_THEMES.length - 1 ? currentIndex + 1 : 0;
+        onSelectTheme(AVAILABLE_THEMES[nextIndex].id);
       } else if (e.key === 'Enter' || e.code === 'Space') {
         e.preventDefault();
         sound.playSonarPing();
@@ -106,7 +118,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedLevel, onSelectLevel, onStartGame, onOpenScoreboard, onSelectLanguage]);
+  }, [selectedLevel, theme, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onSelectLanguage]);
 
   const handleLevelClick = (lvl: number) => {
     sound.playSonarPing();
