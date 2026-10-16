@@ -72,7 +72,7 @@ export const INITIAL_ARMY_MOBILE_HIGH_SCORES: HighScore[] = [
 
 export const armyTheme: ThemeConfig = {
   id: 'army',
-  name: 'ARMY',
+  name: 'ARMYWRITE',
   icon: '🪖',
   flair: '⚔',
   title: 'ARMYWRITE!',

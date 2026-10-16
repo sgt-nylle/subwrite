@@ -361,7 +361,7 @@
 
 /* Character states */
 .char-pending {
-  color: #d8e2ec;
+  color: #ffffff;
 }
 
 .char-correct {
@@ -2652,7 +2652,7 @@
 }
 
 .c64-viewport[data-theme="airforce"] .char-pending {
-  color: #bae6fd;
+  color: #ffffff;
 }
 
 /* Terminal Focus Warning & Engagement Banner in Airforce Mode */
@@ -3153,7 +3153,7 @@
 }
 
 .c64-viewport[data-theme="army"] .char-pending {
-  color: #86efac;
+  color: #ffffff;
 }
 
 /* Terminal Focus Warning & Engagement Banner in Army Mode */

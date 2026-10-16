@@ -72,7 +72,7 @@ export const INITIAL_AIRFORCE_MOBILE_HIGH_SCORES: HighScore[] = [
 
 export const airforceTheme: ThemeConfig = {
   id: 'airforce',
-  name: 'AIRFORCE',
+  name: 'AIRWRITE',
   icon: '✈️',
   flair: '✈',
   title: 'AIRWRITE!',

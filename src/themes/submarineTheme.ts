@@ -9,7 +9,7 @@ import {
 
 export const submarineTheme: ThemeConfig = {
   id: 'submarine',
-  name: 'SUBMARINE',
+  name: 'SUBWRITE',
   icon: '⚓',
   flair: '★',
   title: 'SUBWRITE!',
