@@ -2306,6 +2306,13 @@
   box-shadow: 0 0 12px rgba(74, 222, 128, 0.7), inset 0 0 8px rgba(74, 222, 128, 0.3);
 }
 
+.theme-btn-pub.active-theme-btn {
+  background-color: #553b05;
+  border-color: #facc15;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.7), inset 0 0 8px rgba(250, 204, 21, 0.3);
+}
+
 .theme-btn-icon {
   font-size: 11px;
 }
@@ -3416,6 +3423,519 @@
   box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
 }
 
+/* =========================================================================
+   PUB THEME OVERRIDES (OFF-DUTY PUB / YELLOW & AMBER CRT MONITOR)
+   ========================================================================= */
+
+.c64-viewport[data-theme="pub"] {
+  background: radial-gradient(circle at center, #261704 0%, #0d0701 100%);
+  color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="pub"] .crt-vignette {
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.65), inset 0 0 35px rgba(250, 204, 21, 0.2);
+}
+
+.c64-viewport[data-theme="pub"] .c64-screen-frame {
+  box-shadow: 
+    0 0 0 4px var(--c64-frame),
+    0 0 35px rgba(250, 204, 21, 0.35),
+    inset 0 0 30px rgba(45, 26, 4, 0.7);
+}
+
+.c64-viewport[data-theme="pub"] .c64-box {
+  background-color: #170e03;
+  border-color: var(--c64-border);
+  box-shadow: inset 0 0 14px rgba(61, 36, 7, 0.55);
+}
+
+.c64-viewport[data-theme="pub"] .c64-top-bar {
+  background-color: #241503;
+  border-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="pub"] .nes-main-title {
+  text-shadow: 
+    0 0 15px var(--c64-red-glow),
+    3px 3px 0px #855512,
+    5px 5px 0px #3d2407;
+}
+
+.c64-viewport[data-theme="pub"] .nes-main-title-mobile {
+  text-shadow: 
+    0 0 8px var(--c64-red-glow),
+    2px 2px 0px #855512 !important;
+}
+
+/* 1. Language Selection Panel in Pub Mode (Standard template white border & black bg) */
+.c64-viewport[data-theme="pub"] .nes-language-panel {
+  background-color: #000000;
+  border-color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .nes-lang-card-btn {
+  background-color: #1a0f02;
+  border-color: #3d2407;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .nes-lang-card-btn:hover {
+  background-color: #382105;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+}
+
+.c64-viewport[data-theme="pub"] .nes-lang-card-btn.active-lang-card {
+  background: linear-gradient(180deg, #573406 0%, #2e1a02 100%);
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.5), inset 0 0 8px rgba(250, 204, 21, 0.35);
+}
+
+.c64-viewport[data-theme="pub"] .lang-sub-title {
+  color: #fde047;
+}
+
+.c64-viewport[data-theme="pub"] .active-lang-card .lang-sub-title {
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .lang-status-badge {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .active-lang-card .lang-status-badge {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+/* 2. Menu Navigation and Level Selector in Pub Mode */
+.c64-viewport[data-theme="pub"] .nes-menu-header {
+  border-bottom: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .nes-menu-item-btn {
+  background: linear-gradient(180deg, #1c1003 0%, #100801 100%);
+  border-color: #553308;
+}
+
+.c64-viewport[data-theme="pub"] .nes-menu-item-btn:hover {
+  background: linear-gradient(180deg, #3d2407 0%, #241503 100%);
+  border-color: var(--c64-red);
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.45);
+}
+
+.c64-viewport[data-theme="pub"] .nes-menu-item-btn.selected-item {
+  background: linear-gradient(180deg, #4d2e07 0%, #2b1803 100%);
+  border-color: var(--c64-red);
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.55), inset 0 0 10px rgba(250, 204, 21, 0.3);
+}
+
+.c64-viewport[data-theme="pub"] .nes-menu-item-main {
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .nes-item-desc {
+  color: #ffffff !important;
+}
+
+.c64-viewport[data-theme="pub"] .nes-quick-dive-badge {
+  background-color: #000000;
+  border-color: var(--c64-border);
+  color: var(--c64-dim-red);
+}
+
+.c64-viewport[data-theme="pub"] .nes-menu-item-btn:hover .nes-quick-dive-badge,
+.c64-viewport[data-theme="pub"] .nes-menu-item-btn.selected-item .nes-quick-dive-badge {
+  background-color: #000000;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+}
+
+.c64-viewport[data-theme="pub"] .nes-hall-of-fame-btn {
+  background-color: #000000;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .nes-hall-of-fame-btn:hover {
+  background-color: #2b1903;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.5);
+}
+
+/* 3. Primary Action Buttons in Pub Mode */
+.c64-viewport[data-theme="pub"] .nes-push-button {
+  background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
+  border: 3px solid #facc15;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.65), 0 5px 0 #451a03;
+}
+
+.c64-viewport[data-theme="pub"] .nes-push-button:hover {
+  background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+  border-color: #fef08a;
+  box-shadow: 0 0 25px rgba(250, 204, 21, 0.85), 0 5px 0 #451a03;
+}
+
+.c64-viewport[data-theme="pub"] .nes-push-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.6), 0 2px 0 #451a03;
+}
+
+.c64-viewport[data-theme="pub"] .push-btn-subtext {
+  color: #ffffff !important;
+}
+
+.c64-viewport[data-theme="pub"] .c64-level-selector {
+  border: 2px solid #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .level-btn {
+  background: #180e03;
+  border-color: #4a2d07;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .level-btn:hover {
+  background: #331d05;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+.c64-viewport[data-theme="pub"] .level-btn.active-level {
+  background: linear-gradient(180deg, #663c08 0%, #361f03 100%);
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.6), inset 0 0 8px rgba(250, 204, 21, 0.4);
+}
+
+.c64-viewport[data-theme="pub"] .level-status-desc {
+  color: #ffffff !important;
+}
+
+/* 4. In-Game HUD Telemetry Boxes in Pub Mode */
+.c64-viewport[data-theme="pub"] .telemetry-item {
+  background: #140b02;
+  border-color: #4a2d07;
+}
+
+.c64-viewport[data-theme="pub"] .telemetry-label {
+  color: #facc15;
+}
+
+.c64-viewport[data-theme="pub"] .telemetry-drain-sub {
+  color: #fef08a;
+}
+
+/* Typing Terminal Arena & Input in Pub Mode */
+.c64-viewport[data-theme="pub"] .c64-terminal-arena {
+  background-color: #080401;
+  border-color: #4a2d07;
+}
+
+.c64-viewport[data-theme="pub"] .arena-focused {
+  border-color: #facc15;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.5), inset 0 0 20px rgba(45, 26, 4, 0.65);
+}
+
+.c64-viewport[data-theme="pub"] .arena-unfocused {
+  border-color: #3b2204;
+}
+
+.c64-viewport[data-theme="pub"] .char-pending {
+  color: #ffffff;
+}
+
+/* Terminal Focus Warning & Engagement Banner in Pub Mode */
+.c64-viewport[data-theme="pub"] .focus-warning-overlay {
+  background-color: rgba(12, 6, 1, 0.92);
+  border: 2px dashed #facc15;
+}
+
+.c64-viewport[data-theme="pub"] .blinking-cursor-prompt {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
+}
+
+/* Progress Meter in Pub Mode */
+.c64-viewport[data-theme="pub"] .depth-progress-container {
+  background: #100801;
+  border-color: #3d2407;
+}
+
+.c64-viewport[data-theme="pub"] .progress-labels {
+  color: #fde047;
+}
+
+.c64-viewport[data-theme="pub"] .c64-progress-bar {
+  background: #140b02;
+  border-color: #4a2d07;
+}
+
+.c64-viewport[data-theme="pub"] .progress-fill {
+  background: linear-gradient(90deg, #ca8a04 0%, #eab308 50%, #facc15 100%);
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.7);
+}
+
+/* Terminal Control Buttons in Pub Mode */
+.c64-viewport[data-theme="pub"] .retro-header-btn {
+  background: #180e03;
+  border-color: #4a2d07;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .retro-header-btn:hover {
+  background: #331d05;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+}
+
+.c64-viewport[data-theme="pub"] .retro-btn.btn-warning {
+  background: #78350f;
+  border-color: #facc15;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .retro-btn.btn-danger {
+  background: #1a0f02;
+  border-color: #4a2d07;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .retro-btn.btn-danger:hover {
+  background: #382105;
+  border-color: #facc15;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .c64-footer {
+  border-top-color: #ffffff;
+  color: #ffffff;
+}
+
+/* 5. Scoreboard & Hall of Fame in Pub Mode */
+.c64-viewport[data-theme="pub"] .retro-scoreboard-container {
+  background-color: #120b02;
+  border-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="pub"] .c64-header-banner {
+  background: linear-gradient(90deg, #3d2407, #784c0f, #3d2407);
+  border-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="pub"] .new-record-prompt {
+  background-color: #2b1803;
+  border-color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="pub"] .scoreboard-limit-selector {
+  border-color: #4a2d07;
+}
+
+.c64-viewport[data-theme="pub"] .limit-legend {
+  color: #fde047;
+}
+
+.c64-viewport[data-theme="pub"] .limit-btn {
+  background-color: #180e03;
+  border-color: #4a2d07;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .limit-btn:hover {
+  background-color: #331d05;
+  border-color: var(--c64-red);
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .limit-btn.active-limit-btn {
+  background-color: #663c08;
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+.c64-viewport[data-theme="pub"] .initials-form label {
+  color: #fde047;
+}
+
+.c64-viewport[data-theme="pub"] .initials-input {
+  background-color: #080401;
+  border-color: #facc15;
+  color: #fde047;
+}
+
+.c64-viewport[data-theme="pub"] .mission-debrief-card {
+  background-color: #170e03;
+  border-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="pub"] .debrief-header {
+  border-bottom-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="pub"] .debrief-item {
+  background-color: #100801;
+  border-color: #3d2407;
+}
+
+.c64-viewport[data-theme="pub"] .debrief-lbl {
+  color: #fde047;
+}
+
+.c64-viewport[data-theme="pub"] .debrief-final-score {
+  border-top-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="pub"] .device-tab-btn {
+  background-color: #180e03;
+  border-color: #4a2d07;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .device-tab-btn:hover {
+  background-color: #331d05;
+  border-color: var(--c64-red);
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .device-tab-btn.active-device-tab {
+  background-color: #553308;
+  border-color: #facc15;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+.c64-viewport[data-theme="pub"] .level-tab-btn {
+  background-color: #180e03;
+  border-color: #4a2d07;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .level-tab-btn:hover {
+  background-color: #331d05;
+  border-color: var(--c64-red);
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .level-tab-btn.active-tab {
+  background: linear-gradient(180deg, #663c08 0%, #361f03 100%);
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+.c64-viewport[data-theme="pub"] .fleet-intel-bar {
+  background: #000000;
+  border-color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .intel-pill {
+  background-color: #000000;
+  border-color: #3d2407;
+}
+
+.c64-viewport[data-theme="pub"] .intel-label {
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .podium-card {
+  background: #170e03;
+}
+
+.c64-viewport[data-theme="pub"] .gold-podium {
+  border-color: #ffd700;
+  background: linear-gradient(180deg, #422604 0%, #1c1002 100%);
+}
+
+.c64-viewport[data-theme="pub"] .silver-podium {
+  border-color: #e2e8f0;
+  background: linear-gradient(180deg, #2b1f14 0%, #150f09 100%);
+}
+
+.c64-viewport[data-theme="pub"] .bronze-podium {
+  border-color: #d97706;
+  background: linear-gradient(180deg, #3d2206 0%, #1a0e02 100%);
+}
+
+.c64-viewport[data-theme="pub"] .c64-score-table th {
+  background-color: #241503;
+  border-color: var(--c64-border);
+  color: #facc15;
+}
+
+.c64-viewport[data-theme="pub"] .sortable-header:hover {
+  background-color: #3d2407;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="pub"] .c64-score-table td {
+  border-color: #261603;
+}
+
+.c64-viewport[data-theme="pub"] .c64-score-table tr:hover td {
+  background-color: rgba(250, 204, 21, 0.12);
+}
+
+.c64-viewport[data-theme="pub"] .current-player-row td {
+  background-color: rgba(250, 204, 21, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.c64-viewport[data-theme="pub"] .btn-back-to-game {
+  background-color: #291803;
+  border-color: #553308;
+  color: #fef08a;
+}
+
+.c64-viewport[data-theme="pub"] .btn-back-to-game:hover {
+  background-color: #472b07;
+  border-color: #facc15;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+}
+
+/* Pub Beer Desk Graphic */
+.pub-beer-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px 0 16px;
+}
+
+.pub-beer-svg {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.35));
+}
+
+.pub-badge-text {
+  background-color: #140b02;
+  border: 1px solid #784c0f;
+  color: #fef08a;
+  font-family: var(--font-retro);
+  font-size: 11px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.2);
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .retro-theme-selector-bar {
@@ -3443,6 +3963,9 @@
   .strv-tank-svg {
     max-width: 200px;
   }
+  .pub-beer-svg {
+    max-width: 200px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -3450,6 +3973,9 @@
     max-width: 170px;
   }
   .strv-tank-svg {
+    max-width: 170px;
+  }
+  .pub-beer-svg {
     max-width: 170px;
   }
 }

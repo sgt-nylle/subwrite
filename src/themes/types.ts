@@ -1,7 +1,7 @@
 import React from 'react';
 import { type HighScore } from '../data/submarineTexts';
 
-export type ThemeId = 'submarine' | 'airforce' | 'army';
+export type ThemeId = 'submarine' | 'airforce' | 'army' | 'pub';
 
 export interface ThemeLevel {
   level: number;

@@ -439,7 +439,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               <span className="intel-val highlight-cyan">{levelStats.minFailed} FAILED CHARS</span>
             </div>
             <div className="intel-pill">
-              <span className="intel-label">{activeTheme.icon} TOTAL {activeTheme.id === 'airforce' ? 'SORTIES' : 'PATROLS'}:</span>
+              <span className="intel-label">{activeTheme.icon} TOTAL {activeTheme.id === 'airforce' ? 'SORTIES' : activeTheme.id === 'army' ? 'MISSIONS' : activeTheme.id === 'pub' ? 'ROUNDS' : 'PATROLS'}:</span>
               <span className="intel-val">{levelStats.totalPatrols} LOGGED</span>
             </div>
           </div>
@@ -511,7 +511,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               {filteredScores.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="no-scores-cell">
-                    NO {selectedDevice === 'mobile' ? 'TOUCHSCREEN' : 'KEYBOARD'} {activeTheme.id === 'airforce' ? 'SQUADRON' : 'FLEET'} RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
+                    NO {selectedDevice === 'mobile' ? 'TOUCHSCREEN' : 'KEYBOARD'} {activeTheme.groupLabel} RECORDS LOGGED FOR LEVEL {selectedLevel} YET. BE THE FIRST!
                   </td>
                 </tr>
               ) : (

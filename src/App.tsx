@@ -3,7 +3,7 @@ import { LEVEL_TIME_LIMITS } from './data/submarineTexts';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
 import { ThemeSelector } from './components/ThemeSelector';
-import { type ThemeId, getTheme, DEFAULT_THEME_ID } from './themes';
+import { type ThemeId, getTheme, THEMES, DEFAULT_THEME_ID } from './themes';
 import { sound } from './utils/audio';
 import { detectDeviceType } from './utils/device';
 import './App.css';
@@ -59,7 +59,7 @@ const getInitialPassage = (): { index: number; text: string } => {
     const savedLang = localStorage.getItem('subwrite_language');
     if (savedLang === 'en' || savedLang === 'sv') initialLang = savedLang;
     const savedTheme = localStorage.getItem('subwrite_theme');
-    if (savedTheme === 'submarine' || savedTheme === 'airforce' || savedTheme === 'army') initialThemeId = savedTheme;
+    if (savedTheme && savedTheme in THEMES) initialThemeId = savedTheme as ThemeId;
   } catch {
     // Ignore
   }
@@ -76,7 +76,7 @@ export function App() {
   const [theme, setTheme] = useState<ThemeId>(() => {
     try {
       const saved = localStorage.getItem('subwrite_theme');
-      if (saved === 'submarine' || saved === 'airforce' || saved === 'army') return saved as ThemeId;
+      if (saved && saved in THEMES) return saved as ThemeId;
     } catch {
       // Ignore
     }

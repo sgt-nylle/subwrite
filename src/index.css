@@ -54,6 +54,25 @@
   --c64-white: #f0fdf4;
 }
 
+/* =========================================================================
+   PUB (OFF-DUTY PUB / YELLOW & AMBER) THEME PALETTE
+   ========================================================================= */
+[data-theme="pub"] {
+  --c64-bg: #0f0a02;           /* Warm tavern dark background */
+  --c64-frame: #3d2407;        /* Aged oak / dark brewery bronze */
+  --c64-border: #855512;       /* Warm golden pub border */
+  --c64-red: #facc15;          /* Golden Yellow / Pub Draught Accent */
+  --c64-red-glow: rgba(250, 204, 21, 0.75);
+  --c64-dim-red: #fde047;      /* Pale foam yellow */
+  --c64-dark-red: #241402;
+  --c64-green: #34d399;
+  --c64-green-glow: rgba(52, 211, 153, 0.6);
+  --c64-amber: #eab308;        /* Golden draught */
+  --c64-gold: #fbbf24;
+  --c64-cyan: #fed7aa;
+  --c64-white: #ffffff;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
