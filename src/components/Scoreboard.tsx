@@ -258,7 +258,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     return filteredScores.slice(0, 3);
   }, [filteredScores]);
 
-  const groupLabel = activeTheme.id === 'airforce' ? 'SQUADRON' : 'FLEET';
+  const groupLabel = activeTheme.groupLabel;
 
   return (
     <div className="retro-modal-overlay">

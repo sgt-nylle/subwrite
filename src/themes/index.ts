@@ -1,19 +1,23 @@
 import { type ThemeId, type ThemeConfig } from './types';
 import { submarineTheme } from './submarineTheme';
 import { airforceTheme } from './airforceTheme';
+import { armyTheme } from './armyTheme';
 
 export * from './types';
 export { submarineTheme } from './submarineTheme';
 export { airforceTheme } from './airforceTheme';
+export { armyTheme } from './armyTheme';
 
 export const THEMES: Record<ThemeId, ThemeConfig> = {
   submarine: submarineTheme,
-  airforce: airforceTheme
+  airforce: airforceTheme,
+  army: armyTheme
 };
 
 export const AVAILABLE_THEMES: ThemeConfig[] = [
   submarineTheme,
-  airforceTheme
+  airforceTheme,
+  armyTheme
 ];
 
 export const DEFAULT_THEME_ID: ThemeId = 'submarine';

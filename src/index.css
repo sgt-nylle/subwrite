@@ -35,6 +35,25 @@
   --c64-white: #f0f9ff;
 }
 
+/* =========================================================================
+   ARMY (PANSARTRUPPERNA / ARMY GREEN) THEME PALETTE
+   ========================================================================= */
+[data-theme="army"] {
+  --c64-bg: #071206;           /* Deep tactical olive black */
+  --c64-frame: #1b3815;        /* Military olive green */
+  --c64-border: #2d5a22;       /* Camo green border */
+  --c64-red: #4ade80;          /* Army Green / Foliage Green Accent */
+  --c64-red-glow: rgba(74, 222, 128, 0.75);
+  --c64-dim-red: #86efac;      /* Light foliage green */
+  --c64-dark-red: #0f290d;
+  --c64-green: #22c55e;
+  --c64-green-glow: rgba(34, 197, 94, 0.6);
+  --c64-amber: #eab308;        /* Military brass */
+  --c64-gold: #facc15;
+  --c64-cyan: #6ee7b7;
+  --c64-white: #f0fdf4;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

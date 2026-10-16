@@ -194,7 +194,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <span className="lang-flag-icon">🇬🇧</span>
             <div className="lang-card-info">
               <span className="lang-primary-title">ENGLISH</span>
-              <span className="lang-sub-title">{activeTheme.id === 'airforce' ? 'Aviation Archives' : 'Naval Archives'}</span>
+              <span className="lang-sub-title">{activeTheme.langSubTitleEn}</span>
             </div>
             <span className="lang-status-badge">
               {selectedLanguage === 'en' ? '► ACTIVE ◄' : 'SELECT [E]'}
@@ -212,7 +212,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             <span className="lang-flag-icon">🇸🇪</span>
             <div className="lang-card-info">
               <span className="lang-primary-title">SVENSKA</span>
-              <span className="lang-sub-title">{activeTheme.id === 'airforce' ? 'Gripen & Flygvapnet' : 'Gotland & Marinen'}</span>
+              <span className="lang-sub-title">{activeTheme.langSubTitleSv}</span>
             </div>
             <span className="lang-status-badge">
               {selectedLanguage === 'sv' ? '► ACTIVE ◄' : 'VÄLJ [V]'}
@@ -230,19 +230,19 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             sound.playSonarPing();
             onStartGame(selectedLevel);
           }}
-          aria-label={isMobile ? `Push to dive at level ${selectedLevel}` : `Push to start dive at level ${selectedLevel}`}
+          aria-label={isMobile ? `Push to ${activeTheme.actionWord.toLowerCase()} at level ${selectedLevel}` : `Push to start at level ${selectedLevel}`}
         >
           <span className="push-btn-content">
             <span className="push-btn-arrows">►</span>
             <span className="push-btn-text">
-              {isMobile ? (activeTheme.id === 'airforce' ? 'PUSH TO FLY' : 'PUSH TO DIVE') : 'PUSH START'}
+              {isMobile ? `PUSH TO ${activeTheme.actionWord}` : 'PUSH START'}
             </span>
             <span className="push-btn-lvl-tag">[LVL {selectedLevel}]</span>
             <span className="push-btn-arrows">◄</span>
           </span>
           <span className="push-btn-subtext">
             {isMobile
-              ? (activeTheme.id === 'airforce' ? 'ONE TOUCH TO COMMENCE FLIGHT' : 'ONE TOUCH TO COMMENCE DIVE')
+              ? `ONE TOUCH TO ${activeTheme.actionWordLong}`
               : 'COMMENCE MISSION • [ENTER]'}
           </span>
         </button>
@@ -273,8 +273,8 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                 </div>
                 <span className="nes-quick-dive-badge">
                   {isMobile
-                    ? (activeTheme.id === 'airforce' ? 'PUSH TO FLY' : 'PUSH TO DIVE')
-                    : (activeTheme.id === 'airforce' ? 'FLY' : 'DIVE')}
+                    ? `PUSH TO ${activeTheme.actionWord}`
+                    : activeTheme.actionWord}
                 </span>
               </button>
             );
@@ -291,11 +291,11 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             onOpenScoreboard();
           }}
           className="nes-hall-of-fame-btn"
-          aria-label="Open Fleet Hall of Fame & Scoreboards"
+          aria-label={`Open ${activeTheme.groupLabel} Hall of Fame & Scoreboards`}
         >
           <span className="trophy-badge">🏆</span>
           <span className="hof-btn-content">
-            <span className="hof-btn-title">{activeTheme.id === 'airforce' ? 'SQUADRON' : 'FLEET'} HALL OF FAME & RECORDS</span>
+            <span className="hof-btn-title">{activeTheme.groupLabel} HALL OF FAME & RECORDS</span>
             <span className="hof-btn-subtitle">
               NAVIGATE LEVELS 1-5 • PC/MAC & SMARTPHONE STATS
             </span>

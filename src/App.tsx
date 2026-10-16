@@ -59,7 +59,7 @@ const getInitialPassage = (): { index: number; text: string } => {
     const savedLang = localStorage.getItem('subwrite_language');
     if (savedLang === 'en' || savedLang === 'sv') initialLang = savedLang;
     const savedTheme = localStorage.getItem('subwrite_theme');
-    if (savedTheme === 'submarine' || savedTheme === 'airforce') initialThemeId = savedTheme;
+    if (savedTheme === 'submarine' || savedTheme === 'airforce' || savedTheme === 'army') initialThemeId = savedTheme;
   } catch {
     // Ignore
   }
@@ -76,7 +76,7 @@ export function App() {
   const [theme, setTheme] = useState<ThemeId>(() => {
     try {
       const saved = localStorage.getItem('subwrite_theme');
-      if (saved === 'submarine' || saved === 'airforce') return saved as ThemeId;
+      if (saved === 'submarine' || saved === 'airforce' || saved === 'army') return saved as ThemeId;
     } catch {
       // Ignore
     }
@@ -623,7 +623,7 @@ export function App() {
           {/* LEVEL SELECTOR (LEVELS 1 - 5) */}
           <section className="c64-level-selector c64-box">
             <div className="level-bar-label">
-              <span>[ {activeTheme.id === 'airforce' ? 'TACTICAL FLIGHT LEVEL' : 'TACTICAL DIVE LEVEL'} ]:</span>
+              <span>[ {activeTheme.levelHeaderLabel} ]:</span>
             </div>
             <div className="level-buttons-grid">
               {activeTheme.levels.map((lvl) => {
@@ -717,8 +717,8 @@ export function App() {
             {/* PROGRESS METER */}
             <div className="depth-progress-container">
               <div className="progress-labels">
-                <span>{activeTheme.id === 'airforce' ? 'AFTERBURNER ENGAGED • CLIMBING...' : 'BALLAST TANKS FLOODING...'}</span>
-                <span>{activeTheme.id === 'airforce' ? 'ALTITUDE REACHED:' : 'DEPTH REACHED:'} {progressPercent}%</span>
+                <span>{activeTheme.progressStatusText}</span>
+                <span>{activeTheme.dimensionLabel} REACHED: {progressPercent}%</span>
               </div>
               <div className="c64-progress-bar">
                 <div

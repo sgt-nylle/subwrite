@@ -2299,6 +2299,13 @@
   box-shadow: 0 0 12px rgba(0, 212, 255, 0.7), inset 0 0 8px rgba(0, 212, 255, 0.3);
 }
 
+.theme-btn-army.active-theme-btn {
+  background-color: #1a4215;
+  border-color: #4ade80;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.7), inset 0 0 8px rgba(74, 222, 128, 0.3);
+}
+
 .theme-btn-icon {
   font-size: 11px;
 }
@@ -2356,6 +2363,52 @@
   color: #38bdf8;
   letter-spacing: 1px;
   text-shadow: 0 0 8px rgba(0, 212, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =========================================================================
+   8-BIT STRIDSVAGN 122 TANK SPRITE STYLING
+   ========================================================================= */
+
+.strv-tank-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0 10px 0;
+  animation: tankRumble 3s ease-in-out infinite;
+}
+
+@keyframes tankRumble {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-1px);
+  }
+}
+
+.strv-tank-svg {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.65));
+}
+
+.strv-badge-text {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #4ade80;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.75);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -2862,6 +2915,507 @@
   box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
 }
 
+/* =========================================================================
+   ARMY THEME OVERRIDES (ARMY GREEN / STRIDSVAGN 122 CRT MONITOR)
+   ========================================================================= */
+
+.c64-viewport[data-theme="army"] {
+  background: radial-gradient(circle at center, #0e240c 0%, #040d03 100%);
+  color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="army"] .crt-vignette {
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.65), inset 0 0 35px rgba(34, 197, 94, 0.2);
+}
+
+.c64-viewport[data-theme="army"] .c64-screen-frame {
+  box-shadow: 
+    0 0 0 4px var(--c64-frame),
+    0 0 35px rgba(74, 222, 128, 0.35),
+    inset 0 0 30px rgba(15, 41, 13, 0.7);
+}
+
+.c64-viewport[data-theme="army"] .c64-box {
+  background-color: #081607;
+  border-color: var(--c64-border);
+  box-shadow: inset 0 0 14px rgba(27, 56, 21, 0.55);
+}
+
+.c64-viewport[data-theme="army"] .c64-top-bar {
+  background-color: #0b1f0a;
+  border-color: var(--c64-border);
+}
+
+.c64-viewport[data-theme="army"] .nes-main-title {
+  text-shadow: 
+    0 0 15px var(--c64-red-glow),
+    3px 3px 0px #2d5a22,
+    5px 5px 0px #132e0e;
+}
+
+.c64-viewport[data-theme="army"] .nes-main-title-mobile {
+  text-shadow: 
+    0 0 8px var(--c64-red-glow),
+    2px 2px 0px #2d5a22 !important;
+}
+
+/* 1. Language Selection Panel in Army Mode (Standard template white border & black bg) */
+.c64-viewport[data-theme="army"] .nes-language-panel {
+  background-color: #000000;
+  border-color: #ffffff;
+}
+
+.c64-viewport[data-theme="army"] .nes-lang-card-btn {
+  background-color: #091708;
+  border-color: #1b3815;
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .nes-lang-card-btn:hover {
+  background-color: #143310;
+  border-color: var(--c64-red);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.45);
+}
+
+.c64-viewport[data-theme="army"] .nes-lang-card-btn.active-lang-card {
+  background: linear-gradient(180deg, #1b4d14 0%, #0d280a 100%);
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.5), inset 0 0 8px rgba(74, 222, 128, 0.35);
+}
+
+.c64-viewport[data-theme="army"] .lang-sub-title {
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .active-lang-card .lang-sub-title {
+  color: #dcfce7;
+}
+
+.c64-viewport[data-theme="army"] .lang-status-badge {
+  background-color: #0f2c0d;
+  border-color: #1b3815;
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .active-lang-card .lang-status-badge {
+  background-color: #16a34a;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+}
+
+/* 2. Start Screen Level List & Menu Options (Header and subtext are white as per standard) */
+.c64-viewport[data-theme="army"] .nes-menu-header {
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="army"] .nes-menu-item-btn {
+  background-color: #091708;
+  border: 1px solid #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .nes-menu-item-btn:hover {
+  background-color: #143310;
+  border-color: var(--c64-red);
+}
+
+.c64-viewport[data-theme="army"] .nes-menu-item-btn.selected-item {
+  background: linear-gradient(90deg, #184212 0%, #091708 100%);
+  border: 1px solid var(--c64-red);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.45);
+}
+
+.c64-viewport[data-theme="army"] .nes-menu-item-main {
+  color: #dcfce7;
+}
+
+.c64-viewport[data-theme="army"] .nes-item-desc {
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="army"] .nes-quick-dive-badge {
+  background: rgba(27, 56, 21, 0.7);
+  border-color: #2d5a22;
+  color: var(--c64-gold);
+}
+
+.c64-viewport[data-theme="army"] .nes-menu-item-btn:hover .nes-quick-dive-badge,
+.c64-viewport[data-theme="army"] .nes-menu-item-btn.selected-item .nes-quick-dive-badge {
+  background: #16a34a;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.75);
+}
+
+.c64-viewport[data-theme="army"] .nes-hall-of-fame-btn {
+  background: linear-gradient(180deg, #1b4513 0%, #091708 100%);
+  border-color: var(--c64-gold);
+  box-shadow: 0 4px 0 #050e04, 0 0 12px rgba(250, 204, 21, 0.35);
+}
+
+.c64-viewport[data-theme="army"] .nes-hall-of-fame-btn:hover {
+  background: linear-gradient(180deg, #235c19 0%, #0d260c 100%);
+  border-color: #ffffff;
+  box-shadow: 0 4px 0 #050e04, 0 0 18px rgba(250, 204, 21, 0.55);
+}
+
+/* 3. Push Start Button in Army Mode */
+.c64-viewport[data-theme="army"] .nes-push-button {
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 50%, #14532d 100%);
+  border: 3px solid #4ade80;
+  box-shadow:
+    0 6px 0 #052e16,
+    0 10px 20px rgba(74, 222, 128, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+.c64-viewport[data-theme="army"] .nes-push-button:hover {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+  border-color: #ffd700;
+  box-shadow:
+    0 6px 0 #052e16,
+    0 12px 25px rgba(74, 222, 128, 0.65),
+    inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.c64-viewport[data-theme="army"] .nes-push-button:active {
+  box-shadow:
+    0 2px 0 #052e16,
+    0 4px 10px rgba(74, 222, 128, 0.6),
+    inset 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.c64-viewport[data-theme="army"] .push-btn-subtext {
+  color: #bbf7d0;
+}
+
+/* 4. Live Mission Arena Level Selector & Terminal */
+.c64-viewport[data-theme="army"] .c64-level-selector {
+  background-color: #071606;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .level-btn {
+  background-color: #0a1f09;
+  border: 3px solid #1b3815;
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .level-btn:hover {
+  background-color: #143812;
+  border-color: #4ade80;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.45);
+}
+
+.c64-viewport[data-theme="army"] .level-btn.active-level {
+  background-color: #16a34a;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.75), inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.c64-viewport[data-theme="army"] .level-status-desc {
+  background-color: #051004;
+  color: #bbf7d0;
+}
+
+/* Tactical Telemetry Panel & Status Icons in Army Mode */
+.c64-viewport[data-theme="army"] .telemetry-item {
+  background-color: #081a07;
+  border: 2px solid #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .telemetry-label {
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .telemetry-drain-sub {
+  color: #bbf7d0;
+  text-shadow: 0 0 4px rgba(74, 222, 128, 0.7);
+}
+
+/* Typing Terminal Arena & Input in Army Mode */
+.c64-viewport[data-theme="army"] .c64-terminal-arena {
+  background-color: #030a02;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .arena-focused {
+  border-color: #4ade80;
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.5), inset 0 0 20px rgba(15, 41, 13, 0.65);
+}
+
+.c64-viewport[data-theme="army"] .arena-unfocused {
+  border-color: #163612;
+}
+
+.c64-viewport[data-theme="army"] .char-pending {
+  color: #86efac;
+}
+
+/* Terminal Focus Warning & Engagement Banner in Army Mode */
+.c64-viewport[data-theme="army"] .focus-warning-overlay {
+  background-color: rgba(3, 10, 2, 0.92);
+  border: 2px dashed #4ade80;
+}
+
+.c64-viewport[data-theme="army"] .blinking-cursor-prompt {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.8);
+}
+
+/* Progress Meter in Army Mode */
+.c64-viewport[data-theme="army"] .depth-progress-container {
+  background-color: #081a07;
+  border: 2px solid #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .progress-labels {
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .c64-progress-bar {
+  background-color: #051004;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .progress-fill {
+  background: repeating-linear-gradient(
+    90deg,
+    #16a34a,
+    #16a34a 8px,
+    #15803d 8px,
+    #15803d 12px
+  );
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+}
+
+.c64-viewport[data-theme="army"] .retro-header-btn {
+  background-color: #0a1f09;
+  border-color: #1b3815;
+  color: #dcfce7;
+}
+
+.c64-viewport[data-theme="army"] .retro-header-btn:hover {
+  background-color: #143812;
+  border-color: #4ade80;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+.c64-viewport[data-theme="army"] .retro-btn.btn-warning {
+  background-color: #2b1f02;
+  border-color: #f59e0b;
+}
+
+.c64-viewport[data-theme="army"] .retro-btn.btn-danger {
+  background-color: #143812;
+  border-color: #4ade80;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="army"] .retro-btn.btn-danger:hover {
+  background-color: #1b4d17;
+  border-color: #86efac;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+
+.c64-viewport[data-theme="army"] .c64-footer {
+  background-color: #091c08;
+  border-color: #1b3815;
+}
+
+/* 5. Scoreboard & Hall of Fame Modal */
+.c64-viewport[data-theme="army"] .retro-scoreboard-container {
+  background-color: #040e03;
+  border-color: #2d5a22;
+  box-shadow: 0 0 40px rgba(74, 222, 128, 0.45);
+}
+
+.c64-viewport[data-theme="army"] .c64-header-banner {
+  border-bottom-color: #2d5a22;
+}
+
+.c64-viewport[data-theme="army"] .new-record-prompt {
+  background: linear-gradient(180deg, #1b4d14 0%, #081a07 100%);
+}
+
+.c64-viewport[data-theme="army"] .scoreboard-limit-selector {
+  background-color: #081a07;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .limit-legend {
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .limit-btn {
+  color: #86efac;
+  background-color: #0b2209;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .limit-btn:hover {
+  background-color: #153c12;
+  color: #ffffff;
+  border-color: #4ade80;
+}
+
+.c64-viewport[data-theme="army"] .limit-btn.active-limit-btn {
+  background-color: #16a34a;
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+}
+
+.c64-viewport[data-theme="army"] .initials-form label {
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .initials-input {
+  background-color: #030a02;
+  border-color: #4ade80;
+  color: var(--c64-green);
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+
+.c64-viewport[data-theme="army"] .mission-debrief-card {
+  background-color: #081a07;
+  border-color: #2d5a22;
+}
+
+.c64-viewport[data-theme="army"] .debrief-header {
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+}
+
+.c64-viewport[data-theme="army"] .debrief-item {
+  background-color: #051004;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .debrief-lbl {
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .debrief-final-score {
+  border-top-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .device-tab-btn {
+  background: linear-gradient(180deg, #0b2209 0%, #051004 100%);
+  border-color: #1b3815;
+  color: #bbf7d0;
+  box-shadow: 0 4px 0 #030a02;
+}
+
+.c64-viewport[data-theme="army"] .device-tab-btn:hover {
+  background: #143812;
+  border-color: var(--c64-gold);
+  color: #ffffff;
+  box-shadow: 0 4px 0 #030a02, 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.c64-viewport[data-theme="army"] .device-tab-btn.active-device-tab {
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+  border-color: var(--c64-gold);
+  color: var(--c64-gold);
+  box-shadow: 0 2px 0 #030a02, 0 0 14px rgba(255, 215, 0, 0.6);
+}
+
+.c64-viewport[data-theme="army"] .level-tab-btn {
+  background-color: #081a07;
+  border-color: #1b3815;
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .level-tab-btn:hover {
+  background-color: #143812;
+  border-color: #4ade80;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+.c64-viewport[data-theme="army"] .level-tab-btn.active-tab {
+  background-color: #16a34a;
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.7);
+}
+
+.c64-viewport[data-theme="army"] .fleet-intel-bar {
+  background-color: #081a07;
+  border-color: #1b3815;
+}
+
+.c64-viewport[data-theme="army"] .intel-pill {
+  background-color: #0b2209;
+  border-color: #1b3815;
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .intel-label {
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .podium-card {
+  background-color: #081a07;
+}
+
+.c64-viewport[data-theme="army"] .gold-podium {
+  background: radial-gradient(circle at top, #3a2b00 0%, #081a07 85%);
+}
+
+.c64-viewport[data-theme="army"] .silver-podium {
+  background: radial-gradient(circle at top, #1e293b 0%, #081a07 85%);
+}
+
+.c64-viewport[data-theme="army"] .bronze-podium {
+  background: radial-gradient(circle at top, #351a08 0%, #081a07 85%);
+}
+
+.c64-viewport[data-theme="army"] .c64-score-table th {
+  background-color: #0b2209;
+  border-bottom-color: #2d5a22;
+  color: #86efac;
+}
+
+.c64-viewport[data-theme="army"] .sortable-header:hover {
+  background-color: #153c12;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+}
+
+.c64-viewport[data-theme="army"] .c64-score-table td {
+  border-bottom-color: #142f10;
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .c64-score-table tr:hover td {
+  background-color: #12370f;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="army"] .current-player-row td {
+  background-color: #165313;
+  color: #ffffff;
+}
+
+.c64-viewport[data-theme="army"] .btn-back-to-game {
+  background-color: #081a07;
+  border-color: #1b3815;
+  color: #bbf7d0;
+}
+
+.c64-viewport[data-theme="army"] .btn-back-to-game:hover {
+  background-color: #143812;
+  border-color: #4ade80;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .retro-theme-selector-bar {
@@ -2886,10 +3440,16 @@
   .gripen-fighter-svg {
     max-width: 200px;
   }
+  .strv-tank-svg {
+    max-width: 200px;
+  }
 }
 
 @media (max-width: 480px) {
   .gripen-fighter-svg {
+    max-width: 170px;
+  }
+  .strv-tank-svg {
     max-width: 170px;
   }
 }

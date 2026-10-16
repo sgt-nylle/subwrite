@@ -18,6 +18,13 @@ export const submarineTheme: ThemeConfig = {
   vesselName: 'HSwMS GOTLAND',
   dimensionLabel: 'DEPTH',
   badgeText: '🇸🇪 HSwMS GOTLAND (A19) • STIRLING AIP • X-RUDDER',
+  groupLabel: 'FLEET',
+  actionWord: 'DIVE',
+  actionWordLong: 'COMMENCE DIVE',
+  langSubTitleEn: 'Naval Archives',
+  langSubTitleSv: 'Gotland & Marinen',
+  progressStatusText: 'BALLAST TANKS FLOODING...',
+  levelHeaderLabel: 'TACTICAL DIVE LEVEL',
   levels: SUBMARINE_LEVELS.map(lvl => ({
     level: lvl.level,
     name: lvl.name,

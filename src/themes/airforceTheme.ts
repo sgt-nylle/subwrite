@@ -81,6 +81,13 @@ export const airforceTheme: ThemeConfig = {
   vesselName: 'SAAB JAS 39 GRIPEN',
   dimensionLabel: 'ALTITUDE',
   badgeText: '🇸🇪 SAAB JAS 39 GRIPEN • CANARD DELTA • FLYGVAPNET',
+  groupLabel: 'SQUADRON',
+  actionWord: 'FLY',
+  actionWordLong: 'COMMENCE FLIGHT',
+  langSubTitleEn: 'Aviation Archives',
+  langSubTitleSv: 'Gripen & Flygvapnet',
+  progressStatusText: 'AFTERBURNER ENGAGED • CLIMBING...',
+  levelHeaderLabel: 'TACTICAL FLIGHT LEVEL',
   levels: [
     {
       level: 1,
