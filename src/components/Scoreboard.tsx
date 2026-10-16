@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { type HighScore } from '../data/submarineTexts';
 import { sound } from '../utils/audio';
 import { detectDeviceType, getDeviceLabel } from '../utils/device';
@@ -87,6 +87,13 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: keyof HighScore, direction: 'asc' | 'desc' }>({ key: 'score', direction: 'desc' });
 
+  // Refs for seamless keyboard event listener access without closure staleness
+  const submitTimestampRef = useRef<number>(0);
+  const selectedLevelRef = useRef<number | 'all'>(selectedLevel);
+  useEffect(() => {
+    selectedLevelRef.current = selectedLevel;
+  }, [selectedLevel]);
+
   // Fetch shared global scores from backend API for current theme
   useEffect(() => {
     let isMounted = true;
@@ -116,18 +123,81 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     return () => { isMounted = false; };
   }, [activeTheme.id, storageKey]);
 
-  // ESC key listener to return to the main menu for the current theme
+  // Keyboard navigation listener:
+  // - ESC: Return to Main Menu
+  // - ArrowLeft / ArrowUp: Cycle to previous level (1..5)
+  // - ArrowRight / ArrowDown: Cycle to next level (1..5)
+  // - Number keys 1..5: Jump to level directly
+  // - Enter: Start the selected level (or previous level if unchanged) once initials are logged
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. ESC: Always return to Main Menu
       if (e.key === 'Escape') {
         e.preventDefault();
         sound.playKeypress();
         onReturnToMenu?.();
+        return;
+      }
+
+      // If the user is currently typing into an input field, do not hijack typing
+      const isInputFocused = (e.target as HTMLElement)?.tagName === 'INPUT';
+      if (isInputFocused) {
+        return;
+      }
+
+      // If a game was just completed and initials have not yet been submitted, do not trigger play again
+      if (currentScore && !submitted) {
+        return;
+      }
+
+      // 2. Arrow keys to change level
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        sound.playLevelSelect();
+        setSelectedLevel(prev => {
+          const cur = typeof prev === 'number' ? prev : (currentScore?.level || 1);
+          return cur > 1 ? cur - 1 : 5;
+        });
+        return;
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        sound.playLevelSelect();
+        setSelectedLevel(prev => {
+          const cur = typeof prev === 'number' ? prev : (currentScore?.level || 1);
+          return cur < 5 ? cur + 1 : 1;
+        });
+        return;
+      }
+
+      // 3. Number keys [1-5] to jump to level
+      if (['1', '2', '3', '4', '5'].includes(e.key)) {
+        e.preventDefault();
+        sound.playLevelSelect();
+        setSelectedLevel(parseInt(e.key, 10));
+        return;
+      }
+
+      // 4. Enter to start the selected level (or previous game level if not changed)
+      if (e.key === 'Enter') {
+        // Prevent accidental double-fire if user just pressed Enter to submit initials
+        if (Date.now() - submitTimestampRef.current < 400) {
+          return;
+        }
+        e.preventDefault();
+        sound.playLevelSelect();
+        const targetLevel = typeof selectedLevelRef.current === 'number'
+          ? selectedLevelRef.current
+          : (currentScore?.level || 1);
+        onPlayAgain(targetLevel);
+        return;
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onReturnToMenu]);
+  }, [onReturnToMenu, onPlayAgain, currentScore, submitted]);
 
   // Check if current trial qualifies as a top 3 podium score for that level & device
   const isPodiumScore = useMemo(() => {
@@ -144,6 +214,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     e.preventDefault();
     if (initials.trim().length === 0 || !currentScore) return;
 
+    submitTimestampRef.current = Date.now();
     sound.playVictory();
     const entryInitials = initials.toUpperCase().slice(0, 3).padEnd(3, 'X');
     const entryDevice = currentScore.device || selectedDevice;
@@ -389,7 +460,12 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         {/* LOGGED CONFIRMATION BANNER */}
         {currentScore && submitted && (
           <div className="submission-confirmed-banner">
-            ✓ CALL-SIGN <span className="highlight-gold">[{initials.toUpperCase().slice(0, 3).padEnd(3, 'X')}]</span> LOGGED TO LEVEL {currentScore.level} FLEET ARCHIVE!
+            <div className="confirmed-msg">
+              ✓ CALL-SIGN <span className="highlight-gold">[{initials.toUpperCase().slice(0, 3).padEnd(3, 'X')}]</span> LOGGED TO LEVEL {currentScore.level} {groupLabel} ARCHIVE!
+            </div>
+            <div className="confirmed-nav-prompt">
+              [◀ / ▶ ARROWS] CHANGE LEVEL &nbsp;•&nbsp; [ENTER] START LEVEL {selectedLevel === 'all' ? currentScore.level : selectedLevel} &nbsp;•&nbsp; [ESC] MENU
+            </div>
           </div>
         )}
 
@@ -572,7 +648,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
             className="retro-btn btn-danger large-btn"
             type="button"
           >
-            ▶ GO {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} (BEAT RECORD)
+            ▶ GO {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} (BEAT RECORD) [ENTER]
           </button>
           {onReturnToMenu && (
             <button

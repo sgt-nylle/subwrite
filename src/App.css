@@ -629,6 +629,13 @@
   letter-spacing: 1px;
 }
 
+.confirmed-nav-prompt {
+  margin-top: 6px;
+  font-size: 8px;
+  color: #ffffff;
+  letter-spacing: 0.8px;
+}
+
 .scoreboard-limit-selector {
   display: flex;
   align-items: center;
