@@ -72,10 +72,10 @@ export const INITIAL_ARMY_MOBILE_HIGH_SCORES: HighScore[] = [
 
 export const armyTheme: ThemeConfig = {
   id: 'army',
-  name: 'ARMYWRITE',
+  name: 'TANKWRITE',
   icon: '🪖',
   flair: '⚔',
-  title: 'ARMYWRITE!',
+  title: 'TANKWRITE!',
   subtitle: 'subwrite.se - your personal armored warfare type challenge!',
   vesselLabel: 'TANK',
   vesselName: 'STRIDSVAGN 122',
