@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { type HighScore } from '../data/submarineTexts';
 import { sound } from '../utils/audio';
 import { detectDeviceType, getDeviceLabel } from '../utils/device';
@@ -26,8 +26,10 @@ interface ScoreboardProps {
   currentScore?: FinalTrialResult | null;
   initialLevel?: number;
   initialDevice?: 'desktop' | 'mobile';
+  language?: 'en' | 'sv';
+  onSelectLanguage?: (lang: 'en' | 'sv') => void;
   theme?: ThemeId;
-  onPlayAgain: (lvl?: number) => void;
+  onPlayAgain: (lvl?: number, lang?: 'en' | 'sv') => void;
   onReturnToMenu?: () => void;
 }
 
@@ -49,6 +51,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   currentScore,
   initialLevel,
   initialDevice,
+  language = 'en',
+  onSelectLanguage,
   theme = 'submarine',
   onPlayAgain,
   onReturnToMenu
@@ -94,6 +98,24 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
     selectedLevelRef.current = selectedLevel;
   }, [selectedLevel]);
 
+  // Language state for post-game retry / next mission
+  const [localLanguage, setLocalLanguage] = useState<'en' | 'sv'>(language || 'en');
+  const currentLanguage = language ?? localLanguage;
+  const currentLanguageRef = useRef<'en' | 'sv'>(currentLanguage);
+  useEffect(() => {
+    currentLanguageRef.current = currentLanguage;
+  }, [currentLanguage]);
+
+  const handleToggleLanguage = useCallback(() => {
+    sound.playKeypress();
+    const nextLang = currentLanguageRef.current === 'en' ? 'sv' : 'en';
+    if (onSelectLanguage) {
+      onSelectLanguage(nextLang);
+    } else {
+      setLocalLanguage(nextLang);
+    }
+  }, [onSelectLanguage]);
+
   // Fetch shared global scores from backend API for current theme
   useEffect(() => {
     let isMounted = true;
@@ -128,6 +150,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   // - ArrowLeft / ArrowUp: Cycle to previous level (1..5)
   // - ArrowRight / ArrowDown: Cycle to next level (1..5)
   // - Number keys 1..5: Jump to level directly
+  // - L: Toggle language (English / Svenska)
   // - Enter: Start the selected level (or previous level if unchanged) once initials are logged
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -145,12 +168,19 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // If a game was just completed and initials have not yet been submitted, do not trigger play again
+      // If a game was just completed and initials have not yet been submitted, do not trigger play again or settings change
       if (currentScore && !submitted) {
         return;
       }
 
-      // 2. Arrow keys to change level
+      // 2. 'L' / 'l': Toggle language between English and Swedish
+      if (e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        handleToggleLanguage();
+        return;
+      }
+
+      // 3. Arrow keys to change level
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
         sound.playLevelSelect();
@@ -171,7 +201,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // 3. Number keys [1-5] to jump to level
+      // 4. Number keys [1-5] to jump to level
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         sound.playLevelSelect();
@@ -179,7 +209,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // 4. Enter to start the selected level (or previous game level if not changed)
+      // 5. Enter to start the selected level (or previous game level if not changed)
       if (e.key === 'Enter') {
         // Prevent accidental double-fire if user just pressed Enter to submit initials
         if (Date.now() - submitTimestampRef.current < 400) {
@@ -190,14 +220,14 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         const targetLevel = typeof selectedLevelRef.current === 'number'
           ? selectedLevelRef.current
           : (currentScore?.level || 1);
-        onPlayAgain(targetLevel);
+        onPlayAgain(targetLevel, currentLanguageRef.current);
         return;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onReturnToMenu, onPlayAgain, currentScore, submitted]);
+  }, [onReturnToMenu, onPlayAgain, currentScore, submitted, handleToggleLanguage]);
 
   // Check if current trial qualifies as a top 3 podium score for that level & device
   const isPodiumScore = useMemo(() => {
@@ -464,7 +494,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               ✓ CALL-SIGN <span className="highlight-gold">[{initials.toUpperCase().slice(0, 3).padEnd(3, 'X')}]</span> LOGGED TO LEVEL {currentScore.level} {groupLabel} ARCHIVE!
             </div>
             <div className="confirmed-nav-prompt">
-              [◀ / ▶ ARROWS] CHANGE LEVEL &nbsp;•&nbsp; [ENTER] START LEVEL {selectedLevel === 'all' ? currentScore.level : selectedLevel} &nbsp;•&nbsp; [ESC] MENU
+              [◀ / ▶] LEVEL &nbsp;•&nbsp; [L] {currentLanguage === 'en' ? '🇬🇧 ENGLISH' : '🇸🇪 SVENSKA'} &nbsp;•&nbsp; [ENTER] START LEVEL {selectedLevel === 'all' ? currentScore.level : selectedLevel} &nbsp;•&nbsp; [ESC] MENU
             </div>
           </div>
         )}
@@ -644,11 +674,19 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
         <div className="scoreboard-actions">
           <button
-            onClick={() => onPlayAgain(selectedLevel === 'all' ? undefined : selectedLevel)}
+            onClick={() => onPlayAgain(selectedLevel === 'all' ? undefined : selectedLevel, currentLanguage)}
             className="retro-btn btn-danger large-btn"
             type="button"
           >
-            ▶ GO {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} (BEAT RECORD) [ENTER]
+            ▶ GO {selectedLevel === 'all' ? 'MISSION' : `LEVEL ${selectedLevel}`} [{currentLanguage === 'en' ? '🇬🇧 EN' : '🇸🇪 SV'}] [ENTER]
+          </button>
+          <button
+            onClick={handleToggleLanguage}
+            className="retro-btn btn-lang-toggle"
+            type="button"
+            title="Toggle Language [L]"
+          >
+            {currentLanguage === 'en' ? '🇬🇧 EN [L]' : '🇸🇪 SV [L]'}
           </button>
           {onReturnToMenu && (
             <button

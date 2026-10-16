@@ -760,11 +760,14 @@ export function App() {
           currentScore={finalScoreData}
           initialLevel={level}
           initialDevice={isMobile ? 'mobile' : 'desktop'}
+          language={language}
+          onSelectLanguage={handleSelectLanguage}
           theme={theme}
-          onPlayAgain={(lvl?: number) => {
-            const target = lvl ?? level;
+          onPlayAgain={(lvl?: number, lang?: 'en' | 'sv') => {
+            const targetLvl = lvl ?? level;
+            const targetLang = lang ?? language;
             setShowScoreboard(false);
-            handleStartGame(target);
+            handleStartGame(targetLvl, targetLang);
           }}
           onReturnToMenu={handleReturnToMenu}
         />

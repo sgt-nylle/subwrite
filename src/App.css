@@ -1124,6 +1124,23 @@
   width: 100%;
 }
 
+.btn-lang-toggle {
+  width: 100%;
+  padding: 10px;
+  font-size: 11px;
+  color: #ffffff;
+  background-color: #0b1a2e;
+  border: 2px solid var(--c64-border);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  letter-spacing: 1px;
+}
+
+.btn-lang-toggle:hover {
+  background-color: #163659;
+  border-color: var(--c64-red);
+  box-shadow: 0 0 15px var(--c64-red-glow);
+}
+
 .btn-back-to-game {
   width: 100%;
   padding: 14px;

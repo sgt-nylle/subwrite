@@ -101,6 +101,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         e.preventDefault();
         sound.playSonarPing();
         onStartGame(selectedLevel);
+      } else if (e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        sound.playKeypress();
+        onSelectLanguage(selectedLanguage === 'en' ? 'sv' : 'en');
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         sound.playKeypress();
@@ -118,7 +122,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedLevel, theme, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onSelectLanguage]);
+  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onSelectLanguage]);
 
   const handleLevelClick = (lvl: number) => {
     sound.playSonarPing();
@@ -153,9 +157,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             }}
             className="nes-mini-btn nes-mini-lang-btn"
             type="button"
-            title="Toggle Language: [E] English / [V] Svenska"
+            title="Toggle Language [L]"
           >
-            {selectedLanguage === 'en' ? '🇬🇧 ENGLISH' : '🇸🇪 SVENSKA'}
+            {selectedLanguage === 'en' ? '🇬🇧 ENGLISH [L]' : '🇸🇪 SVENSKA [L]'}
           </button>
           <button
             onClick={onOpenScoreboard}
@@ -209,7 +213,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               <span className="lang-sub-title">{activeTheme.langSubTitleEn}</span>
             </div>
             <span className="lang-status-badge">
-              {selectedLanguage === 'en' ? '► ACTIVE ◄' : 'SELECT [E]'}
+              {selectedLanguage === 'en' ? '► ACTIVE ◄' : 'SELECT [L]'}
             </span>
           </button>
           <button
@@ -227,7 +231,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               <span className="lang-sub-title">{activeTheme.langSubTitleSv}</span>
             </div>
             <span className="lang-status-badge">
-              {selectedLanguage === 'sv' ? '► ACTIVE ◄' : 'VÄLJ [V]'}
+              {selectedLanguage === 'sv' ? '► ACTIVE ◄' : 'VÄLJ [L]'}
             </span>
           </button>
         </div>
