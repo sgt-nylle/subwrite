@@ -28,6 +28,8 @@ interface ScoreboardProps {
   initialDevice?: 'desktop' | 'mobile';
   language?: 'en' | 'sv';
   onSelectLanguage?: (lang: 'en' | 'sv') => void;
+  soundEnabled?: boolean;
+  onToggleSound?: () => void;
   theme?: ThemeId;
   onPlayAgain: (lvl?: number, lang?: 'en' | 'sv') => void;
   onReturnToMenu?: () => void;
@@ -53,6 +55,8 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   initialDevice,
   language = 'en',
   onSelectLanguage,
+  soundEnabled = true,
+  onToggleSound,
   theme = 'submarine',
   onPlayAgain,
   onReturnToMenu
@@ -295,7 +299,14 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // 3. Arrow keys to change level
+      // 3. 'S' / 's': Toggle audio sound on / off
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        onToggleSound?.();
+        return;
+      }
+
+      // 4. Arrow keys to change level
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
         sound.playLevelSelect();
@@ -316,7 +327,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // 4. Number keys [1-5] to jump to level
+      // 5. Number keys [1-5] to jump to level
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         sound.playLevelSelect();
@@ -324,7 +335,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // 5. Enter to start the selected level (or previous game level if not changed)
+      // 6. Enter to start the selected level (or previous game level if not changed)
       if (e.key === 'Enter') {
         // Prevent accidental double-fire if user just pressed Enter to submit initials
         if (Date.now() - submitTimestampRef.current < 350) {
@@ -342,7 +353,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onReturnToMenu, onPlayAgain, currentScore, submitted, handleToggleLanguage, handleSubmitInitials]);
+  }, [onReturnToMenu, onPlayAgain, currentScore, submitted, handleToggleLanguage, onToggleSound, handleSubmitInitials]);
 
   // All matching scores for active device and level filter
   const totalMatchingScores = useMemo(() => {
@@ -760,6 +771,16 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
           >
             {currentLanguage === 'en' ? '🇬🇧 EN [L]' : '🇸🇪 SV [L]'}
           </button>
+          {onToggleSound && (
+            <button
+              onClick={onToggleSound}
+              className="retro-btn"
+              type="button"
+              title="Toggle Audio [S]"
+            >
+              {soundEnabled ? '🔊 SFX [S]' : '🔇 MUTE [S]'}
+            </button>
+          )}
           {onReturnToMenu && (
             <button
               onClick={onReturnToMenu}

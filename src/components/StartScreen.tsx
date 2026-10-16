@@ -74,7 +74,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         const lvl = parseInt(e.key, 10);
-        sound.playSonarPing();
+        sound.playLevelSelect();
         onSelectLevel(lvl);
         onStartGame(lvl);
       } else if (e.key === 'ArrowUp') {
@@ -99,13 +99,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         onSelectTheme(AVAILABLE_THEMES[nextIndex].id);
       } else if (e.key === 'Enter' || e.code === 'Space') {
         e.preventDefault();
-        sound.playSonarPing();
+        sound.playLevelSelect();
         onStartGame(selectedLevel);
       } else if (e.key === 'l' || e.key === 'L') {
         e.preventDefault();
         sound.playKeypress();
         onSelectLanguage(selectedLanguage === 'en' ? 'sv' : 'en');
       } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        onToggleSound();
+      } else if (e.key === 'h' || e.key === 'H') {
         e.preventDefault();
         sound.playKeypress();
         onOpenScoreboard();
@@ -122,10 +125,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onSelectLanguage]);
+  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onSelectLanguage, onToggleSound]);
 
   const handleLevelClick = (lvl: number) => {
-    sound.playSonarPing();
+    sound.playLevelSelect();
     onSelectLevel(lvl);
     onStartGame(lvl);
   };
@@ -165,15 +168,17 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             onClick={onOpenScoreboard}
             className="nes-mini-btn"
             type="button"
+            title="Leaderboard & Hall of Fame [H]"
           >
-            🏆 SCORES
+            🏆 SCORES [H]
           </button>
           <button
             onClick={onToggleSound}
             className="nes-mini-btn"
             type="button"
+            title="Toggle Audio [S]"
           >
-            {soundEnabled ? '🔊 ON' : '🔇 OFF'}
+            {soundEnabled ? '🔊 ON [S]' : '🔇 OFF [S]'}
           </button>
         </div>
       </div>
@@ -243,7 +248,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           type="button"
           className="nes-push-button"
           onClick={() => {
-            sound.playSonarPing();
+            sound.playLevelSelect();
             onStartGame(selectedLevel);
           }}
           aria-label={isMobile ? `Push to ${activeTheme.actionWord.toLowerCase()} at level ${selectedLevel}` : `Push to start at level ${selectedLevel}`}

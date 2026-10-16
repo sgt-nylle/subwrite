@@ -271,7 +271,6 @@ export function App() {
   const handleComplete = useCallback((completedVal?: string) => {
     setIsFinished(true);
     if (timerRef.current) clearInterval(timerRef.current);
-    sound.playSonarPing();
 
     const currentVal = completedVal ?? inputVal;
 
@@ -348,7 +347,6 @@ export function App() {
     if (!isStarted && val.length > 0) {
       setIsStarted(true);
       setStartTime(Date.now());
-      sound.playSonarPing();
     }
 
     let nextVal = inputVal;
@@ -523,12 +521,14 @@ export function App() {
     }
   };
 
-  const toggleSound = () => {
-    const next = !soundEnabled;
-    setSoundEnabled(next);
-    sound.enabled = next;
-    if (next) sound.playLevelSelect();
-  };
+  const toggleSound = useCallback(() => {
+    setSoundEnabled(prev => {
+      const next = !prev;
+      sound.enabled = next;
+      if (next) sound.playLevelSelect();
+      return next;
+    });
+  }, []);
 
   const handleLevelSelect = (lvl: number) => {
     sound.playLevelSelect();
@@ -611,10 +611,10 @@ export function App() {
               <button
                 onClick={toggleSound}
                 className="retro-header-btn"
-                title="Toggle Audio"
+                title="Toggle Audio [S]"
                 type="button"
               >
-                {soundEnabled ? '🔊 SFX' : '🔇 MUTE'}
+                {soundEnabled ? '🔊 SFX [S]' : '🔇 MUTE [S]'}
               </button>
             </div>
           </header>
@@ -800,6 +800,8 @@ export function App() {
           initialDevice={isMobile ? 'mobile' : 'desktop'}
           language={language}
           onSelectLanguage={handleSelectLanguage}
+          soundEnabled={soundEnabled}
+          onToggleSound={toggleSound}
           theme={theme}
           onPlayAgain={(lvl?: number, lang?: 'en' | 'sv') => {
             const targetLvl = lvl ?? level;
