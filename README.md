@@ -33,12 +33,42 @@ SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web applic
   - Retro 3-character initials input (e.g. `RAM`, `NYL`, `RED`).
   - Score algorithm factoring in speed, accuracy, and difficulty multiplier: `Score = (WPM * (Accuracy / 100)) * (Level * 200)`.
   - Local storage persistence for classified fleet records.
+- **100% Keyboard-Driven Navigation:** The complete experience—theme switching, level selection, language toggling, in-game restarts, audio muting, and post-game leaderboard submissions—can be operated seamlessly without touching a mouse.
 - **Synthesized 8-Bit Web Audio:**
-  - Dynamic key clicks, sonar pings, error alarms, and victory fanfares synthesized in real-time via the Web Audio API.
+  - Dynamic key clicks, sonar pings, error alarms, and victory fanfares synthesized in real-time via the Web Audio API (press `[S]` to mute/unmute).
 - **Mobile & Smartphone Ready:**
   - Fully optimized for iOS and Android virtual keyboards.
   - Auto-capitalization and autocorrect suppressed to ensure pure typing test accuracy.
   - Tap-to-engage terminal prompt with responsive telemetry layout.
+
+---
+
+## ⌨️ Keyboard Controls Reference
+
+SubWrite is designed for lightning-fast, mouse-free arcade gameplay. Every state of the application supports intuitive keyboard shortcuts:
+
+| Context | Key / Shortcut | Action Description |
+| :--- | :--- | :--- |
+| **Universal** | `ESC` | Universal exit / back button: returns to Main Menu from active game or highscore menu |
+| | `S` | Toggle synthesized sound effects and audio ON / OFF |
+| **Main Menu** | `Enter` or `Space` | Launch typing mission with selected level, theme, and language |
+| | `←` / `→` (Left / Right Arrows) | Cycle operational theme (*Submarine* ⇄ *Air Force* ⇄ *Army* ⇄ *Pub*) |
+| | `↑` / `↓` (Up / Down Arrows) | Cycle difficulty level (Levels 1 to 5) |
+| | `1` – `5` | Instantly select difficulty level 1 through 5 and launch mission |
+| | `L` | Toggle passage language between English (`EN`) and Swedish (`SV`) |
+| | `E` / `V` | Direct language selection (`E` = English, `V` = Svenska) |
+| | `H` | Open Hall of Fame / High Scoreboard modal |
+| **In-Game** | `Any Key` | Auto-focus capture: keystrokes immediately route to the terminal arena without clicking |
+| | `Enter` | Instant restart: restarts mission immediately with a fresh random passage |
+| | `ESC` | Abort mission and return to Main Menu |
+| | `1` – `5` | Switch difficulty level before typing commences |
+| | `Backspace` | Erase previous character without desynchronizing cursor state |
+| **Scoreboard** | `Enter` | **First press:** Submit 3-letter callsign/initials<br>**Subsequent press:** Launch selected level for a new mission |
+| | `←` / `↑` (Left / Up Arrows) | Decrease target level for next mission (cycles 5 → 4 → 3 → 2 → 1) |
+| | `→` / `↓` (Right / Down Arrows) | Increase target level for next mission (cycles 1 → 2 → 3 → 4 → 5) |
+| | `1` – `5` | Jump directly to level 1, 2, 3, 4, or 5 |
+| | `L` | Toggle language (`EN` / `SV`) for next game |
+| | `ESC` | Close scoreboard and return to Main Menu |
 
 ---
 
