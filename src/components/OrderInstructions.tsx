@@ -155,7 +155,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
             <div className="instructions-card">
               <div className="formula-callout">
                 <span className="formula-tag">{isEn ? 'FINAL SCORE FORMULA' : 'FORMLER FÖR SLUTPOÄNG'}</span>
-                <code>SCORE = MAX(0, RESERVE - TIME_DRAIN - ERROR_PENALTY)</code>
+                <code>SCORE = MAX(0, RESERVE - TIME_DRAIN - ERROR_PENALTY + PRECISION_BONUS)</code>
               </div>
 
               <div className="scoring-pillars-grid">
@@ -195,12 +195,27 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                     <h4>{isEn ? '3. ERROR PENALTY' : '3. FELSTRAFF'}</h4>
                   </div>
                   <div className="pillar-formula">
-                    <code>-500 PTS PER ERROR</code>
+                    <code>-100 PTS PER ERROR</code>
                   </div>
                   <p>
                     {isEn
-                      ? 'Accuracy is vital! Every incorrect or continued mistake instantly costs 500 points from your total.'
-                      : 'Precision är avgörande! Varje felaktigt tecken bestraffas direkt med 500 minuspoäng.'}
+                      ? 'Typing errors deduct 100 points per misstyped or continued character from your mission pool.'
+                      : 'Feltryckningar medför 100 minuspoäng per felaktigt eller fortsatt felaktigt tecken.'}
+                  </p>
+                </div>
+
+                <div className="scoring-pillar">
+                  <div className="pillar-title">
+                    <span className="pillar-icon">🎯</span>
+                    <h4>{isEn ? '4. PRECISION BONUS' : '4. PRECISIONSBONUS'}</h4>
+                  </div>
+                  <div className="pillar-formula">
+                    <code>+4,000 PTS (≤1 ERROR)</code>
+                  </div>
+                  <p>
+                    {isEn
+                      ? 'Transcribe with pinpoint accuracy: finish with 1 or zero total errors to secure a huge +4,000 bonus!'
+                      : 'Skriv med kirurgisk precision: slutför med högst 1 fel (eller 0 fel) för en bonus på hela +4 000 poäng!'}
                   </p>
                 </div>
               </div>
@@ -209,6 +224,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                 <strong>{isEn ? 'TELEMETRY METRICS:' : 'TELEMETRIMÅTT:'}</strong>
                 <span>• <strong>WPM:</strong> (Characters ÷ 5) ÷ Minutes</span>
                 <span>• <strong>ACCURACY:</strong> (Clean Hits ÷ Total Strokes) × 100%</span>
+                <span>• <strong>BONUS:</strong> +4000 PTS (≤1 error)</span>
               </div>
             </div>
           </section>

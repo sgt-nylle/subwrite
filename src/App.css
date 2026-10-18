@@ -1339,7 +1339,7 @@
 /* Scoring Pillars Grid */
 .scoring-pillars-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
@@ -1483,6 +1483,12 @@
   width: auto;
 }
 
+@media (max-width: 900px) {
+  .scoring-pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .retro-instructions-container {
     padding: 14px;
@@ -1570,19 +1576,6 @@
   color: #ffffff;
   border-color: #ffffff;
   box-shadow: 0 0 8px var(--c64-red-glow);
-}
-
-.nes-mini-instruct-btn {
-  border-color: var(--c64-gold);
-  color: var(--c64-gold);
-  text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
-}
-
-.nes-mini-instruct-btn:hover {
-  background-color: var(--c64-gold);
-  color: #000000;
-  border-color: var(--c64-gold);
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
 }
 
 /* NES Title Section */
@@ -1832,12 +1825,6 @@
   border-color: #ffffff;
   color: #ffffff;
   box-shadow: 0 0 8px var(--c64-red-glow);
-  font-weight: bold;
-}
-
-.nes-mini-lang-btn {
-  border-color: var(--c64-gold) !important;
-  color: var(--c64-gold) !important;
   font-weight: bold;
 }
 

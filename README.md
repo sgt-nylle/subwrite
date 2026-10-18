@@ -29,10 +29,13 @@ SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web applic
   - **Level 4 (90% length - 450 chars):** Exact technical specifications, reactor/engine power ratings, dates, and metric units.
   - **Level 5 (100% length - 500 chars):** Tactical dialogues, quotes, Cyrillic/callsign transliterations, and complex symbols.
 - **Wikipedia Submarine Articles:** Curated passages extracted directly from submarine history and naval doctrine.
-- **Arcade High Scoreboard:**
-  - Retro 3-character initials input (e.g. `RAM`, `NYL`, `RED`).
-  - Score algorithm factoring in speed, accuracy, and difficulty multiplier: `Score = (WPM * (Accuracy / 100)) * (Level * 200)`.
-  - Local storage persistence for classified fleet records.
+- **Arcade Scoring & Mission Telemetry Algorithm:**
+  - `SCORE = MAX(0, RESERVE - TIME_DRAIN - ERROR_PENALTY + PRECISION_BONUS)`
+  - **Mission Reserve Pool:** `(Text Length × 25) + (Level × 2500)` base point pool.
+  - **Continuous Time Drain:** `20 + (Level × 10) PTS/SEC` continuously drained every second (30 to 70 pts/sec).
+  - **Misstype Penalty:** `-100 PTS` per typo or continued incorrect character.
+  - **Precision Bonus:** `+4,000 PTS` awarded when completing a mission with 1 or zero total typing errors.
+  - Retro 3-character initials input (e.g. `RAM`, `NYL`, `RED`) saved to global backend & local storage.
 - **100% Keyboard-Driven Navigation:** The complete experience—theme switching, level selection, language toggling, in-game restarts, audio muting, and post-game leaderboard submissions—can be operated seamlessly without touching a mouse.
 - **Synthesized 8-Bit Web Audio:**
   - Dynamic key clicks, sonar pings, error alarms, and victory fanfares synthesized in real-time via the Web Audio API (press `[S]` to mute/unmute).
@@ -58,6 +61,7 @@ SubWrite is designed for lightning-fast, mouse-free arcade gameplay. Every state
 | | `L` | Toggle passage language between English (`EN`) and Swedish (`SV`) |
 | | `E` / `V` | Direct language selection (`E` = English, `V` = Svenska) |
 | | `H` | Open Hall of Fame / High Scoreboard modal |
+| | `I` | Open Order Instructions modal (Mission Briefing, Point System, Controls) |
 | **In-Game** | `Any Key` | Auto-focus capture: keystrokes immediately route to the terminal arena without clicking |
 | | `Enter` | Instant restart: restarts mission immediately with a fresh random passage |
 | | `ESC` | Abort mission and return to Main Menu |

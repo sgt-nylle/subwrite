@@ -140,12 +140,14 @@ export function App() {
   // Scoring constants:
   // 1. Initial mission reserve pool
   // 2. Continuous time drain rate (points/sec) - the faster you type, the less is drained
-  // 3. -500 points per continued misstyped error
+  // 3. -100 points per continued misstyped error
+  // 4. +4,000 points precision bonus for 1 or fewer (0) total typing errors
   const initialReserve = (targetText.length * 25) + (level * 2500);
   const drainRate = 20 + (level * 10);
   const timeDrain = elapsedSeconds * drainRate;
-  const errorPenalty = continuedErrors * 500;
-  const liveScore = Math.max(0, Math.round(initialReserve - timeDrain - errorPenalty));
+  const errorPenalty = continuedErrors * 100;
+  const precisionBonus = continuedErrors <= 1 ? 4000 : 0;
+  const liveScore = Math.max(0, Math.round(initialReserve - timeDrain - errorPenalty + precisionBonus));
 
   // Format time mm:ss
   const formatTime = (secs: number) => {
@@ -292,8 +294,9 @@ export function App() {
     const finalErrors = Math.max(actualErrors, continuedErrors);
     const finalTime = Math.max(1, elapsedSeconds);
     const finalDrain = finalTime * drainRate;
-    const finalPenalty = finalErrors * 500;
-    const finalScore = Math.max(0, Math.round(initialReserve - finalDrain - finalPenalty));
+    const finalPenalty = finalErrors * 100;
+    const finalBonus = finalErrors <= 1 ? 4000 : 0;
+    const finalScore = Math.max(0, Math.round(initialReserve - finalDrain - finalPenalty + finalBonus));
 
     const finalTimeInMinutes = Math.max(finalTime / 60, 0.05);
     const finalWpm = Math.max(0, Math.round((targetText.length / 5) / finalTimeInMinutes));
@@ -312,6 +315,7 @@ export function App() {
       timeSpentSeconds: finalTime,
       timeLimitSeconds: timeLimit,
       penaltyPoints: finalPenalty,
+      accuracyBonus: finalBonus,
       device: isMobile ? 'mobile' : 'desktop',
       initialReserve,
       timeDrain: finalDrain,
@@ -377,7 +381,8 @@ export function App() {
       }
 
       if (hadError) {
-        setRecentPenalty('-500 PTS ERROR');
+        const nextErrors = continuedErrors + 1;
+        setRecentPenalty(nextErrors === 2 ? '-100 PTS (BONUS LOST!)' : '-100 PTS ERROR');
         sound.playError();
         if (penaltyTimerRef.current) clearTimeout(penaltyTimerRef.current);
         penaltyTimerRef.current = window.setTimeout(() => {
@@ -771,7 +776,7 @@ export function App() {
           {/* BOTTOM ACTION BAR */}
           <footer className="c64-footer c64-box">
             <div className="footer-keys-legend">
-              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className="footer-version">{APP_VERSION}</span>
+              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className={continuedErrors <= 1 ? "highlight-gold" : ""}>{continuedErrors <= 1 ? "★ BONUS: +4000 PTS" : "BONUS: 0 PTS"}</span> | <span className="footer-version">{APP_VERSION}</span>
             </div>
             <div className="footer-actions">
               <button

@@ -169,7 +169,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               sound.playKeypress();
               onOpenInstructions();
             }}
-            className="nes-mini-btn nes-mini-instruct-btn"
+            className="nes-mini-btn"
             type="button"
             title="Order Instructions [I]"
           >
@@ -180,7 +180,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               sound.playKeypress();
               onSelectLanguage(selectedLanguage === 'en' ? 'sv' : 'en');
             }}
-            className="nes-mini-btn nes-mini-lang-btn"
+            className="nes-mini-btn"
             type="button"
             title="Toggle Language [L]"
           >

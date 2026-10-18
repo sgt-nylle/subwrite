@@ -19,6 +19,7 @@ export interface FinalTrialResult {
   initialReserve?: number;
   timeDrain?: number;
   continuedErrors?: number;
+  accuracyBonus?: number;
   theme?: ThemeId;
 }
 
@@ -510,9 +511,15 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                 </span>
               </div>
               <div className="debrief-item">
-                <span className="debrief-lbl">MISSTYPE PENALTY (-500/ERR)</span>
+                <span className="debrief-lbl">MISSTYPE PENALTY (-100/ERR)</span>
                 <span className="debrief-val highlight-penalty">-{currentScore.penaltyPoints} PTS</span>
               </div>
+              {currentScore.accuracyBonus !== undefined && currentScore.accuracyBonus > 0 && (
+                <div className="debrief-item">
+                  <span className="debrief-lbl">PRECISION BONUS (≤1 ERR)</span>
+                  <span className="debrief-val highlight-gold">+{currentScore.accuracyBonus.toLocaleString()} PTS</span>
+                </div>
+              )}
               <div className="debrief-item">
                 <span className="debrief-lbl">NET SPEED</span>
                 <span className="debrief-val highlight-green">{currentScore.wpm} WPM</span>
