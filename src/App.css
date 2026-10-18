@@ -460,6 +460,12 @@
   color: #ffffff;
 }
 
+.footer-version {
+  color: #ffd700;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
 .footer-actions {
   display: flex;
   gap: 8px;

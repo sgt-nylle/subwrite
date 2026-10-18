@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { LEVEL_TIME_LIMITS } from './data/submarineTexts';
+import { APP_VERSION } from './version';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
 import { ThemeSelector } from './components/ThemeSelector';
@@ -131,7 +132,7 @@ export function App() {
   // Active theme and level configuration
   const activeTheme = getTheme(theme);
   const activeLevel = activeTheme.levels.find(l => l.level === level) || activeTheme.levels[0];
-  const timeLimit = LEVEL_TIME_LIMITS[level] || 180;
+  const timeLimit = LEVEL_TIME_LIMITS[level] || 240;
   const timeRemaining = Math.max(0, timeLimit - elapsedSeconds);
 
   // Scoring constants:
@@ -676,7 +677,7 @@ export function App() {
               })}
             </div>
             <div className="level-status-desc">
-              <span className="status-bullet">►</span> {activeLevel.rank}: {activeLevel.description} (TIME: {Math.floor((LEVEL_TIME_LIMITS[level] || 180) / 60)} MIN)
+              <span className="status-bullet">►</span> {activeLevel.rank}: {activeLevel.description} (TIME: {Math.floor((LEVEL_TIME_LIMITS[level] || 240) / 60)} MIN)
             </div>
           </section>
 
@@ -765,7 +766,7 @@ export function App() {
           {/* BOTTOM ACTION BAR */}
           <footer className="c64-footer c64-box">
             <div className="footer-keys-legend">
-              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span>
+              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className="footer-version">{APP_VERSION}</span>
             </div>
             <div className="footer-actions">
               <button

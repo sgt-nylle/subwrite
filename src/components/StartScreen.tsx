@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { type HighScore } from '../data/submarineTexts';
+import { APP_VERSION } from '../version';
 import { ThemeSelector } from './ThemeSelector';
 import { AVAILABLE_THEMES, type ThemeId, getTheme } from '../themes';
 import { sound } from '../utils/audio';
@@ -329,7 +330,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       <div className="nes-footer-credits">
         <div className="nes-footer-prompt">PRESS ENTER TO LAUNCH</div>
         <footer className="footer">
-          <p>© 2026 SUBWRITE // CLASSIFIED RETRO SYSTEMS</p>
+          <p>© 2026 SUBWRITE <span className="footer-version">{APP_VERSION}</span> // CLASSIFIED RETRO SYSTEMS</p>
           <p>
             SOURCE CODE & DISPATCH:{' '}
             <a

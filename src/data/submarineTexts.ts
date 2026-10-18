@@ -110,11 +110,11 @@ export interface HighScore {
 }
 
 export const LEVEL_TIME_LIMITS: Record<number, number> = {
-  1: 300, // 5 minutes
+  1: 240, // 4 minutes
   2: 240, // 4 minutes
-  3: 180, // 3 minutes
-  4: 240, // 4 minutes
-  5: 180  // 3 minutes
+  3: 240, // 4 minutes
+  4: 300, // 5 minutes
+  5: 300  // 5 minutes
 };
 
 export const INITIAL_HIGH_SCORES: HighScore[] = [
