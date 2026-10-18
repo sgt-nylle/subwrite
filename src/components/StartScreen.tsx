@@ -119,7 +119,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         e.preventDefault();
         sound.playKeypress();
         onOpenScoreboard();
-      } else if (e.key === 'i' || e.key === 'I') {
+      } else if (e.key === 'i' || e.key === 'I' || e.code === 'KeyI') {
         e.preventDefault();
         sound.playKeypress();
         onOpenInstructions();
@@ -173,7 +173,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             type="button"
             title="Order Instructions [I]"
           >
-            INSTRUCTIONS!
+            📖 INSTRUCTIONS [I]
           </button>
           <button
             onClick={() => {

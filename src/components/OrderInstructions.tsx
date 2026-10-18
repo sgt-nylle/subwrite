@@ -37,7 +37,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
   // Keyboard navigation: ESC exits to menu, L toggles language, Enter starts game
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.key === 'i' || e.key === 'I' || e.code === 'KeyI') {
         e.preventDefault();
         sound.playKeypress();
         onClose();
@@ -340,7 +340,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
             onClick={onClose}
             className="retro-btn btn-danger large-btn"
             type="button"
-            title="Return to Main Menu [ESC]"
+            title="Return to Main Menu [ESC / I]"
           >
             ◄ {isEn ? 'MAIN MENU [ESC]' : 'HUVUDMENY [ESC]'}
           </button>
