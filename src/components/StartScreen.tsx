@@ -51,7 +51,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       })
       .catch(() => {
         try {
-          const local = localStorage.getItem(`subwrite_high_scores_${activeTheme.id}_v2`);
+          const local = localStorage.getItem(`subwrite_high_scores_${activeTheme.id}_v095`);
           if (local) {
             const parsed: HighScore[] = JSON.parse(local);
             const filtered = parsed.filter(s => (s.device || 'desktop') === targetDevice);

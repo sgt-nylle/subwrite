@@ -62,7 +62,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
   onReturnToMenu
 }) => {
   const activeTheme = getTheme(currentScore?.theme || theme);
-  const storageKey = `subwrite_high_scores_${activeTheme.id}_v2`;
+  const storageKey = `subwrite_high_scores_${activeTheme.id}_v095`;
 
   const [scores, setScores] = useState<HighScore[]>(() => {
     try {
@@ -158,12 +158,22 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         const res = await fetch(`/api/scores?theme=${activeTheme.id}`);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0 && isMounted) {
-            setScores(data);
-            try {
-              localStorage.setItem(storageKey, JSON.stringify(data));
-            } catch {
-              // Ignore
+          if (Array.isArray(data) && isMounted) {
+            if (data.length > 0) {
+              setScores(data);
+              try {
+                localStorage.setItem(storageKey, JSON.stringify(data));
+              } catch {
+                // Ignore
+              }
+            } else {
+              const freshDefaults = [...activeTheme.initialScores, ...activeTheme.initialMobileScores];
+              setScores(freshDefaults);
+              try {
+                localStorage.setItem(storageKey, JSON.stringify(freshDefaults));
+              } catch {
+                // Ignore
+              }
             }
           }
         }
@@ -176,7 +186,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
     fetchSharedScores();
     return () => { isMounted = false; };
-  }, [activeTheme.id, storageKey]);
+  }, [activeTheme.id, activeTheme.initialScores, activeTheme.initialMobileScores, storageKey]);
 
   // Check if current trial qualifies as a top 3 podium score for that level & device
   const isPodiumScore = useMemo(() => {
