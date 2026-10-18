@@ -15,8 +15,10 @@ interface StartScreenProps {
   onSelectLanguage: (lang: 'en' | 'sv') => void;
   onStartGame: (lvl?: number, lang?: 'en' | 'sv') => void;
   onOpenScoreboard: () => void;
+  onOpenInstructions: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
+  disabled?: boolean;
 }
 
 export const StartScreen: React.FC<StartScreenProps> = ({
@@ -29,8 +31,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   onSelectLanguage,
   onStartGame,
   onOpenScoreboard,
+  onOpenInstructions,
   soundEnabled,
-  onToggleSound
+  onToggleSound,
+  disabled = false
 }) => {
   const activeTheme = getTheme(theme);
   const [topScore, setTopScore] = useState<HighScore | null>(null);
@@ -72,6 +76,8 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   // Keyboard navigation for NES style: Up/Down arrow moves level, Enter starts, 1-5 starts immediately
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (disabled) return;
+
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         const lvl = parseInt(e.key, 10);
@@ -113,6 +119,10 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         e.preventDefault();
         sound.playKeypress();
         onOpenScoreboard();
+      } else if (e.key === 'i' || e.key === 'I') {
+        e.preventDefault();
+        sound.playKeypress();
+        onOpenInstructions();
       } else if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();
         sound.playKeypress();
@@ -126,7 +136,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onSelectLanguage, onToggleSound]);
+  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onOpenInstructions, onSelectLanguage, onToggleSound, disabled]);
 
   const handleLevelClick = (lvl: number) => {
     sound.playLevelSelect();
@@ -154,6 +164,17 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           <span className="top-initials"> {topScore?.initials || (isMobile ? 'MOB' : 'RAM')}</span>
         </div>
         <div className="nes-hud-buttons">
+          <button
+            onClick={() => {
+              sound.playKeypress();
+              onOpenInstructions();
+            }}
+            className="nes-mini-btn nes-mini-instruct-btn"
+            type="button"
+            title="Order Instructions [I]"
+          >
+            INSTRUCTIONS!
+          </button>
           <button
             onClick={() => {
               sound.playKeypress();

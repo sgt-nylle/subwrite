@@ -3,6 +3,7 @@ import { LEVEL_TIME_LIMITS } from './data/submarineTexts';
 import { APP_VERSION } from './version';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
 import { StartScreen } from './components/StartScreen';
+import { OrderInstructions } from './components/OrderInstructions';
 import { ThemeSelector } from './components/ThemeSelector';
 import { type ThemeId, getTheme, THEMES, DEFAULT_THEME_ID } from './themes';
 import { sound } from './utils/audio';
@@ -110,6 +111,7 @@ export function App() {
   const [recentPenalty, setRecentPenalty] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [showScoreboard, setShowScoreboard] = useState<boolean>(false);
+  const [showInstructions, setShowInstructions] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(() => detectDeviceType() === 'mobile');
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
@@ -250,6 +252,7 @@ export function App() {
   const handleReturnToMenu = useCallback(() => {
     setGameState('start');
     setShowScoreboard(false);
+    setShowInstructions(false);
     setIsStarted(false);
     setIsFinished(false);
     if (timerRef.current) clearInterval(timerRef.current);
@@ -404,7 +407,7 @@ export function App() {
   // Keyboard shortcut listener for level change (1-5), restart (Enter), exit to menu (Escape)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (showScoreboard) return;
+      if (showScoreboard || showInstructions) return;
 
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -455,7 +458,7 @@ export function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, isStarted, level, language, showScoreboard, loadPassage, handleReturnToMenu, inputVal.length]);
+  }, [gameState, isStarted, level, language, showScoreboard, showInstructions, loadPassage, handleReturnToMenu, inputVal.length]);
 
   // Ensure caret always stays locked to the active typing position at the end of input
   const syncCaretToEnd = useCallback(() => {
@@ -565,8 +568,10 @@ export function App() {
             onSelectLanguage={handleSelectLanguage}
             onStartGame={handleStartGame}
             onOpenScoreboard={() => setShowScoreboard(true)}
+            onOpenInstructions={() => setShowInstructions(true)}
             soundEnabled={soundEnabled}
             onToggleSound={toggleSound}
+            disabled={showScoreboard || showInstructions}
           />
         )}
 
@@ -792,6 +797,20 @@ export function App() {
           </footer>
         </div>
       </div>
+
+      {/* ORDER INSTRUCTIONS MODAL */}
+      {showInstructions && (
+        <OrderInstructions
+          theme={theme}
+          language={language}
+          onClose={() => setShowInstructions(false)}
+          onSelectLanguage={handleSelectLanguage}
+          onStartGame={(lvl, lang) => {
+            setShowInstructions(false);
+            handleStartGame(lvl, lang);
+          }}
+        />
+      )}
 
       {/* SCOREBOARD / TRIAL STATUS DEBRIEF MODAL */}
       {showScoreboard && (
