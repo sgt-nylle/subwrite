@@ -8,3 +8,19 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+
+const revealPage = () => {
+  requestAnimationFrame(() => {
+    document.body.classList.add('loaded')
+  })
+}
+
+if (document.fonts && document.fonts.ready) {
+  Promise.race([
+    document.fonts.ready,
+    new Promise((resolve) => setTimeout(resolve, 150)),
+  ]).then(revealPage)
+} else {
+  revealPage()
+}
+

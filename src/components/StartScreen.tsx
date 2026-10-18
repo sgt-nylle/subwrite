@@ -362,6 +362,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
               [ GITHUB REPO ]
             </a>
           </p>
+          <p><strong>Subwrite</strong> is a retro-styled keyboard typing tester and speed challenge. Practice touch typing, benchmark your words per minute (WPM), and test your typing accuracy across tactical naval passages.</p>
         </footer>
       </div>
     </div>

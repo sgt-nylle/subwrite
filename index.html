@@ -10,33 +10,33 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#ff3333" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Subwrite - Retro Typing Challenge</title>
-    <meta name="description" content="Retro Typing Speedtester for Submarine Admins!" />
-    <meta name="keywords" content="typing test, typing speed test, wpm test, c64 typing test, retro typing test, subwrite" />
+    <title>Subwrite – Retro Keyboard Typing Tester &amp; Challenge (WPM)</title>
+    <meta name="description" content="Test your keyboard speed with Subwrite, a retro submarine-themed typing challenge. Benchmark your WPM, accuracy, and climb from Cadet to Admiral." />
+    <meta name="keywords" content="keyboard typing tester, typing challenge, WPM, typing speed, touch typing, typing test, retro typing test, subwrite" />
     <link rel="canonical" href="https://subwrite.se/" />
 
     <!-- Open Graph / Slack, Teams, Discord, Facebook -->
     <meta property="og:site_name" content="Subwrite" />
+    <meta property="og:title" content="Subwrite – Retro Keyboard Typing Tester &amp; Challenge" />
+    <meta property="og:description" content="Submarine-themed retro typing test. Measure WPM and accuracy across 5 tactical dive depths." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://subwrite.se/" />
-    <meta property="og:title" content="Subwrite - Retro Typing Challenge" />
-    <meta property="og:description" content="Retro Typing Speedtester for Submarine Admins!" />
     <meta property="og:image" content="https://subwrite.se/og-image.png" />
     <meta property="og:image:secure_url" content="https://subwrite.se/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Subwrite - Retro Typing Challenge" />
+    <meta property="og:image:alt" content="Subwrite – Retro Keyboard Typing Tester &amp; Challenge" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:domain" content="subwrite.se" />
     <meta name="twitter:url" content="https://subwrite.se/" />
-    <meta name="twitter:title" content="Subwrite - Retro Typing Challenge" />
-    <meta name="twitter:description" content="Retro Typing Speedtester for Submarine Admins!" />
+    <meta name="twitter:title" content="Subwrite – Retro Keyboard Typing Challenge" />
+    <meta name="twitter:description" content="Test your typing speed and accuracy in a retro submarine console environment." />
     <meta name="twitter:image" content="https://subwrite.se/og-image.png" />
-    <meta name="twitter:image:alt" content="Subwrite - Retro Typing Challenge" />
+    <meta name="twitter:image:alt" content="Subwrite – Retro Keyboard Typing Challenge" />
 
     <!-- Structured Data (JSON-LD for Google Rich Results) -->
     <script type="application/ld+json">
@@ -44,8 +44,8 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Subwrite",
-      "url": "https://subwrite.se",
-      "description": "Retro Typing Speedtester for Submarine Admins!",
+      "url": "https://subwrite.se/",
+      "description": "Test your keyboard speed with Subwrite, a retro submarine-themed typing challenge. Benchmark your WPM, accuracy, and climb from Cadet to Admiral.",
       "image": "https://subwrite.se/og-image.png",
       "applicationCategory": "GameApplication",
       "operatingSystem": "All",
@@ -58,10 +58,40 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=block" rel="stylesheet">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #030000;
+        color: #a0a0a0;
+      }
+      body {
+        visibility: hidden;
+      }
+      body.loaded {
+        visibility: visible;
+      }
+      #root > .footer {
+        color: #030000;
+        background-color: #030000;
+        opacity: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+    </style>
+    <noscript>
+      <style>
+        body { visibility: visible !important; }
+      </style>
+    </noscript>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <footer class="footer">
+        <p><strong>Subwrite</strong> is a retro-styled keyboard typing tester and speed challenge. Practice touch typing, benchmark your words per minute (WPM), and test your typing accuracy across tactical naval passages.</p>
+      </footer>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
