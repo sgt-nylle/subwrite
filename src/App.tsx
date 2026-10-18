@@ -119,6 +119,8 @@ export function App() {
   const [finalScoreData, setFinalScoreData] = useState<FinalTrialResult | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const cursorRef = useRef<HTMLSpanElement | null>(null);
+  const lastAutoScrollRef = useRef<number>(0);
   const timerRef = useRef<number | null>(null);
   const penaltyTimerRef = useRef<number | null>(null);
 
@@ -185,7 +187,7 @@ export function App() {
     if (timerRef.current) clearInterval(timerRef.current);
     if (!showScoreboard) {
       setTimeout(() => {
-        inputRef.current?.focus();
+        inputRef.current?.focus({ preventScroll: true });
       }, 100);
     }
   }, [theme, showScoreboard]);
@@ -226,12 +228,12 @@ export function App() {
 
     // Synchronously focus so mobile browsers (iOS Safari) trigger virtual keyboard immediately
     if (inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus({ preventScroll: true });
       const len = inputRef.current.value.length;
       inputRef.current.setSelectionRange(len, len);
       setIsFocused(true);
       setTimeout(() => {
-        inputRef.current?.focus();
+        inputRef.current?.focus({ preventScroll: true });
       }, 80);
     }
   };
@@ -448,7 +450,7 @@ export function App() {
       if (gameState === 'playing' && document.activeElement !== inputRef.current) {
         if (e.key === 'Backspace') {
           e.preventDefault();
-          inputRef.current?.focus();
+          inputRef.current?.focus({ preventScroll: true });
           if (inputVal.length > 0) {
             setInputVal(prev => prev.slice(0, -1));
             sound.playKeypress();
@@ -456,7 +458,7 @@ export function App() {
           return;
         }
         if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
-          inputRef.current?.focus();
+          inputRef.current?.focus({ preventScroll: true });
         }
       }
     };
@@ -472,6 +474,75 @@ export function App() {
       inputRef.current.setSelectionRange(len, len);
     }
   }, []);
+
+  // Automatically scroll the page as the user types so the active line never approaches the bottom edge of the screen or mobile keyboard
+  const ensureCursorInView = useCallback((force: boolean = false) => {
+    if (gameState !== 'playing' || !cursorRef.current) return;
+    const cursorEl = cursorRef.current;
+
+    // Keep the hidden input vertically aligned with the active cursor line while focused so mobile browsers never snap scroll back to top
+    if (inputRef.current) {
+      if (isFocused) {
+        inputRef.current.style.top = `${cursorEl.offsetTop}px`;
+        inputRef.current.style.height = `${Math.max(28, cursorEl.offsetHeight || 32)}px`;
+      } else {
+        inputRef.current.style.top = '0px';
+        inputRef.current.style.height = '100%';
+      }
+    }
+
+    const now = Date.now();
+    if (!force && now - lastAutoScrollRef.current < 180) return;
+
+    const vv = window.visualViewport;
+    const vvTop = vv ? vv.offsetTop : 0;
+    const vvHeight = vv ? vv.height : window.innerHeight;
+    const cursorRect = cursorEl.getBoundingClientRect();
+
+    const isCompactViewport = isMobile || vvHeight < 620;
+    // Scroll down well BEFORE the user reaches the text at the bottom of the screen
+    const bottomThreshold = vvTop + vvHeight * (isCompactViewport ? 0.50 : 0.60);
+    const targetViewportY = vvTop + vvHeight * (isCompactViewport ? 0.30 : 0.38);
+    const topThreshold = vvTop + (isCompactViewport ? 48 : 80);
+
+    if (cursorRect.bottom > bottomThreshold && (isStarted || isFocused || force)) {
+      const deltaY = cursorRect.top - targetViewportY;
+      if (deltaY > 8) {
+        lastAutoScrollRef.current = now;
+        window.scrollBy({ top: deltaY, behavior: 'smooth' });
+      }
+    } else if (cursorRect.top < topThreshold && (inputVal.length === 0 || isStarted || force)) {
+      const deltaY = cursorRect.top - targetViewportY;
+      if (deltaY < -8) {
+        lastAutoScrollRef.current = now;
+        window.scrollBy({ top: deltaY, behavior: 'smooth' });
+      }
+    }
+  }, [gameState, isFocused, isMobile, isStarted, inputVal.length]);
+
+  // Trigger auto-scroll check as user types or resets passage
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    ensureCursorInView(inputVal.length <= 1);
+  }, [gameState, inputVal.length, targetText, ensureCursorInView]);
+
+  // Re-evaluate cursor visibility when focus changes or mobile virtual keyboard resizes visualViewport
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    ensureCursorInView(true);
+    const t1 = window.setTimeout(() => ensureCursorInView(true), 120);
+    const t2 = window.setTimeout(() => ensureCursorInView(true), 320);
+
+    const vv = window.visualViewport;
+    const handleViewportResize = () => ensureCursorInView(true);
+    vv?.addEventListener('resize', handleViewportResize);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      vv?.removeEventListener('resize', handleViewportResize);
+    };
+  }, [gameState, isFocused, ensureCursorInView]);
 
   // Handle direct keydown events on the typing input
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -694,7 +765,7 @@ export function App() {
           {/* TYPING ARENA */}
           <main
             className={`c64-terminal-arena c64-box ${isFocused ? 'arena-focused' : 'arena-unfocused'}`}
-            onClick={() => inputRef.current?.focus()}
+            onClick={() => inputRef.current?.focus({ preventScroll: true })}
           >
             {/* Unfocused Click-to-Start Banner */}
             {!isFocused && !isFinished && (
@@ -747,6 +818,7 @@ export function App() {
                 return (
                   <span
                     key={index}
+                    ref={isCursor ? cursorRef : null}
                     className={`terminal-char ${charClass} ${isCursor ? 'char-cursor' : ''}`}
                   >
                     {char}
@@ -754,7 +826,7 @@ export function App() {
                 );
               })}
               {inputVal.length >= targetText.length && (
-                <span className="terminal-char char-cursor">█</span>
+                <span ref={cursorRef} className="terminal-char char-cursor">█</span>
               )}
             </div>
 

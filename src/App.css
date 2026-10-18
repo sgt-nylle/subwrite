@@ -4,14 +4,13 @@
 
 .c64-viewport {
   position: relative;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   background: radial-gradient(circle at center, #140202 0%, #050000 100%);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 16px;
-  overflow-y: auto;
 }
 
 /* CRT Scanline & Screen Effects */
@@ -1205,23 +1204,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-height: 62vh;
-  overflow-y: auto;
-  padding-right: 8px;
-}
-
-.instructions-content::-webkit-scrollbar {
-  width: 8px;
-}
-.instructions-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid var(--c64-dark-red);
-}
-.instructions-content::-webkit-scrollbar-thumb {
-  background: var(--c64-border);
-}
-.instructions-content::-webkit-scrollbar-thumb:hover {
-  background: var(--c64-red);
 }
 
 .instructions-section {

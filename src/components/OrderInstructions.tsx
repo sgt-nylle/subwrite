@@ -23,7 +23,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
   // Auto-focus the back button on mount so ESC or Enter works immediately
   useEffect(() => {
     const timer = setTimeout(() => {
-      backBtnRef.current?.focus();
+      backBtnRef.current?.focus({ preventScroll: true });
     }, 60);
     return () => clearTimeout(timer);
   }, []);
