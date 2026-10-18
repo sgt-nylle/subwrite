@@ -117,3 +117,34 @@ body {
   background: var(--c64-red);
   border: 1px solid var(--c64-frame);
 }
+
+html[data-theme="airforce"]::-webkit-scrollbar-track,
+body[data-theme="airforce"]::-webkit-scrollbar-track {
+  background: #082946;
+}
+html[data-theme="airforce"]::-webkit-scrollbar-thumb,
+body[data-theme="airforce"]::-webkit-scrollbar-thumb {
+  background: #38bdf8;
+  border: 1px solid #0e3d64;
+}
+
+html[data-theme="army"]::-webkit-scrollbar-track,
+body[data-theme="army"]::-webkit-scrollbar-track {
+  background: #0f290d;
+}
+html[data-theme="army"]::-webkit-scrollbar-thumb,
+body[data-theme="army"]::-webkit-scrollbar-thumb {
+  background: #4ade80;
+  border: 1px solid #1b3815;
+}
+
+html[data-theme="pub"]::-webkit-scrollbar-track,
+body[data-theme="pub"]::-webkit-scrollbar-track {
+  background: #241402;
+}
+html[data-theme="pub"]::-webkit-scrollbar-thumb,
+body[data-theme="pub"]::-webkit-scrollbar-thumb {
+  background: #facc15;
+  border: 1px solid #3d2407;
+}
+

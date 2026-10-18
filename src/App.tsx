@@ -133,6 +133,12 @@ export function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Sync operational theme to root html & body elements so main window scrollbar matches active theme
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+  }, [theme]);
+
   // Active theme and level configuration
   const activeTheme = getTheme(theme);
   const activeLevel = activeTheme.levels.find(l => l.level === level) || activeTheme.levels[0];
