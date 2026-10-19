@@ -39,7 +39,7 @@
 .c64-screen-frame {
   position: relative;
   width: 100%;
-  max-width: 980px;
+  max-width: 1060px;
   background-color: var(--c64-bg);
   border: 12px solid var(--c64-border);
   box-shadow: 
@@ -2641,7 +2641,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .retro-theme-btn {
@@ -2659,6 +2659,8 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   user-select: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .retro-theme-btn:hover {
@@ -4326,6 +4328,18 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 960px) {
+  .retro-theme-selector-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  .theme-selector-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 600px) {
   .retro-theme-selector-bar {
     flex-direction: column;
@@ -4339,6 +4353,7 @@
   .theme-selector-buttons {
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
   }
   .retro-theme-btn {
     flex: 1;

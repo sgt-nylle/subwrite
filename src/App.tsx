@@ -121,6 +121,8 @@ export function App() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const cursorRef = useRef<HTMLSpanElement | null>(null);
   const lastAutoScrollRef = useRef<number>(0);
+  const lastLineOffsetTopRef = useRef<number>(0);
+  const inputLengthRef = useRef<number>(0);
   const timerRef = useRef<number | null>(null);
   const penaltyTimerRef = useRef<number | null>(null);
 
@@ -181,6 +183,8 @@ export function App() {
     setPassageIndex(selectedIdx);
     setTargetText(passages[selectedIdx]);
     setInputVal('');
+    inputLengthRef.current = 0;
+    lastLineOffsetTopRef.current = 0;
     setIsStarted(false);
     setIsFinished(false);
     setStartTime(null);
@@ -235,8 +239,6 @@ export function App() {
     // Synchronously focus so mobile browsers (iOS Safari) trigger virtual keyboard immediately
     if (inputRef.current) {
       inputRef.current.focus({ preventScroll: true });
-      const len = inputRef.current.value.length;
-      inputRef.current.setSelectionRange(len, len);
       setIsFocused(true);
       setTimeout(() => {
         inputRef.current?.focus({ preventScroll: true });
@@ -477,75 +479,125 @@ export function App() {
   const syncCaretToEnd = useCallback(() => {
     if (inputRef.current) {
       const len = inputRef.current.value.length;
-      inputRef.current.setSelectionRange(len, len);
+      if (inputRef.current.selectionStart !== len || inputRef.current.selectionEnd !== len) {
+        inputRef.current.setSelectionRange(len, len);
+      }
     }
   }, []);
 
-  // Automatically scroll the page as the user types so the active line never approaches the bottom edge of the screen or mobile keyboard
-  const ensureCursorInView = useCallback((force: boolean = false) => {
+  // Automatically scroll the page only when the user wraps to a new line and is running out of screen space
+  const ensureCursorInView = useCallback((mode: 'typing' | 'reset' | 'viewport' = 'typing') => {
     if (gameState !== 'playing' || !cursorRef.current) return;
     const cursorEl = cursorRef.current;
+    const lineTop = cursorEl.offsetTop;
 
-    // Keep the hidden input vertically aligned with the active cursor line while focused so mobile browsers never snap scroll back to top
+    // Keep the hidden input vertically aligned with the active cursor line only when line changes
     if (inputRef.current) {
       if (isFocused) {
-        inputRef.current.style.top = `${cursorEl.offsetTop}px`;
-        inputRef.current.style.height = `${Math.max(28, cursorEl.offsetHeight || 32)}px`;
+        const targetTop = `${lineTop}px`;
+        const targetHeight = `${Math.max(28, cursorEl.offsetHeight || 32)}px`;
+        if (inputRef.current.style.top !== targetTop) {
+          inputRef.current.style.top = targetTop;
+        }
+        if (inputRef.current.style.height !== targetHeight) {
+          inputRef.current.style.height = targetHeight;
+        }
       } else {
-        inputRef.current.style.top = '0px';
-        inputRef.current.style.height = '100%';
+        if (inputRef.current.style.top !== '0px') inputRef.current.style.top = '0px';
+        if (inputRef.current.style.height !== '100%') inputRef.current.style.height = '100%';
       }
     }
-
-    const now = Date.now();
-    if (!force && now - lastAutoScrollRef.current < 180) return;
 
     const vv = window.visualViewport;
     const vvTop = vv ? vv.offsetTop : 0;
     const vvHeight = vv ? vv.height : window.innerHeight;
     const cursorRect = cursorEl.getBoundingClientRect();
-
+    const cursorVisibleTop = cursorRect.top - vvTop;
+    const cursorVisibleBottom = cursorRect.bottom - vvTop;
     const isCompactViewport = isMobile || vvHeight < 620;
-    // Scroll down well BEFORE the user reaches the text at the bottom of the screen
-    const bottomThreshold = vvTop + vvHeight * (isCompactViewport ? 0.50 : 0.60);
-    const targetViewportY = vvTop + vvHeight * (isCompactViewport ? 0.30 : 0.38);
-    const topThreshold = vvTop + (isCompactViewport ? 48 : 80);
 
-    if (cursorRect.bottom > bottomThreshold && (isStarted || isFocused || force)) {
-      const deltaY = cursorRect.top - targetViewportY;
-      if (deltaY > 8) {
-        lastAutoScrollRef.current = now;
-        window.scrollBy({ top: deltaY, behavior: 'smooth' });
+    // When resetting passage or adjusting to viewport before typing starts
+    if (mode === 'reset' || (mode === 'viewport' && inputLengthRef.current === 0)) {
+      lastLineOffsetTopRef.current = lineTop;
+      if (cursorVisibleBottom > vvHeight * 0.72 || cursorVisibleTop < 16) {
+        const targetVisibleY = vvHeight * (isCompactViewport ? 0.28 : 0.35);
+        const deltaY = cursorVisibleTop - targetVisibleY;
+        if (Math.abs(deltaY) > 20) {
+          lastAutoScrollRef.current = Date.now();
+          window.scrollBy({ top: deltaY, behavior: 'smooth' });
+        }
       }
-    } else if (cursorRect.top < topThreshold && (inputVal.length === 0 || isStarted || force)) {
-      const deltaY = cursorRect.top - targetViewportY;
-      if (deltaY < -8) {
+      return;
+    }
+
+    // When mobile virtual keyboard resizes mid-passage, only scroll down if cursor became covered by keyboard
+    if (mode === 'viewport') {
+      if (cursorVisibleBottom > vvHeight * 0.75) {
+        const targetVisibleY = vvHeight * (isCompactViewport ? 0.38 : 0.40);
+        const deltaY = cursorVisibleTop - targetVisibleY;
+        if (deltaY > 16) {
+          lastAutoScrollRef.current = Date.now();
+          window.scrollBy({ top: deltaY, behavior: 'smooth' });
+        }
+      }
+      return;
+    }
+
+    // Mode === 'typing': only evaluate downward auto-scroll when the cursor wraps onto a new line
+    const isNewLine = lineTop > lastLineOffsetTopRef.current + 6;
+    if (lineTop !== lastLineOffsetTopRef.current) {
+      lastLineOffsetTopRef.current = lineTop;
+    }
+    if (!isNewLine) return;
+
+    const now = Date.now();
+    if (now - lastAutoScrollRef.current < 400) return;
+
+    // Only center/scroll once the active line is genuinely running out of visible screen space
+    const bottomThreshold = vvHeight * (isCompactViewport ? 0.68 : 0.62);
+    const targetVisibleY = vvHeight * (isCompactViewport ? 0.36 : 0.38);
+
+    if (cursorVisibleBottom > bottomThreshold) {
+      const deltaY = cursorVisibleTop - targetVisibleY;
+      if (deltaY > 16) {
         lastAutoScrollRef.current = now;
         window.scrollBy({ top: deltaY, behavior: 'smooth' });
       }
     }
-  }, [gameState, isFocused, isMobile, isStarted, inputVal.length]);
+  }, [gameState, isFocused, isMobile]);
 
   // Trigger auto-scroll check as user types or resets passage
   useEffect(() => {
+    inputLengthRef.current = inputVal.length;
     if (gameState !== 'playing') return;
-    ensureCursorInView(inputVal.length <= 1);
+    if (inputVal.length === 0) {
+      ensureCursorInView('reset');
+    } else {
+      ensureCursorInView('typing');
+    }
   }, [gameState, inputVal.length, targetText, ensureCursorInView]);
 
-  // Re-evaluate cursor visibility when focus changes or mobile virtual keyboard resizes visualViewport
+  // Re-evaluate cursor visibility only when focus state changes or mobile virtual keyboard finishes resizing
   useEffect(() => {
     if (gameState !== 'playing') return;
-    ensureCursorInView(true);
-    const t1 = window.setTimeout(() => ensureCursorInView(true), 120);
-    const t2 = window.setTimeout(() => ensureCursorInView(true), 320);
+    let resizeTimer: number | null = null;
+
+    const t1 = window.setTimeout(() => {
+      ensureCursorInView('viewport');
+    }, 220);
 
     const vv = window.visualViewport;
-    const handleViewportResize = () => ensureCursorInView(true);
+    const handleViewportResize = () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        ensureCursorInView('viewport');
+      }, 160);
+    };
     vv?.addEventListener('resize', handleViewportResize);
 
     return () => {
       clearTimeout(t1);
-      clearTimeout(t2);
+      if (resizeTimer) clearTimeout(resizeTimer);
       vv?.removeEventListener('resize', handleViewportResize);
     };
   }, [gameState, isFocused, ensureCursorInView]);
