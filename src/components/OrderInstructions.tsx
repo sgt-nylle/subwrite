@@ -313,7 +313,11 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                   </div>
                   <div className="key-item">
                     <kbd>←</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>↓</kbd>
-                    <span>{isEn ? 'Change target level for next mission' : 'Ändra målnivå för nästa uppdrag'}</span>
+                    <span>{isEn ? 'Cycle ALL records and levels (ALL ⇄ 1–5)' : 'Bläddra mellan ALLA och nivåer (ALLA ⇄ 1–5)'}</span>
+                  </div>
+                  <div className="key-item">
+                    <kbd>A</kbd>
+                    <span>{isEn ? 'Show ALL records across all levels' : 'Visa ALLA resultat oavsett nivå'}</span>
                   </div>
                   <div className="key-item">
                     <kbd>1</kbd> - <kbd>5</kbd>

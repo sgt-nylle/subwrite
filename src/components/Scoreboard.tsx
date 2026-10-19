@@ -317,13 +317,22 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         return;
       }
 
-      // 4. Arrow keys to change level
+      // 4. 'A' / 'a' or '0': Show ALL levels records
+      if (e.key === 'a' || e.key === 'A' || e.key === '0') {
+        e.preventDefault();
+        sound.playLevelSelect();
+        setSelectedLevel('all');
+        return;
+      }
+
+      // 5. Arrow keys to cycle through ALL and levels 1..5
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
         sound.playLevelSelect();
         setSelectedLevel(prev => {
-          const cur = typeof prev === 'number' ? prev : (currentScore?.level || 1);
-          return cur > 1 ? cur - 1 : 5;
+          if (prev === 'all') return 5;
+          if (prev === 1) return 'all';
+          return prev - 1;
         });
         return;
       }
@@ -332,13 +341,14 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
         e.preventDefault();
         sound.playLevelSelect();
         setSelectedLevel(prev => {
-          const cur = typeof prev === 'number' ? prev : (currentScore?.level || 1);
-          return cur < 5 ? cur + 1 : 1;
+          if (prev === 'all') return 1;
+          if (prev === 5) return 'all';
+          return prev + 1;
         });
         return;
       }
 
-      // 5. Number keys [1-5] to jump to level
+      // 6. Number keys [1-5] to jump to level
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         sound.playLevelSelect();
@@ -593,7 +603,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               ✓ CALL-SIGN <span className="highlight-gold">[{initials.toUpperCase().slice(0, 3).padEnd(3, 'X')}]</span> LOGGED TO LEVEL {currentScore.level} {groupLabel} ARCHIVE!
             </div>
             <div className="confirmed-nav-prompt">
-              [◀ / ▶] LEVEL &nbsp;•&nbsp; [L] {currentLanguage === 'en' ? '🇬🇧 ENGLISH' : '🇸🇪 SVENSKA'} &nbsp;•&nbsp; [ENTER] START LEVEL {selectedLevel === 'all' ? currentScore.level : selectedLevel} &nbsp;•&nbsp; [ESC] MENU
+              [◀ / ▶] LEVEL &nbsp;•&nbsp; [A] ALL &nbsp;•&nbsp; [L] {currentLanguage === 'en' ? '🇬🇧 ENGLISH' : '🇸🇪 SVENSKA'} &nbsp;•&nbsp; [ENTER] START LEVEL {selectedLevel === 'all' ? currentScore.level : selectedLevel} &nbsp;•&nbsp; [ESC] MENU
             </div>
           </div>
         )}
@@ -607,8 +617,9 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               sound.playKeypress();
               setSelectedLevel('all');
             }}
+            title={`Show all ${groupLabel.toLowerCase()} records [A]`}
           >
-            {activeTheme.flair} ALL {groupLabel}
+            {activeTheme.flair} ALL {groupLabel} [A]
           </button>
           {activeTheme.levels.map(lvl => {
             const count = scores.filter(s => (s.device || 'desktop') === selectedDevice && Number(s.level) === lvl.level).length;

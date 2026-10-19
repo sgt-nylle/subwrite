@@ -68,8 +68,9 @@ SubWrite is designed for lightning-fast, mouse-free arcade gameplay. Every state
 | | `1` – `5` | Switch difficulty level before typing commences |
 | | `Backspace` | Erase previous character without desynchronizing cursor state |
 | **Scoreboard** | `Enter` | **First press:** Submit 3-letter callsign/initials<br>**Subsequent press:** Launch selected level for a new mission |
-| | `←` / `↑` (Left / Up Arrows) | Decrease target level for next mission (cycles 5 → 4 → 3 → 2 → 1) |
-| | `→` / `↓` (Right / Down Arrows) | Increase target level for next mission (cycles 1 → 2 → 3 → 4 → 5) |
+| | `←` / `↑` (Left / Up Arrows) | Cycle backward through leaderboard tabs (`5` → `4` → `3` → `2` → `1` → `ALL`) |
+| | `→` / `↓` (Right / Down Arrows) | Cycle forward through leaderboard tabs (`ALL` → `1` → `2` → `3` → `4` → `5`) |
+| | `A` | Show `ALL` records across all difficulty levels |
 | | `1` – `5` | Jump directly to level 1, 2, 3, 4, or 5 |
 | | `L` | Toggle language (`EN` / `SV`) for next game |
 | | `ESC` | Close scoreboard and return to Main Menu |
