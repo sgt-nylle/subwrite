@@ -52,7 +52,8 @@ SubWrite is designed for lightning-fast, mouse-free arcade gameplay. Every state
 
 | Context | Key / Shortcut | Action Description |
 | :--- | :--- | :--- |
-| **Universal** | `ESC` | Universal exit / back button: returns to Main Menu from active game or highscore menu |
+| **Start Page** | `Enter` or `Space` | Power on from the first-load NES title screen into the Theme Main Menu |
+| **Universal** | `ESC` | Step-by-step back button: closes modals / exits active game to Theme Main Menu, and returns from Theme Main Menu to the Start Page |
 | | `S` | Toggle synthesized sound effects and audio ON / OFF |
 | **Main Menu** | `Enter` or `Space` | Launch typing mission with selected level, theme, and language |
 | | `←` / `→` (Left / Right Arrows) | Cycle operational theme (*Submarine* ⇄ *Air Force* ⇄ *Army* ⇄ *Pub*) |
@@ -64,7 +65,8 @@ SubWrite is designed for lightning-fast, mouse-free arcade gameplay. Every state
 | | `I` | Open Order Instructions modal (Mission Briefing, Point System, Controls) |
 | **In-Game** | `Any Key` | Auto-focus capture: keystrokes immediately route to the terminal arena without clicking |
 | | `Enter` | Instant restart: restarts mission immediately with a fresh random passage |
-| | `ESC` | Abort mission and return to Main Menu |
+| | `ESC` | Abort mission and return to Theme Main Menu |
+| | `←` / `→` (Left / Right Arrows) | Cycle difficulty level (`1` ⇄ `5`) and load a fresh passage |
 | | `1` – `5` | Switch difficulty level before typing commences |
 | | `Backspace` | Erase previous character without desynchronizing cursor state |
 | **Scoreboard** | `Enter` | **First press:** Submit 3-letter callsign/initials<br>**Subsequent press:** Launch selected level for a new mission |

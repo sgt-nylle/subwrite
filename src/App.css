@@ -4383,3 +4383,375 @@
     max-width: 170px;
   }
 }
+
+
+/* =========================================================================
+   NES CARTRIDGE BOOT / FIRST-LOAD INTRO SCREEN
+   ========================================================================= */
+
+.c64-intro-frame {
+  max-width: 840px;
+  padding: 16px;
+  background-color: #040000;
+}
+
+.nes-intro-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: min(600px, calc(100vh - 76px));
+  padding: 22px 28px 18px;
+  background-color: #040000;
+  background-image:
+    linear-gradient(rgba(120, 0, 0, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 0, 0, 0.14) 1px, transparent 1px);
+  background-size: 64px 64px;
+  border: 2px solid #550a0a;
+  box-shadow: inset 0 0 55px rgba(0, 0, 0, 0.92);
+  animation: nesBootPowerOn 0.45s steps(8, end) both;
+}
+
+@keyframes nesBootPowerOn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: brightness(2.2);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+}
+
+.nes-intro-corner {
+  position: absolute;
+  font-family: var(--font-arcade);
+  font-size: 14px;
+  color: var(--c64-gold);
+  opacity: 0.75;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+}
+
+.nes-intro-corner.corner-tl { top: 10px; left: 12px; }
+.nes-intro-corner.corner-tr { top: 10px; right: 12px; }
+.nes-intro-corner.corner-bl { bottom: 10px; left: 12px; }
+.nes-intro-corner.corner-br { bottom: 10px; right: 12px; }
+
+.nes-intro-topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 14px;
+  z-index: 2;
+}
+
+.nes-intro-cart-code {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #aa4444;
+  letter-spacing: 1.5px;
+}
+
+.nes-intro-sound-btn {
+  font-size: 9px;
+  padding: 5px 10px;
+}
+
+.nes-intro-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+  max-width: 640px;
+  margin: auto 0;
+  padding: 12px 0;
+  text-align: center;
+  z-index: 2;
+}
+
+.nes-intro-logo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.nes-intro-stars {
+  font-size: 15px;
+  letter-spacing: 12px;
+}
+
+.nes-intro-title {
+  font-family: var(--font-arcade);
+  font-size: clamp(28px, 6vw, 54px);
+  color: #ff2a2a;
+  letter-spacing: clamp(3px, 1vw, 8px);
+  margin: 0;
+  line-height: 1.1;
+  text-shadow:
+    0 -1px 0 #ffaaaa,
+    0 0 22px rgba(255, 34, 34, 0.85),
+    4px 4px 0px #990000,
+    7px 7px 0px #380000;
+  white-space: nowrap;
+}
+
+.nes-intro-title-mobile {
+  font-size: clamp(22px, 7.5vw, 32px);
+  letter-spacing: 2px;
+  text-shadow:
+    0 -1px 0 #ffaaaa,
+    0 0 14px rgba(255, 34, 34, 0.85),
+    3px 3px 0px #990000,
+    5px 5px 0px #380000;
+}
+
+.nes-intro-badge {
+  font-family: var(--font-arcade);
+  font-size: clamp(9px, 1.8vw, 12px);
+  color: var(--c64-gold);
+  letter-spacing: 2.5px;
+  padding: 7px 18px;
+  background-color: rgba(35, 2, 2, 0.9);
+  border: 2px solid #cc2222;
+  border-radius: 3px;
+  box-shadow: 0 0 14px rgba(255, 34, 34, 0.25);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.55);
+}
+
+.nes-intro-sprite-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 0;
+  width: 100%;
+}
+
+.nes-intro-sub .gotland-badge-text {
+  display: none;
+}
+
+.nes-intro-description {
+  font-family: var(--font-retro);
+  font-size: clamp(20px, 2.6vw, 24px);
+  line-height: 1.35;
+  color: #f2dede;
+  max-width: 560px;
+  letter-spacing: 0.6px;
+  text-shadow: 0 0 8px rgba(255, 60, 60, 0.28);
+  padding: 0 8px;
+}
+
+.nes-intro-cta-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.nes-intro-start-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 290px;
+  max-width: 380px;
+  width: 100%;
+  padding: 16px 32px;
+  background: linear-gradient(180deg, #cc1414 0%, #800808 55%, #4d0303 100%);
+  border: 3px solid #ff5555;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow:
+    0 6px 0 #2b0000,
+    0 0 24px rgba(255, 34, 34, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.08s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+  touch-action: manipulation;
+}
+
+.nes-intro-start-btn:hover {
+  background: linear-gradient(180deg, #e01b1b 0%, #960b0b 55%, #5c0404 100%);
+  border-color: var(--c64-gold);
+  box-shadow:
+    0 6px 0 #2b0000,
+    0 0 32px rgba(255, 68, 68, 0.75),
+    inset 0 2px 0 rgba(255, 255, 255, 0.65);
+  transform: translateY(-1px);
+}
+
+.nes-intro-start-btn:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 #2b0000,
+    0 0 14px rgba(255, 34, 34, 0.6),
+    inset 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.nes-intro-btn-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: var(--font-arcade);
+  font-size: 18px;
+  color: #ffffff;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 2px 2px 0 #440000;
+}
+
+.nes-intro-arrow {
+  color: var(--c64-gold);
+  font-size: 16px;
+  animation: nesIntroBlink 0.9s infinite steps(2, start);
+}
+
+.nes-intro-btn-hint {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #ffdddd;
+  letter-spacing: 1.8px;
+  animation: nesIntroBlink 1.2s infinite steps(2, start);
+}
+
+@keyframes nesIntroBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.nes-intro-launching {
+  animation: nesRapidStrobe 0.09s infinite steps(2, start) !important;
+  border-color: #ffffff !important;
+}
+
+@keyframes nesRapidStrobe {
+  0% {
+    background: #ffffff;
+    box-shadow: 0 0 36px #ffffff;
+  }
+  50% {
+    background: #ff2222;
+    box-shadow: 0 0 36px #ffd700;
+  }
+}
+
+.nes-intro-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.nes-intro-provider,
+.nes-provider-credit {
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #cc9999;
+  letter-spacing: 1.2px;
+}
+
+.nes-provider-credit {
+  color: var(--c64-dim-red);
+}
+
+.nes-intro-provider-link,
+.nes-provider-credit a {
+  color: var(--c64-gold);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255, 215, 0, 0.55);
+  padding-bottom: 1px;
+  transition: color 0.15s ease, text-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.nes-intro-provider-link:hover,
+.nes-provider-credit a:hover {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+}
+
+.nes-intro-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  color: #883333;
+  letter-spacing: 1.5px;
+  z-index: 2;
+}
+
+.nes-intro-dot {
+  color: var(--c64-red);
+}
+
+@media (max-width: 600px) {
+  .c64-intro-frame {
+    padding: 10px;
+  }
+
+  .nes-intro-screen {
+    min-height: calc(100svh - 56px);
+    padding: 18px 14px 14px;
+    background-size: 44px 44px;
+  }
+
+  .nes-intro-topbar {
+    padding: 0 6px;
+  }
+
+  .nes-intro-cart-code {
+    font-size: 8px;
+  }
+
+  .nes-intro-center {
+    gap: 16px;
+  }
+
+  .nes-intro-badge {
+    font-size: 8px;
+    letter-spacing: 1.4px;
+    padding: 6px 12px;
+  }
+
+  .nes-intro-description {
+    font-size: 19px;
+    line-height: 1.3;
+  }
+
+  .nes-intro-start-btn {
+    min-width: 0;
+    padding: 14px 20px;
+  }
+
+  .nes-intro-btn-main {
+    font-size: 14px;
+    letter-spacing: 2px;
+    gap: 10px;
+  }
+
+  .nes-intro-btn-hint {
+    font-size: 8px;
+  }
+}
+
+.mission-theme-selector-bar .theme-selector-shortcut {
+  display: none;
+}
+
+.level-bar-shortcut {
+  color: var(--c64-gold);
+  font-size: 9px;
+  margin-left: 4px;
+}

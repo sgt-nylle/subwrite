@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { LEVEL_TIME_LIMITS } from './data/submarineTexts';
 import { APP_VERSION } from './version';
 import { Scoreboard, type FinalTrialResult } from './components/Scoreboard';
+import { IntroScreen, INTRO_SESSION_KEY } from './components/IntroScreen';
 import { StartScreen } from './components/StartScreen';
 import { OrderInstructions } from './components/OrderInstructions';
 import { ThemeSelector } from './components/ThemeSelector';
@@ -73,8 +74,22 @@ const getInitialPassage = (): { index: number; text: string } => {
   return { index: 0, text: getTheme(DEFAULT_THEME_ID).levels[0]?.description || '' };
 };
 
+const getInitialGameState = (): 'intro' | 'start' => {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('intro') === '1') return 'intro';
+    if (sessionStorage.getItem(INTRO_SESSION_KEY) === '1') {
+      return 'start';
+    }
+  } catch {
+    // Ignore
+  }
+  return 'intro';
+};
+
 export function App() {
-  const [gameState, setGameState] = useState<'start' | 'playing'>('start');
+  const [gameState, setGameState] = useState<'intro' | 'start' | 'playing'>(getInitialGameState);
+  const gameStateRef = useRef<'intro' | 'start' | 'playing'>(gameState);
   const [theme, setTheme] = useState<ThemeId>(() => {
     try {
       const saved = localStorage.getItem('subwrite_theme');
@@ -136,10 +151,11 @@ export function App() {
   }, []);
 
   // Sync operational theme to root html & body elements so main window scrollbar matches active theme
+  const viewportTheme: ThemeId = gameState === 'intro' ? 'submarine' : theme;
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.body.setAttribute('data-theme', theme);
-  }, [theme]);
+    document.documentElement.setAttribute('data-theme', viewportTheme);
+    document.body.setAttribute('data-theme', viewportTheme);
+  }, [viewportTheme]);
 
   // Active theme and level configuration
   const activeTheme = getTheme(theme);
@@ -195,9 +211,11 @@ export function App() {
     setRecentPenalty(null);
     setFinalScoreData(null);
     if (timerRef.current) clearInterval(timerRef.current);
-    if (!showScoreboard) {
+    if (gameStateRef.current === 'playing' && !showScoreboard) {
       setTimeout(() => {
-        inputRef.current?.focus({ preventScroll: true });
+        if (gameStateRef.current === 'playing') {
+          inputRef.current?.focus({ preventScroll: true });
+        }
       }, 100);
     }
   }, [theme, showScoreboard]);
@@ -231,6 +249,7 @@ export function App() {
         // Ignore
       }
     }
+    gameStateRef.current = 'playing';
     setGameState('playing');
     // Ensure every time a level is selected or game started, a fresh random template is loaded
     currentPassageIndexRef.current = -1;
@@ -241,7 +260,9 @@ export function App() {
       inputRef.current.focus({ preventScroll: true });
       setIsFocused(true);
       setTimeout(() => {
-        inputRef.current?.focus({ preventScroll: true });
+        if (gameStateRef.current === 'playing') {
+          inputRef.current?.focus({ preventScroll: true });
+        }
       }, 80);
     }
   };
@@ -260,15 +281,26 @@ export function App() {
     }
   }, [level, loadPassage, gameState, showScoreboard]);
 
-  // Return to title screen
+  // Return to title screen (active theme's level menu)
   const handleReturnToMenu = useCallback(() => {
+    gameStateRef.current = 'start';
     setGameState('start');
     setShowScoreboard(false);
     setShowInstructions(false);
     setIsStarted(false);
     setIsFinished(false);
+    setIsFocused(false);
+    inputRef.current?.blur();
     if (timerRef.current) clearInterval(timerRef.current);
   }, []);
+
+  // Ensure hidden typing input never holds focus outside active gameplay
+  useEffect(() => {
+    gameStateRef.current = gameState;
+    if (gameState !== 'playing') {
+      inputRef.current?.blur();
+    }
+  }, [gameState]);
 
   // Calculate live metrics
   const calculateMetrics = useCallback(() => {
@@ -443,6 +475,19 @@ export function App() {
         return;
       }
 
+      // Switch level with Left / Right arrow keys while in playing mode
+      if (gameState === 'playing' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+        e.preventDefault();
+        const newLvl = e.key === 'ArrowLeft'
+          ? (level > 1 ? level - 1 : 5)
+          : (level < 5 ? level + 1 : 1);
+        sound.playLevelSelect();
+        setLevel(newLvl);
+        currentPassageIndexRef.current = -1;
+        loadPassage(newLvl, language);
+        return;
+      }
+
       // If in playing mode and hasn't started typing yet, allow pressing 1-5 to select level
       if (gameState === 'playing' && !isStarted && ['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
@@ -604,8 +649,14 @@ export function App() {
 
   // Handle direct keydown events on the typing input
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (gameState !== 'playing') {
+      inputRef.current?.blur();
+      return;
+    }
+
     if (e.key === 'Escape') {
       e.preventDefault();
+      e.stopPropagation();
       sound.playKeypress();
       handleReturnToMenu();
       return;
@@ -613,6 +664,7 @@ export function App() {
 
     if (e.key === 'Enter') {
       e.preventDefault();
+      e.stopPropagation();
       sound.playLevelSelect();
       currentPassageIndexRef.current = -1;
       loadPassage(level, language);
@@ -683,11 +735,20 @@ export function App() {
     : 0;
 
   return (
-    <div className="c64-viewport" data-theme={theme}>
+    <div className="c64-viewport" data-theme={viewportTheme}>
       <div className="crt-overlay"></div>
       <div className="crt-vignette"></div>
 
-      <div className="c64-screen-frame">
+      <div className={`c64-screen-frame ${gameState === 'intro' ? 'c64-intro-frame' : ''}`}>
+        {gameState === 'intro' && (
+          <IntroScreen
+            isMobile={isMobile}
+            soundEnabled={soundEnabled}
+            onToggleSound={toggleSound}
+            onEnterGame={() => setGameState('start')}
+          />
+        )}
+
         {gameState === 'start' && (
           /* =============================================================
              START SCREEN (NINTENDO NES TITLE WITH SWEDISH GOTLAND SUB)
@@ -703,6 +764,10 @@ export function App() {
             onStartGame={handleStartGame}
             onOpenScoreboard={() => setShowScoreboard(true)}
             onOpenInstructions={() => setShowInstructions(true)}
+            onBackToIntro={() => {
+              gameStateRef.current = 'intro';
+              setGameState('intro');
+            }}
             soundEnabled={soundEnabled}
             onToggleSound={toggleSound}
             disabled={showScoreboard || showInstructions}
@@ -712,7 +777,7 @@ export function App() {
         {/* =============================================================
            TYPING ARENA (LIVE MISSION) - Kept mounted to enable synchronous iOS Safari keyboard popup on tap
            ============================================================= */}
-        <div className={`c64-mission-view ${gameState === 'start' ? 'mission-view-standby' : ''}`}>
+        <div className={`c64-mission-view ${gameState !== 'playing' ? 'mission-view-standby' : ''}`}>
           {/* RETRO ARCADE THEME SELECTOR ROW IN MISSION VIEW */}
           <ThemeSelector currentTheme={theme} onSelectTheme={handleSelectTheme} className="mission-theme-selector-bar" />
 
@@ -796,7 +861,7 @@ export function App() {
           {/* LEVEL SELECTOR (LEVELS 1 - 5) */}
           <section className="c64-level-selector c64-box">
             <div className="level-bar-label">
-              <span>[ {activeTheme.levelHeaderLabel} ]:</span>
+              <span>[ {activeTheme.levelHeaderLabel} ] <span className="level-bar-shortcut">[1-5 / ◀ ▶]</span>:</span>
             </div>
             <div className="level-buttons-grid">
               {activeTheme.levels.map((lvl) => {
@@ -839,6 +904,7 @@ export function App() {
               ref={inputRef}
               type="text"
               className="hidden-typing-input"
+              tabIndex={gameState === 'playing' ? 0 : -1}
               value={inputVal}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
@@ -906,7 +972,7 @@ export function App() {
           {/* BOTTOM ACTION BAR */}
           <footer className="c64-footer c64-box">
             <div className="footer-keys-legend">
-              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className={continuedErrors <= 1 ? "highlight-gold" : ""}>{continuedErrors <= 1 ? "★ BONUS: +4000 PTS" : "BONUS: 0 PTS"}</span> | <span className="footer-version">{APP_VERSION}</span>
+              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5 / ◀▶] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className={continuedErrors <= 1 ? "highlight-gold" : ""}>{continuedErrors <= 1 ? "★ BONUS: +4000 PTS" : "BONUS: 0 PTS"}</span> | <span className="footer-version">{APP_VERSION}</span>
             </div>
             <div className="footer-actions">
               <button

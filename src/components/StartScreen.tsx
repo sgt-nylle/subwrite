@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { type HighScore } from '../data/submarineTexts';
 import { APP_VERSION } from '../version';
 import { ThemeSelector } from './ThemeSelector';
@@ -16,6 +16,7 @@ interface StartScreenProps {
   onStartGame: (lvl?: number, lang?: 'en' | 'sv') => void;
   onOpenScoreboard: () => void;
   onOpenInstructions: () => void;
+  onBackToIntro?: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
   disabled?: boolean;
@@ -32,6 +33,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   onStartGame,
   onOpenScoreboard,
   onOpenInstructions,
+  onBackToIntro,
   soundEnabled,
   onToggleSound,
   disabled = false
@@ -39,6 +41,14 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   const activeTheme = getTheme(theme);
   const [topScore, setTopScore] = useState<HighScore | null>(null);
   const targetDevice = isMobile ? 'mobile' : 'desktop';
+  const mountedTimeStampRef = useRef<number>(0);
+
+  // Ignore any keydown event created before StartScreen became active/enabled
+  useEffect(() => {
+    if (!disabled) {
+      mountedTimeStampRef.current = performance.now();
+    }
+  }, [disabled]);
 
   // Load top score for current theme & device to display on NES header (like classic "TOP - 050000")
   useEffect(() => {
@@ -76,7 +86,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   // Keyboard navigation for NES style: Up/Down arrow moves level, Enter starts, 1-5 starts immediately
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (disabled) return;
+      if (disabled || (e.timeStamp > 0 && e.timeStamp <= mountedTimeStampRef.current)) return;
 
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
@@ -131,12 +141,18 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         e.preventDefault();
         sound.playKeypress();
         onSelectLanguage('sv');
+      } else if (e.key === 'Escape') {
+        if (onBackToIntro) {
+          e.preventDefault();
+          sound.playKeypress();
+          onBackToIntro();
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onOpenInstructions, onSelectLanguage, onToggleSound, disabled]);
+  }, [selectedLevel, theme, selectedLanguage, onSelectLevel, onSelectTheme, onStartGame, onOpenScoreboard, onOpenInstructions, onBackToIntro, onSelectLanguage, onToggleSound, disabled]);
 
   const handleLevelClick = (lvl: number) => {
     sound.playLevelSelect();
@@ -349,7 +365,17 @@ export const StartScreen: React.FC<StartScreenProps> = ({
 
       {/* FOOTER COPYRIGHT */}
       <div className="nes-footer-credits">
-        <div className="nes-footer-prompt">PRESS ENTER TO LAUNCH</div>
+        <div className="nes-footer-prompt">PRESS ENTER TO LAUNCH • [ESC] START PAGE</div>
+        <div className="nes-provider-credit">
+          Provided by{' '}
+          <a
+            href="https://github.com/sgt-nylle/subwrite"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Sgt.Moon
+          </a>
+        </div>
         <footer className="footer">
           <p>© 2026 SUBWRITE <span className="footer-version">{APP_VERSION}</span> // CLASSIFIED RETRO SYSTEMS</p>
           <p>

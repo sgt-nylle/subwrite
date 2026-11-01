@@ -576,9 +576,11 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
+                      e.stopPropagation();
                       handleSubmitInitials();
                     } else if (e.key === 'Escape') {
                       e.preventDefault();
+                      e.stopPropagation();
                       sound.playKeypress();
                       onReturnToMenu?.();
                     }

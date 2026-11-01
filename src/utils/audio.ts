@@ -82,6 +82,36 @@ class RetroAudio {
     }
   }
 
+  playStartGame() {
+    if (!this.enabled) return;
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+      // Classic NES "Press Start" 8-bit square-wave arpeggio chime (C5 -> E5 -> G5 -> C6)
+      const notes = [
+        { freq: 523.25, delay: 0, dur: 0.07 },
+        { freq: 659.25, delay: 0.06, dur: 0.07 },
+        { freq: 783.99, delay: 0.12, dur: 0.08 },
+        { freq: 1046.5, delay: 0.18, dur: 0.22 },
+      ];
+      notes.forEach(({ freq, delay, dur }) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.07, this.ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + delay + dur);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(this.ctx.currentTime + delay);
+        osc.stop(this.ctx.currentTime + delay + dur);
+      });
+    } catch {
+      // Ignore
+    }
+  }
+
   playVictory() {
     if (!this.enabled) return;
     try {
