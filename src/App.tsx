@@ -167,12 +167,15 @@ export function App() {
   // 1. Initial mission reserve pool
   // 2. Continuous time drain rate (points/sec) - the faster you type, the less is drained
   // 3. -100 points per continued misstyped error
-  // 4. +4,000 points precision bonus for 1 or fewer (0) total typing errors
+  // 4. +4,000 points precision bonus for 98% or higher accuracy
+  const accuracy = totalKeystrokes > 0
+    ? Math.max(0, Math.min(100, Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100)))
+    : 100;
   const initialReserve = (targetText.length * 25) + (level * 2500);
   const drainRate = 20 + (level * 10);
   const timeDrain = elapsedSeconds * drainRate;
   const errorPenalty = continuedErrors * 100;
-  const precisionBonus = continuedErrors <= 1 ? 4000 : 0;
+  const precisionBonus = accuracy >= 98 ? 4000 : 0;
   const liveScore = Math.max(0, Math.round(initialReserve - timeDrain - errorPenalty + precisionBonus));
 
   // Format time mm:ss
@@ -307,20 +310,25 @@ export function App() {
     const timeInMinutes = Math.max((elapsedSeconds || 1) / 60, 0.05);
     const wordsTyped = inputVal.length / 5;
     const wpm = Math.max(0, Math.round(wordsTyped / timeInMinutes));
-    const accuracy = totalKeystrokes > 0
-      ? Math.max(0, Math.min(100, Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100)))
-      : 100;
-    return { wpm, accuracy, score: liveScore };
-  }, [elapsedSeconds, inputVal.length, totalKeystrokes, errorCount, liveScore]);
+    return { wpm, score: liveScore };
+  }, [elapsedSeconds, inputVal.length, liveScore]);
 
-  const { wpm, accuracy, score } = calculateMetrics();
+  const { wpm, score } = calculateMetrics();
 
   // Completion check
-  const handleComplete = useCallback((completedVal?: string) => {
+  const handleComplete = useCallback((
+    completedVal?: string,
+    completedKeystrokes?: number,
+    completedErrorCount?: number,
+    completedContinuedErrors?: number
+  ) => {
     setIsFinished(true);
     if (timerRef.current) clearInterval(timerRef.current);
 
     const currentVal = completedVal ?? inputVal;
+    const finalTotalKeystrokes = completedKeystrokes ?? totalKeystrokes;
+    const finalErrorCount = completedErrorCount ?? errorCount;
+    const activeContinuedErrors = completedContinuedErrors ?? continuedErrors;
 
     // Count correct chars and errors directly from completed string
     let correctChars = 0;
@@ -333,18 +341,19 @@ export function App() {
       }
     }
 
-    const finalErrors = Math.max(actualErrors, continuedErrors);
+    const finalAcc = finalTotalKeystrokes > 0
+      ? Math.max(0, Math.min(100, Math.round(((finalTotalKeystrokes - finalErrorCount) / finalTotalKeystrokes) * 100)))
+      : 100;
+
+    const finalErrors = Math.max(actualErrors, activeContinuedErrors);
     const finalTime = Math.max(1, elapsedSeconds);
     const finalDrain = finalTime * drainRate;
     const finalPenalty = finalErrors * 100;
-    const finalBonus = finalErrors <= 1 ? 4000 : 0;
+    const finalBonus = finalAcc >= 98 ? 4000 : 0;
     const finalScore = Math.max(0, Math.round(initialReserve - finalDrain - finalPenalty + finalBonus));
 
     const finalTimeInMinutes = Math.max(finalTime / 60, 0.05);
     const finalWpm = Math.max(0, Math.round((targetText.length / 5) / finalTimeInMinutes));
-    const finalAcc = totalKeystrokes > 0
-      ? Math.max(0, Math.min(100, Math.round(((totalKeystrokes - errorCount) / totalKeystrokes) * 100)))
-      : 100;
 
     setFinalScoreData({
       score: finalScore,
@@ -353,7 +362,7 @@ export function App() {
       level,
       correctChars,
       incorrectChars: finalErrors,
-      totalKeystrokes,
+      totalKeystrokes: finalTotalKeystrokes,
       timeSpentSeconds: finalTime,
       timeLimitSeconds: timeLimit,
       penaltyPoints: finalPenalty,
@@ -401,30 +410,41 @@ export function App() {
 
     let nextVal = inputVal;
 
+    let nextTotalKeystrokes = totalKeystrokes;
+    let nextErrorCount = errorCount;
+    let nextContinuedErrors = continuedErrors;
+
     // Forward typing: Characters were added
     if (val.length > inputVal.length) {
       // Extract newly added characters from the end or diff
       const addedChars = val.slice(inputVal.length);
-      setTotalKeystrokes(prev => prev + addedChars.length);
+      nextTotalKeystrokes = totalKeystrokes + addedChars.length;
+      setTotalKeystrokes(nextTotalKeystrokes);
 
       nextVal = (inputVal + addedChars).slice(0, targetText.length);
 
-      let hadError = false;
+      let addedErrors = 0;
       for (let i = inputVal.length; i < nextVal.length; i++) {
         const typedChar = nextVal[i];
         const expectedChar = targetText[i];
         const isMatch = typedChar === expectedChar || areCharsEquivalent(typedChar, expectedChar);
 
         if (!isMatch) {
-          hadError = true;
-          setErrorCount(prev => prev + 1);
-          setContinuedErrors(prev => prev + 1);
+          addedErrors++;
         }
       }
 
-      if (hadError) {
-        const nextErrors = continuedErrors + 1;
-        setRecentPenalty(nextErrors === 2 ? '-100 PTS (BONUS LOST!)' : '-100 PTS ERROR');
+      if (addedErrors > 0) {
+        nextErrorCount = errorCount + addedErrors;
+        nextContinuedErrors = continuedErrors + addedErrors;
+        setErrorCount(nextErrorCount);
+        setContinuedErrors(nextContinuedErrors);
+
+        const nextAcc = Math.max(
+          0,
+          Math.min(100, Math.round(((nextTotalKeystrokes - nextErrorCount) / nextTotalKeystrokes) * 100))
+        );
+        setRecentPenalty(accuracy >= 98 && nextAcc < 98 ? '-100 PTS (<98% BONUS!)' : '-100 PTS ERROR');
         sound.playError();
         if (penaltyTimerRef.current) clearTimeout(penaltyTimerRef.current);
         penaltyTimerRef.current = window.setTimeout(() => {
@@ -447,7 +467,7 @@ export function App() {
 
     // Finished entire passage?
     if (nextVal.length >= targetText.length && targetText.length > 0) {
-      handleComplete(nextVal);
+      handleComplete(nextVal, nextTotalKeystrokes, nextErrorCount, nextContinuedErrors);
     }
   };
 
@@ -972,7 +992,7 @@ export function App() {
           {/* BOTTOM ACTION BAR */}
           <footer className="c64-footer c64-box">
             <div className="footer-keys-legend">
-              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5 / ◀▶] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className={continuedErrors <= 1 ? "highlight-gold" : ""}>{continuedErrors <= 1 ? "★ BONUS: +4000 PTS" : "BONUS: 0 PTS"}</span> | <span className="footer-version">{APP_VERSION}</span>
+              <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5 / ◀▶] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className={accuracy >= 98 ? "highlight-gold" : ""}>{accuracy >= 98 ? "★ BONUS: +4000 PTS (≥98%)" : "BONUS: 0 PTS (<98%)"}</span> | <span className="footer-version">{APP_VERSION}</span>
             </div>
             <div className="footer-actions">
               <button

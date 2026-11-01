@@ -102,8 +102,8 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
             <div className="instructions-card">
               <p className="instructions-lead">
                 {isEn
-                  ? 'Your objective is simple yet rigorous: transcribe incoming tactical transmissions with maximum typing speed and zero errors before your mission time expires.'
-                  : 'Ditt uppdrag är enkelt men krävande: skriv av inkommande taktiska meddelanden med maximal hastighet och noll fel innan din uppdragstid tar slut.'}
+                  ? 'Your objective is simple yet rigorous: transcribe incoming tactical transmissions with maximum typing speed and ≥98% accuracy before your mission time expires.'
+                  : 'Ditt uppdrag är enkelt men krävande: skriv av inkommande taktiska meddelanden med maximal hastighet och minst 98% träffsäkerhet innan din uppdragstid tar slut.'}
               </p>
 
               <div className="levels-guide-grid">
@@ -210,12 +210,12 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                     <h4>{isEn ? '4. PRECISION BONUS' : '4. PRECISIONSBONUS'}</h4>
                   </div>
                   <div className="pillar-formula">
-                    <code>+4,000 PTS (≤1 ERROR)</code>
+                    <code>{isEn ? '+4,000 PTS (≥98% ACCURACY)' : '+4,000 PTS (≥98% TRÄFFSÄKERHET)'}</code>
                   </div>
                   <p>
                     {isEn
-                      ? 'Transcribe with pinpoint accuracy: finish with 1 or zero total errors to secure a huge +4,000 bonus!'
-                      : 'Skriv med kirurgisk precision: slutför med högst 1 fel (eller 0 fel) för en bonus på hela +4 000 poäng!'}
+                      ? 'Maintain 98% or higher typing accuracy to earn a +4,000 point bonus! Scales with passage length—and if an early slip drops you below 98%, clean typing can recover the bonus.'
+                      : 'Håll minst 98% träffsäkerhet för en bonus på hela +4 000 poäng! Skalas med textens längd – och om ett tidigt fel sänker dig under 98% kan felfritt skrivande återställa bonusen.'}
                   </p>
                 </div>
               </div>
@@ -224,7 +224,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                 <strong>{isEn ? 'TELEMETRY METRICS:' : 'TELEMETRIMÅTT:'}</strong>
                 <span>• <strong>WPM:</strong> (Characters ÷ 5) ÷ Minutes</span>
                 <span>• <strong>ACCURACY:</strong> (Clean Hits ÷ Total Strokes) × 100%</span>
-                <span>• <strong>BONUS:</strong> +4000 PTS (≤1 error)</span>
+                <span>• <strong>BONUS:</strong> {isEn ? '+4,000 PTS at ≥98% accuracy (live dynamic check)' : '+4 000 PTS vid ≥98% träffsäkerhet (uppdateras live)'}</span>
               </div>
             </div>
           </section>
@@ -241,7 +241,7 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                   <h4>{isEn ? 'UNIVERSAL / GLOBAL' : 'ÖVERGRIPANDE'}</h4>
                   <div className="key-item">
                     <kbd>ESC</kbd>
-                    <span>{isEn ? 'Universal Back / Exit to Main Menu' : 'Tillbaka / Avbryt till Huvudmenyn'}</span>
+                    <span>{isEn ? 'Step-by-step Back (Game → Main Menu → Start Page)' : 'Stegvis tillbaka (Spel → Huvudmeny → Startsida)'}</span>
                   </div>
                   <div className="key-item">
                     <kbd>S</kbd>
@@ -296,8 +296,8 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
                     <span>{isEn ? 'Abort current game and return to Main Menu' : 'Avbryt pågående spel till Huvudmenyn'}</span>
                   </div>
                   <div className="key-item">
-                    <kbd>1</kbd> - <kbd>5</kbd>
-                    <span>{isEn ? 'Change level before typing commences' : 'Byt nivå innan du börjar skriva'}</span>
+                    <kbd>1</kbd> - <kbd>5</kbd> / <kbd>←</kbd> <kbd>→</kbd>
+                    <span>{isEn ? 'Switch difficulty level (1 to 5)' : 'Byt svårighetsgrad (1 till 5)'}</span>
                   </div>
                   <div className="key-item">
                     <kbd>BACKSPACE</kbd>

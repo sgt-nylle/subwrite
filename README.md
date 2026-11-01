@@ -34,7 +34,7 @@ SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web applic
   - **Mission Reserve Pool:** `(Text Length × 25) + (Level × 2500)` base point pool.
   - **Continuous Time Drain:** `20 + (Level × 10) PTS/SEC` continuously drained every second (30 to 70 pts/sec).
   - **Misstype Penalty:** `-100 PTS` per typo or continued incorrect character.
-  - **Precision Bonus:** `+4,000 PTS` awarded when completing a mission with 1 or zero total typing errors.
+  - **Precision Bonus:** `+4,000 PTS` awarded when completing a mission with **98% or higher typing accuracy** (`≥98%`). Evaluated dynamically in real time—if an early typo drops accuracy below 98%, clean typing on the remainder of the passage can recover the bonus.
   - Retro 3-character initials input (e.g. `RAM`, `NYL`, `RED`) saved to global backend & local storage.
 - **100% Keyboard-Driven Navigation:** The complete experience—theme switching, level selection, language toggling, in-game restarts, audio muting, and post-game leaderboard submissions—can be operated seamlessly without touching a mouse.
 - **Synthesized 8-Bit Web Audio:**

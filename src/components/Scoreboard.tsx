@@ -526,7 +526,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               </div>
               {currentScore.accuracyBonus !== undefined && currentScore.accuracyBonus > 0 && (
                 <div className="debrief-item">
-                  <span className="debrief-lbl">PRECISION BONUS (≤1 ERR)</span>
+                  <span className="debrief-lbl">PRECISION BONUS (≥98% ACC)</span>
                   <span className="debrief-val highlight-gold">+{currentScore.accuracyBonus.toLocaleString()} PTS</span>
                 </div>
               )}
