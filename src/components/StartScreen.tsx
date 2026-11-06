@@ -367,14 +367,23 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       <div className="nes-footer-credits">
         <div className="nes-footer-prompt">PRESS ENTER TO LAUNCH • [ESC] START PAGE</div>
         <div className="nes-provider-credit">
-          Provided by{' '}
-          <a
-            href="https://github.com/sgt-nylle/subwrite"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Sgt.Moon
-          </a>
+          <span className="nes-provider-item">
+            Provided by{' '}
+            <a
+              href="https://github.com/sgt-nylle/subwrite"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Sgt.Moon
+            </a>
+          </span>
+          <span className="nes-provider-sep" aria-hidden="true">•</span>
+          <span className="nes-provider-item">
+            contact:{' '}
+            <a href="mailto:sysop@subwrite.se">
+              sysop@subwrite.se
+            </a>
+          </span>
         </div>
         <footer className="footer">
           <p>© 2026 SUBWRITE <span className="footer-version">{APP_VERSION}</span> // CLASSIFIED RETRO SYSTEMS</p>

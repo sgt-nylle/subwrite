@@ -133,15 +133,27 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       {/* Provider Credit + Classic NES Copyright Line */}
       <div className="nes-intro-bottom">
         <div className="nes-intro-provider">
-          Provided by{' '}
-          <a
-            href="https://github.com/sgt-nylle/subwrite"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nes-intro-provider-link"
-          >
-            Sgt.Moon
-          </a>
+          <span className="nes-provider-item">
+            Provided by{' '}
+            <a
+              href="https://github.com/sgt-nylle/subwrite"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nes-intro-provider-link"
+            >
+              Sgt.Moon
+            </a>
+          </span>
+          <span className="nes-provider-sep" aria-hidden="true">•</span>
+          <span className="nes-provider-item">
+            contact:{' '}
+            <a
+              href="mailto:sysop@subwrite.se"
+              className="nes-intro-provider-link"
+            >
+              sysop@subwrite.se
+            </a>
+          </span>
         </div>
         <footer className="nes-intro-footer">
           <span>© 2026 SUBWRITE.SE</span>

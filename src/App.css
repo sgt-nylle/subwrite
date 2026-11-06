@@ -4654,6 +4654,11 @@
 
 .nes-intro-provider,
 .nes-provider-credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 10px;
   font-family: var(--font-arcade);
   font-size: 9px;
   color: #cc9999;
@@ -4662,6 +4667,14 @@
 
 .nes-provider-credit {
   color: var(--c64-dim-red);
+}
+
+.nes-provider-item {
+  white-space: nowrap;
+}
+
+.nes-provider-sep {
+  color: var(--c64-red);
 }
 
 .nes-intro-provider-link,
@@ -4743,6 +4756,17 @@
 
   .nes-intro-btn-hint {
     font-size: 8px;
+  }
+
+  .nes-intro-provider,
+  .nes-provider-credit {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 8px;
+  }
+
+  .nes-provider-sep {
+    display: none;
   }
 }
 

@@ -117,3 +117,12 @@ subwrite-status -w
 # Show last 30 requests
 subwrite-status -n 30
 ```
+
+---
+
+## Contact
+
+For questions, feedback, or bug reports regarding [subwrite.se](https://subwrite.se):
+
+- **Email:** [sysop@subwrite.se](mailto:sysop@subwrite.se)
+- **GitHub:** [sgt-nylle/subwrite](https://github.com/sgt-nylle/subwrite)

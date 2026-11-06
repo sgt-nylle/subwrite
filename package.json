@@ -1,7 +1,9 @@
 {
   "name": "subwrite",
   "private": true,
-  "version": "0.98.2",
+  "version": "0.98.3",
+  "author": "Sgt.Moon <sysop@subwrite.se>",
+  "homepage": "https://subwrite.se",
   "type": "module",
   "scripts": {
     "dev": "vite",
