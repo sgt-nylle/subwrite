@@ -120,9 +120,10 @@ subwrite-status -n 30
 
 ---
 
-## Contact
+## Community & Contact
 
-For questions, feedback, or bug reports regarding [subwrite.se](https://subwrite.se):
+Join our Discord server or reach out for questions, feedback, or bug reports regarding [subwrite.se](https://subwrite.se):
 
+- **Discord:** [https://discord.gg/9uXbaunJb](https://discord.gg/9uXbaunJb)
 - **Email:** [sysop@subwrite.se](mailto:sysop@subwrite.se)
 - **GitHub:** [sgt-nylle/subwrite](https://github.com/sgt-nylle/subwrite)
