@@ -120,9 +120,10 @@ subwrite-status -n 30
 
 ---
 
-## Contact
+## Community & Contact
 
-For questions, feedback, or bug reports regarding [subwrite.se](https://subwrite.se):
+Join our open Matrix channel or reach out for questions, feedback, or bug reports regarding [subwrite.se](https://subwrite.se):
 
+- **Matrix Room (`#subwrite:subwrite.se`):** [https://chat.subwrite.se/#/room/#subwrite:subwrite.se](https://chat.subwrite.se/#/room/#subwrite:subwrite.se) (or via [matrix.to](https://matrix.to/#/#subwrite:subwrite.se) from any Matrix client)
 - **Email:** [sysop@subwrite.se](mailto:sysop@subwrite.se)
 - **GitHub:** [sgt-nylle/subwrite](https://github.com/sgt-nylle/subwrite)
