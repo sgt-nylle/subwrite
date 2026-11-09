@@ -11,16 +11,10 @@ import { sound } from './utils/audio';
 import { detectDeviceType } from './utils/device';
 import './App.css';
 
-// Helper to allow tolerant matching for special characters, smart quotes, and dashes
+// Helper to allow tolerant matching for smart quotes, dashes, and spaces
 const areCharsEquivalent = (typed?: string, expected?: string): boolean => {
   if (!typed || !expected) return false;
   if (typed === expected) return true;
-
-  // Swedish special characters mapping if user types without local layout
-  const isA = (c: string) => c === 'a' || c === 'A';
-  const isO = (c: string) => c === 'o' || c === 'O';
-  if ((expected === 'å' || expected === 'ä' || expected === 'Å' || expected === 'Ä') && isA(typed)) return true;
-  if ((expected === 'ö' || expected === 'Ö') && isO(typed)) return true;
 
   // Single quotes, apostrophes, backticks, acute accents
   const isSingleQuote = (c: string) => c === "'" || c === '’' || c === '‘' || c === '`' || c === '´';

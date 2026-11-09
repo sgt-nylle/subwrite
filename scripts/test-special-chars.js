@@ -38,8 +38,17 @@ console.assert(areCharsEquivalent("—", "-"), "Em-dash should match hyphen");
 // 3. Test spaces
 console.assert(areCharsEquivalent(" ", "\u00A0"), "Normal space should match non-breaking space");
 
-// 4. Test non-equivalent
+// 4. Test non-equivalent (including strict Swedish å/ä/ö matching)
 console.assert(!areCharsEquivalent("a", "b"), "Different letters should not match");
+console.assert(!areCharsEquivalent("a", "ä"), "'a' should not match 'ä'");
+console.assert(!areCharsEquivalent("a", "å"), "'a' should not match 'å'");
+console.assert(!areCharsEquivalent("o", "ö"), "'o' should not match 'ö'");
+console.assert(!areCharsEquivalent("A", "Ä"), "'A' should not match 'Ä'");
+console.assert(!areCharsEquivalent("A", "Å"), "'A' should not match 'Å'");
+console.assert(!areCharsEquivalent("O", "Ö"), "'O' should not match 'Ö'");
+console.assert(areCharsEquivalent("ä", "ä"), "'ä' should match 'ä'");
+console.assert(areCharsEquivalent("å", "å"), "'å' should match 'å'");
+console.assert(areCharsEquivalent("ö", "ö"), "'ö' should match 'ö'");
 console.assert(!areCharsEquivalent("-", "."), "Hyphen and period should not match");
 console.assert(!areCharsEquivalent("'", '"'), "Single and double quote should not match");
 
