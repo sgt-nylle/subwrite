@@ -1,5 +1,11 @@
 # SubWrite! 🌊⌨️
 
+> [!NOTE]
+> ### 🦅 Version 0.99.1 — The Raptor Update!
+> Expanded the bilingual mission dictionary from 800 to **1,200 curated, length-calibrated passages** (+400 new stories — 10 new stories per level in both English and Swedish across all 4 operational themes: **Submarine**, **Air Force**, **Army**, and **Pub / Off-Duty**).
+>
+> Sourced from Swedish and international Wikipedia archives, the Raptor Update introduces deep historical and technical passages covering **Saab Kockums Project A26 (*Blekinge*-class)**, ***Sjöormen* / *Näcken* / *Västergötland* submarines**, **URF & HMS *Belos***, **Lockheed Martin F-22A Raptor**, **JAS 39E Gripen**, **Saab 29 Tunnan & 32 Lansen**, **GlobalEye AEW&C**, **MBDA Meteor & RBS 15 Gungnir**, **Stridsfordon 9040C**, **Archer FH77BW L52**, **Stridsvagn 103 (*S-vagnen*)**, **Bandkanon 1C**, **Carl Gustaf M4 & Robot 57 (NLAW)**, **Carnegie Porter**, **Oppigårds & Nynäshamns Ångbryggeri**, and Swedish rock/metal legends (**Europe**, **At the Gates**, **Opeth**, **Meshuggah**, **Sabaton**, **Entombed**).
+
 > [!IMPORTANT]
 > ### 🏆 Leaderboard Reset Announcement (Version 0.95)
 > All highscores have been cleared as of **v0.95** to start from a completely clean slate.
@@ -21,7 +27,7 @@ SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web applic
   - **Air Force (Saab JAS 39 Gripen / HUD):** Swedish aviation cockpit theme, jet afterburner audio, and altitude telemetry.
   - **Army (Stridsvagn 122 / Night Vision):** Emerald armor green military CRT, tank cannon acoustics, and combat range telemetry.
   - **Pub / Off-Duty (Local Tavern / Amber CRT):** Warm amber pub aesthetic, tavern chime acoustics, and rock music & brewing history.
-- **Dual Language Support (English & Swedish):** Over 800 curated, calibrated passages with quick toggle via keyboard `[L]`.
+- **Dual Language Support (English & Swedish):** 1,200 curated, calibrated passages (30 per level across all 4 themes in both English and Swedish) with quick toggle via keyboard `[L]`.
 - **5 Classified Difficulty Levels:**
   - **Level 1 (50% length - 250 chars):** Short, lowercase vocabulary, periods only, minimal punctuation.
   - **Level 2 (60% length - 300 chars):** Standard compound sentences, capitalization, proper nouns, and commas.
