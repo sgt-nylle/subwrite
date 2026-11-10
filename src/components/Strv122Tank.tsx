@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const Strv122Tank: React.FC<{ className?: string }> = ({ className = '' }) => {
-  // 8-bit NES pixel grid representing the Swedish Stridsvagn 122 (Leopard 2A5 SE) Main Battle Tank
+  // Clean pixel grid representing the Swedish Stridsvagn 122 (Leopard 2A5 SE) Main Battle Tank
   // Features: Rheinmetall 120mm L/44 smoothbore gun, arrowhead wedge turret armor,
   // commander PERI R17A2 panoramic periscope, Swedish M90 splinter camouflage,
   // heavy composite side skirts, 7 road wheels, and continuous tank tracks.
@@ -108,7 +108,7 @@ export const Strv122Tank: React.FC<{ className?: string }> = ({ className = '' }
         viewBox={`0 0 ${width} ${height}`}
         className="gotland-sub-svg strv-tank-svg"
         shapeRendering="crispEdges"
-        aria-label="8-bit Stridsvagn 122 Main Battle Tank pixel art"
+        aria-label="Clean Stridsvagn 122 Main Battle Tank pixel art"
       >
         <defs>
           <filter id="tankGlow" x="-20%" y="-20%" width="140%" height="140%">

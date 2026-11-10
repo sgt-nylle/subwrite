@@ -1,4 +1,4 @@
-// Web Audio API 8-Bit Retro Sound Effects for SubWrite!
+// Web Audio API Clean Fast Sound Effects for SubWrite!
 
 class RetroAudio {
   private ctx: AudioContext | null = null;
@@ -87,7 +87,7 @@ class RetroAudio {
     try {
       this.initCtx();
       if (!this.ctx) return;
-      // Classic NES "Press Start" 8-bit square-wave arpeggio chime (C5 -> E5 -> G5 -> C6)
+      // Clean "Press Start" square-wave arpeggio chime (C5 -> E5 -> G5 -> C6)
       const notes = [
         { freq: 523.25, delay: 0, dur: 0.07 },
         { freq: 659.25, delay: 0.06, dur: 0.07 },

@@ -454,9 +454,9 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
       <div
         ref={containerRef}
         tabIndex={-1}
-        className="retro-scoreboard-container c64-box"
+        className="retro-scoreboard-container clean-box"
       >
-        <div className="c64-header-banner">
+        <div className="clean-header-banner">
           <span className="star-icon">{activeTheme.flair}</span>
           <h2>
             {selectedDevice === 'mobile' ? `📱 TOUCHSCREEN ${groupLabel}` : `💻 KEYBOARD ${groupLabel}`}
@@ -493,7 +493,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
         {/* STATUS PROMPT: CORRECT & INCORRECT CHARACTERS DEBRIEF */}
         {currentScore && (
-          <div className="mission-debrief-card c64-box">
+          <div className="mission-debrief-card clean-box">
             <div className="debrief-header">
               <span className="radar-blip">●</span> TRIAL STATUS DEBRIEF
               <span className="debrief-device-badge">
@@ -555,7 +555,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
 
         {/* 3-LETTER INITIALS / USERNAME PROMPT: ALWAYS SHOWN AFTER COMPLETING A GAME */}
         {currentScore && !submitted && (
-          <div className="new-record-prompt c64-box">
+          <div className="new-record-prompt clean-box">
             <div className={`blinking-alert ${isPodiumScore ? 'podium-alert' : ''}`}>
               {isPodiumScore
                 ? `★★★ FLEET PODIUM RECORD FOR LEVEL ${currentScore.level} [${getDeviceLabel(currentScore.device)}] ★★★`
@@ -670,7 +670,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
               const medals = ['🥇 GOLD', '🥈 SILVER', '🥉 BRONZE'];
               const podiumThemes = ['gold-podium', 'silver-podium', 'bronze-podium'];
               return (
-                <div key={player.id || idx} className={`podium-card c64-box ${podiumThemes[idx]}`}>
+                <div key={player.id || idx} className={`podium-card clean-box ${podiumThemes[idx]}`}>
                   <div className="podium-badge">{medals[idx]}</div>
                   <div className="podium-initials">{player.initials}</div>
                   <div className="podium-score highlight-gold">{player.score.toLocaleString()} PTS</div>
@@ -695,7 +695,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({
             </span>
             {isLoading && <span className="syncing-text">[{`SYNCING ${groupLabel}...`}]</span>}
           </div>
-          <table className="c64-score-table">
+          <table className="clean-score-table">
             <thead>
               <tr>
                 <th>RANK</th>

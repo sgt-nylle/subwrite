@@ -68,7 +68,7 @@ export const SubmarineGraphic: React.FC<{ className?: string }> = ({ className =
           strokeWidth="2"
         />
 
-        {/* Main Submarine Hull (Typhoon Class / Red October shape) */}
+        {/* Main Submarine Hull (Typhoon Class / Tactical shape) */}
         {/* Rounded Bow to Tapered Stern */}
         <path
           d="M 560 90 
@@ -139,7 +139,7 @@ export const SubmarineGraphic: React.FC<{ className?: string }> = ({ className =
 
         {/* Tactical Classification Text */}
         <text x="32" y="165" fill="#ff6666" fontFamily="'VT323', monospace" fontSize="18" letterSpacing="1">
-          PROJECT 941 AKULA / TYPHOON-CLASS SSBN "KRASNY OKTYABR" (RED OCTOBER)
+          PROJECT 941 AKULA / TYPHOON-CLASS SSBN "TK-208 DMITRIY DONSKOY"
         </text>
         <text x="500" y="165" fill="#ffd700" fontFamily="'VT323', monospace" fontSize="18" letterSpacing="1">
           DISP: 48,000t

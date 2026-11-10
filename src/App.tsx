@@ -749,11 +749,11 @@ export function App() {
     : 0;
 
   return (
-    <div className="c64-viewport" data-theme={viewportTheme}>
+    <div className="clean-viewport" data-theme={viewportTheme}>
       <div className="crt-overlay"></div>
       <div className="crt-vignette"></div>
 
-      <div className={`c64-screen-frame ${gameState === 'intro' ? 'c64-intro-frame' : ''}`}>
+      <div className={`clean-screen-frame ${gameState === 'intro' ? 'clean-intro-frame' : ''}`}>
         {gameState === 'intro' && (
           <IntroScreen
             isMobile={isMobile}
@@ -791,13 +791,13 @@ export function App() {
         {/* =============================================================
            TYPING ARENA (LIVE MISSION) - Kept mounted to enable synchronous iOS Safari keyboard popup on tap
            ============================================================= */}
-        <div className={`c64-mission-view ${gameState !== 'playing' ? 'mission-view-standby' : ''}`}>
+        <div className={`clean-mission-view ${gameState !== 'playing' ? 'mission-view-standby' : ''}`}>
           {/* RETRO ARCADE THEME SELECTOR ROW IN MISSION VIEW */}
           <ThemeSelector currentTheme={theme} onSelectTheme={handleSelectTheme} className="mission-theme-selector-bar" />
 
           {/* TOP STATUS BAR */}
-          <header className="c64-top-bar">
-            <div className="c64-branding">
+          <header className="clean-top-bar">
+            <div className="clean-branding">
               <span className="soviet-star">{activeTheme.flair}</span>
               <span className="brand-name">subwrite.se</span>
               <span className="kernel-tag">{activeTheme.vesselName} / LEVEL {level} ({activeLevel.name})</span>
@@ -839,7 +839,7 @@ export function App() {
           </header>
 
           {/* TACTICAL TELEMETRY PANEL (WITH TIME COUNTDOWN) */}
-          <section className="c64-telemetry-panel c64-box">
+          <section className="clean-telemetry-panel clean-box">
             <div className="telemetry-item">
               <span className="telemetry-label">{activeTheme.vesselLabel}</span>
               <span className="telemetry-val highlight-red">{activeTheme.vesselName}</span>
@@ -873,7 +873,7 @@ export function App() {
           </section>
 
           {/* LEVEL SELECTOR (LEVELS 1 - 5) */}
-          <section className="c64-level-selector c64-box">
+          <section className="clean-level-selector clean-box">
             <div className="level-bar-label">
               <span>[ {activeTheme.levelHeaderLabel} ] <span className="level-bar-shortcut">[1-5 / ◀ ▶]</span>:</span>
             </div>
@@ -901,7 +901,7 @@ export function App() {
 
           {/* TYPING ARENA */}
           <main
-            className={`c64-terminal-arena c64-box ${isFocused ? 'arena-focused' : 'arena-unfocused'}`}
+            className={`clean-terminal-arena clean-box ${isFocused ? 'arena-focused' : 'arena-unfocused'}`}
             onClick={() => inputRef.current?.focus({ preventScroll: true })}
           >
             {/* Unfocused Click-to-Start Banner */}
@@ -974,7 +974,7 @@ export function App() {
                 <span>{activeTheme.progressStatusText}</span>
                 <span>{activeTheme.dimensionLabel} REACHED: {progressPercent}%</span>
               </div>
-              <div className="c64-progress-bar">
+              <div className="clean-progress-bar">
                 <div
                   className="progress-fill"
                   style={{ width: `${progressPercent}%` }}
@@ -984,7 +984,7 @@ export function App() {
           </main>
 
           {/* BOTTOM ACTION BAR */}
-          <footer className="c64-footer c64-box">
+          <footer className="clean-footer clean-box">
             <div className="footer-keys-legend">
               <span>[ESC] MENU</span> | <span>[ENTER] RESTART</span> | <span>[1-5 / ◀▶] LEVEL</span> | <span>ERRORS: {continuedErrors}</span> | <span>PENALTY: -{errorPenalty} PTS</span> | <span className={accuracy >= 98 ? "highlight-gold" : ""}>{accuracy >= 98 ? "★ BONUS: +4000 PTS (≥98%)" : "BONUS: 0 PTS (<98%)"}</span> | <span className="footer-version">{APP_VERSION}</span>
             </div>

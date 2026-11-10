@@ -90,7 +90,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         </button>
       </div>
 
-      {/* Centerpiece Logo + 8-Bit Submarine + Brief Description + Start Button */}
+      {/* Centerpiece Logo + Clean Submarine + Brief Description + Start Button */}
       <div className="nes-intro-center">
         <div className="nes-intro-logo-block">
           <div className="nes-star-flair nes-intro-stars">★ ★ ★</div>

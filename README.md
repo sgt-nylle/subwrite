@@ -14,16 +14,16 @@
 >
 > **Permanent Highscore Guarantee:** From version 0.95 onward, **no future highscores will be cleared**. This was an exclusive one-time reset conducted during active pre-release development to establish fair, permanent competitive leaderboards for all players.
 
-> **Red October Commodore 64 Submarine Typing Speed Test**
+> **Fast, Clean Submarine Typing Speed Test**
 
-SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web application inspired by the Cold War classic *The Hunt for Red October* and classic Commodore 64 terminal aesthetics.
+SubWrite! is a clean, optimized submarine-themed typing speed and accuracy web application inspired by naval telemetry, fast typing challenges, and clean terminal aesthetics.
 
 ---
 
 ## Features
 
 - **4 Operational Themes & Visual Viewports:**
-  - **Submarine (Red October / C64):** Crimson radar CRT glow, sonar acoustics, and ballast telemetry.
+  - **Submarine (Tactical Red):** Crimson radar CRT glow, sonar acoustics, and ballast telemetry.
   - **Air Force (Saab JAS 39 Gripen / HUD):** Swedish aviation cockpit theme, jet afterburner audio, and altitude telemetry.
   - **Army (Stridsvagn 122 / Night Vision):** Emerald armor green military CRT, tank cannon acoustics, and combat range telemetry.
   - **Pub / Off-Duty (Local Tavern / Amber CRT):** Warm amber pub aesthetic, tavern chime acoustics, and rock music & brewing history.
@@ -43,7 +43,7 @@ SubWrite! is a retro 8-bit submarine-themed typing speed and accuracy web applic
   - **Precision Bonus:** `+4,000 PTS` awarded when completing a mission with **98% or higher typing accuracy** (`≥98%`). Evaluated dynamically in real time—if an early typo drops accuracy below 98%, clean typing on the remainder of the passage can recover the bonus.
   - Retro 3-character initials input (e.g. `RAM`, `NYL`, `RED`) saved to global backend & local storage.
 - **100% Keyboard-Driven Navigation:** The complete experience—theme switching, level selection, language toggling, in-game restarts, audio muting, and post-game leaderboard submissions—can be operated seamlessly without touching a mouse.
-- **Synthesized 8-Bit Web Audio:**
+- **Synthesized Clean Web Audio:**
   - Dynamic key clicks, sonar pings, error alarms, and victory fanfares synthesized in real-time via the Web Audio API (press `[S]` to mute/unmute).
 - **Mobile & Smartphone Ready:**
   - Fully optimized for iOS and Android virtual keyboards.

@@ -151,10 +151,10 @@ const SV_LEVEL_4 = [
   "Under Kockums tester visade Gotland-klassens Stirlingmaskineri en akustisk signatur som låg under havets naturliga bakgrundsbrus."
 ];
 
-// --- LEVEL 5: ADMIRAL / AMIRAL (Taktisk strid, atomubåtar, Red October, SOSUS, kavitation och nödstigning) ---
+// --- LEVEL 5: ADMIRAL / AMIRAL (Taktisk strid, atomubåtar, SOSUS, kavitation och nödstigning) ---
 const SV_LEVEL_5 = [
   "Sovjetiska atomubåtar av Projekt 941 Akula (Nato: Typhoon-klass) hade ett deplacement på 48 000 ton och bar 20 stycken R-39 ballistiska kärnvapenrobotar.",
-  "Den fiktiva 'Röd Oktober' under befäl av kapten Marko Ramius var utrustad med en experimentell magnetohydrodynamisk (MHD) kållar-drift för total tystnad.",
+  "Avancerade prototyper av Projekt 941 utrustades med en experimentell magnetohydrodynamisk (MHD) kållar-drift för total tystnad.",
   "Larmrapport: Sonarkontakt klassificerad som fientlig atomubåt av Victor III-klass på bäring 245 grader! Gör klart främre torpedtuber ett och två för trådstyrd Tp 62!",
   "Stirlingmotorns förbränningskammare arbetar med ett tryck som överstiger det omgivande vattentrycket på 200 meters djup, vilket gör att avgaserna kan dumpas utan kompressor.",
   "Svenska A26 Blekinge-klassen designas med den unika Kockums 'Ghost'-teknologin (Genuine Holistic Stealth) för att ge nära noll akustiska, magnetiska och infraröda signaturer.",

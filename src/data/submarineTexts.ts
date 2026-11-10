@@ -83,7 +83,7 @@ export const SUBMARINE_LEVELS: SubmarineLevel[] = [
   {
     level: 5,
     name: "ADMIRAL",
-    rank: "Fleet Admiral / Red October",
+    rank: "Fleet Admiral / Fast Strike",
     depth: "700 METERS (TEST DEPTH)",
     description: "Maximum difficulty: Typhoon-class stealth doctrine, symbols, quotes, numbers, and Cyrillic transliterations.",
     multiplier: 5.0,
@@ -91,7 +91,7 @@ export const SUBMARINE_LEVELS: SubmarineLevel[] = [
       ? passagesData.level5
       : [
           "TK-208 'Dmitriy Donskoy', lead ship of Project 941 Akula (NATO: Typhoon-class), displaces 48,000 tonnes submerged. Equipped with twin OK-650 pressurized-water reactors (190 MW each) and 20x RSM-52 'R-39 Rif' solid-fuel SLBMs, it remains humanity's largest submarine.",
-          "The fictional 'Red October' (Krasny Oktyabr), captained by Marko Ramius, was fitted with an experimental magnetohydrodynamic 'caterpillar drive' - silent caterpillar propulsion with no moving turbine blades, leaving zero cavitation signature for SOSUS arrays to track."
+          "Advanced Project 941 stealth prototypes evaluated magnetohydrodynamic propulsion - silent caterpillar drive with no moving turbine blades, leaving zero cavitation signature for SOSUS arrays to track."
         ]
   }
 ];

@@ -230,7 +230,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         </div>
       </div>
 
-      {/* 8-BIT THEME VEHICLE SPRITE */}
+      {/* CLEAN THEME VEHICLE SPRITE */}
       <activeTheme.GraphicComponent />
 
       {/* PROMINENT ARCADE LANGUAGE SELECTOR PANEL */}

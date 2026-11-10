@@ -77,9 +77,9 @@ export const OrderInstructions: React.FC<OrderInstructionsProps> = ({
         }
       }}
     >
-      <div className="retro-instructions-container c64-box" tabIndex={-1}>
+      <div className="retro-instructions-container clean-box" tabIndex={-1}>
         {/* HEADER BANNER */}
-        <div className="c64-header-banner">
+        <div className="clean-header-banner">
           <span className="star-icon">{activeTheme.flair}</span>
           <h2>
             {isEn ? `ORDER INSTRUCTIONS // ${activeTheme.title} MANUAL` : `ORDERINSTRUKTIONER // ${activeTheme.title} MANUAL`}

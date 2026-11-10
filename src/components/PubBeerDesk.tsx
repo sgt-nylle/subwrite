@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const PubBeerDesk: React.FC<{ className?: string }> = ({ className = '' }) => {
-  // 8-bit NES pixel grid representing a cold draught beer on a polished wooden bardesk
+  // Clean pixel grid representing a cold draught beer on a polished wooden bardesk
   // Features: Thick foaming head spilling over, golden amber lager with carbonation bubbles,
   // heavy dimpled glass mug with side handle, bar coaster, and rich mahogany counter.
   // Width: 64 pixels, Height: 22 pixels, rendered at crisp scale.
@@ -109,7 +109,7 @@ export const PubBeerDesk: React.FC<{ className?: string }> = ({ className = '' }
         viewBox={`0 0 ${width} ${height}`}
         className="gotland-sub-svg pub-beer-svg"
         shapeRendering="crispEdges"
-        aria-label="8-bit Cold Beer on Bardesk pixel art"
+        aria-label="Clean Cold Beer on Bardesk pixel art"
       >
         <defs>
           <filter id="pubBeerGlow" x="-20%" y="-20%" width="140%" height="140%">

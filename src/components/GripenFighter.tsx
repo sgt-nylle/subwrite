@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const GripenFighter: React.FC<{ className?: string }> = ({ className = '' }) => {
-  // 8-bit NES pixel grid representing the Swedish Saab JAS 39 Gripen multirole fighter
+  // Clean pixel grid representing the Swedish Saab JAS 39 Gripen multirole fighter
   // Features: Supersonic radome, canard foreplanes, delta wings, wingtip missile rails,
   // vertical stabilizer with Flygvapnet emblem, and afterburner flame exhaust.
   // Width: 64 pixels, Height: 22 pixels, rendered at crisp scale.

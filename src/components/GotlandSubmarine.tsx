@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const GotlandSubmarine: React.FC<{ className?: string }> = ({ className = '' }) => {
-  // 8-bit NES pixel grid representing the Swedish Gotland-class (A19) submarine
+  // Clean pixel grid representing the Swedish Gotland-class (A19) submarine
   // Features: Streamlined sail, bow torpedo array, Stirling AIP mid-hull, and iconic Swedish X-rudder!
   // Width: 64 pixels, Height: 20 pixels, rendered at crisp scale.
   const pixelSize = 5;
