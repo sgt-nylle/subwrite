@@ -133,3 +133,11 @@ Join our Discord server or reach out for questions, feedback, or bug reports reg
 - **Discord:** [https://discord.gg/9uXbaunJb](https://discord.gg/9uXbaunJb)
 - **Email:** [sysop@subwrite.se](mailto:sysop@subwrite.se)
 - **GitHub:** [sgt-nylle/subwrite](https://github.com/sgt-nylle/subwrite)
+
+---
+
+### ⚓ Design & Aesthetic Notes
+The visual identity, naming conventions, and UI themes across this project are inspired by vintage Swedish naval and maritime defense computing aesthetics (cold-war CRT telemetry, green/amber phosphors, sonar consoles). 
+
+This is purely a stylistic and retro-computing design choice. The project has no official affiliation with the Swedish Armed Forces (Försvarsmakten) or any military organization.
+
